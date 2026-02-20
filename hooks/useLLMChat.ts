@@ -13,10 +13,20 @@ export function useLLMChat(conversationId: number) {
 
   // Load chat history on mount
   useEffect(() => {
+    // Don't load if conversationId is 0 or null (not ready yet)
+    if (!conversationId) {
+      loggingService.debug('Chat', 'Skipping history load: no conversation ID yet');
+      return;
+    }
+
     async function loadHistory() {
       try {
         loggingService.info('Chat', 'Loading chat history', { conversationId });
         console.log('📚 Loading chat history...');
+        
+        // Wait a bit for database to be ready
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         const history = await databaseService.getMessages(conversationId);
         setMessages(history);
         loggingService.info('Chat', `Loaded ${history.length} messages from history`);
@@ -25,8 +35,12 @@ export function useLLMChat(conversationId: number) {
         const errorMsg = err instanceof Error ? err.message : 'Unknown error';
         loggingService.error('Chat', 'Failed to load chat history', { error: errorMsg });
         console.error('❌ Failed to load history:', err);
+        
+        // Don't fail completely, just log and continue
+        setMessages([]);
       }
     }
+    
     loadHistory();
   }, [conversationId]);
 

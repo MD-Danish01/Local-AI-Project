@@ -1,6 +1,7 @@
 import { loggingService } from "@/services/logging/LoggingService";
 import type { GenerateOptions } from "@/types/llm";
 import { RunAnywhere } from "@runanywhere/core";
+import { LlamaCPP } from "@runanywhere/llamacpp";
 import { DEFAULT_GENERATION_OPTIONS, QWEN_MODEL_CONFIG } from "./config";
 
 /**
@@ -20,6 +21,7 @@ class LLMService {
     try {
       loggingService.info("LLM", "Initializing LLM with RunAnywhere SDK", {
         modelPath,
+        modelId: this.modelId,
       });
 
       // Validate model path exists
@@ -29,8 +31,43 @@ class LLMService {
 
       loggingService.debug("LLM", `Loading model from: ${modelPath}`);
 
-      // Load the model into memory using RunAnywhere SDK
-      await RunAnywhere.loadModel(modelPath);
+      // Register the LlamaCPP backend module
+      LlamaCPP.register();
+      loggingService.debug("LLM", "LlamaCPP module registered");
+
+      // Register the model with LlamaCPP so the SDK knows its ID, URL, and local path
+      await LlamaCPP.addModel({
+        id: QWEN_MODEL_CONFIG.id,
+        name: QWEN_MODEL_CONFIG.name,
+        url: QWEN_MODEL_CONFIG.url,
+        memoryRequirement: QWEN_MODEL_CONFIG.size,
+      });
+      loggingService.debug("LLM", `Model registered with LlamaCPP`, {
+        modelId: this.modelId,
+      });
+
+      // Load the model into memory using the model ID (not the file path)
+      try {
+        await RunAnywhere.loadModel(this.modelId);
+        loggingService.info("LLM", "Model loaded successfully", {
+          modelId: this.modelId,
+        });
+      } catch (loadError) {
+        // Log the specific error code if available
+        const errorCode =
+          (loadError as any)?.code || (loadError as any)?.status || "unknown";
+        const errorMsg =
+          loadError instanceof Error ? loadError.message : String(loadError);
+
+        loggingService.error("LLM", "Model loading failed", {
+          error: errorMsg,
+          errorCode: errorCode,
+          modelPath,
+          modelId: this.modelId,
+        });
+
+        throw loadError;
+      }
 
       this.isModelLoaded = true;
       this.isInitialized = true;
@@ -40,11 +77,19 @@ class LLMService {
       this.isModelLoaded = false;
       const errorMessage =
         error instanceof Error ? error.message : String(error);
+      const errorCode = (error as any)?.code || "unknown";
+
       loggingService.error("LLM", "LLM initialization failed", {
         error: errorMessage,
+        errorCode: errorCode,
         modelPath,
+        modelId: this.modelId,
+        stack: error instanceof Error ? error.stack : undefined,
       });
-      throw new Error(`Failed to initialize LLM: ${errorMessage}`);
+
+      throw new Error(
+        `Failed to initialize LLM (code: ${errorCode}): ${errorMessage}`,
+      );
     }
   }
 

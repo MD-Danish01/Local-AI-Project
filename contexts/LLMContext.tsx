@@ -2,6 +2,7 @@ import { databaseService } from "@/services/database/DatabaseService";
 import { llmService } from "@/services/llm/LLMService";
 import { modelDownloadService } from "@/services/llm/ModelDownloadService";
 import { modelService } from "@/services/llm/ModelService";
+import { loggingService } from "@/services/logging/LoggingService";
 import { ModelLoadingState } from "@/types/llm";
 import { RunAnywhere, SDKEnvironment } from "@runanywhere/core";
 import { LlamaCPP } from "@runanywhere/llamacpp";
@@ -54,16 +55,22 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function initApp() {
       try {
+        loggingService.info("App", "Starting app initialization");
         console.log("🚀 Starting app initialisation…");
 
         // 0. Initialize RunAnywhere SDK
         setProgress(5);
+        loggingService.info("App", "Initializing RunAnywhere SDK");
         console.log("🔧 Initializing RunAnywhere SDK...");
         await RunAnywhere.initialize({
           environment: SDKEnvironment.Development,
           debug: true,
         });
+
+        // Register LlamaCPP backend
+        loggingService.info("App", "Registering LlamaCPP backend");
         LlamaCPP.register();
+        loggingService.info("App", "RunAnywhere SDK ready");
         console.log("✅ RunAnywhere SDK ready");
 
         // 1. Init database

@@ -7,7 +7,11 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Alert,
+  Share,
+  Platform,
 } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { loggingService, LogLevel, LogEntry } from '@/services/logging/LoggingService';
 
 export default function LogsScreen() {
@@ -113,19 +117,83 @@ export default function LogsScreen() {
     return logs.filter(log => log.level === level).length;
   };
 
+  const copyLogsToClipboard = async () => {
+    try {
+      const logsText = loggingService.exportLogs();
+      await Clipboard.setStringAsync(logsText);
+      Alert.alert('Success', 'Logs copied to clipboard!');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to copy logs to clipboard');
+    }
+  };
+
+  const shareLogsAsText = async () => {
+    try {
+      const logsText = loggingService.exportLogs();
+      const result = await Share.share({
+        message: logsText,
+        title: 'App Logs',
+      });
+      
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          console.log('Shared with activity type:', result.activityType);
+        } else {
+          console.log('Logs shared successfully');
+        }
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to share logs');
+    }
+  };
+
+  const copyFilteredLogs = async () => {
+    try {
+      const logsToExport = filteredLogs.map(log => ({
+        timestamp: log.timestamp.toISOString(),
+        level: log.level,
+        category: log.category,
+        message: log.message,
+        details: log.details,
+      }));
+      
+      const logsText = JSON.stringify(logsToExport, null, 2);
+      await Clipboard.setStringAsync(logsText);
+      Alert.alert('Success', `Copied ${filteredLogs.length} filtered logs to clipboard!`);
+    } catch (error) {
+      Alert.alert('Error', 'Failed to copy logs');
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>System Logs</Text>
-        <TouchableOpacity
-          style={styles.clearButton}
-          onPress={() => {
-            loggingService.clearLogs();
-            setExpandedLog(null);
-          }}
-        >
-          <Text style={styles.clearButtonText}>Clear</Text>
-        </TouchableOpacity>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity
+            style={styles.copyButton}
+            onPress={copyFilteredLogs}
+          >
+            <Text style={styles.copyButtonText}>📋 Copy</Text>
+          </TouchableOpacity>
+          {Platform.OS !== 'web' && (
+            <TouchableOpacity
+              style={styles.shareButton}
+              onPress={shareLogsAsText}
+            >
+              <Text style={styles.shareButtonText}>📤</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            style={styles.clearButton}
+            onPress={() => {
+              loggingService.clearLogs();
+              setExpandedLog(null);
+            }}
+          >
+            <Text style={styles.clearButtonText}>Clear</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.filterContainer}>
@@ -192,6 +260,29 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#FFFFFF',
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  copyButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#374151',
+    borderRadius: 8,
+  },
+  copyButtonText: {
+    color: '#10B981',
+    fontWeight: '600',
+  },
+  shareButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#374151',
+    borderRadius: 8,
+  },
+  shareButtonText: {
+    fontSize: 18,
   },
   clearButton: {
     paddingHorizontal: 16,
