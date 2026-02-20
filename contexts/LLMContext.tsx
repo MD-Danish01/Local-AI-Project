@@ -1,11 +1,17 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { RunAnywhere, SDKEnvironment } from '@runanywhere/core';
-import { LlamaCPP } from '@runanywhere/llamacpp';
-import { modelService } from '@/services/llm/ModelService';
-import { modelDownloadService } from '@/services/llm/ModelDownloadService';
-import { llmService } from '@/services/llm/LLMService';
-import { databaseService } from '@/services/database/DatabaseService';
-import { ModelLoadingState } from '@/types/llm';
+import { databaseService } from "@/services/database/DatabaseService";
+import { llmService } from "@/services/llm/LLMService";
+import { modelDownloadService } from "@/services/llm/ModelDownloadService";
+import { modelService } from "@/services/llm/ModelService";
+import { ModelLoadingState } from "@/types/llm";
+import { RunAnywhere, SDKEnvironment } from "@runanywhere/core";
+import { LlamaCPP } from "@runanywhere/llamacpp";
+import React, {
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 
 interface LLMContextType {
   /** Model is loaded and LLM is ready to generate */
@@ -33,7 +39,9 @@ interface LLMContextType {
 const LLMContext = createContext<LLMContextType | undefined>(undefined);
 
 export function LLMProvider({ children }: { children: React.ReactNode }) {
-  const [appState, setAppState] = useState<ModelLoadingState>(ModelLoadingState.IDLE);
+  const [appState, setAppState] = useState<ModelLoadingState>(
+    ModelLoadingState.IDLE,
+  );
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [downloadedBytes, setDownloadedBytes] = useState(0);
@@ -46,33 +54,33 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     async function initApp() {
       try {
-        console.log('🚀 Starting app initialisation…');
+        console.log("🚀 Starting app initialisation…");
 
         // 0. Initialize RunAnywhere SDK
         setProgress(5);
-        console.log('🔧 Initializing RunAnywhere SDK...');
+        console.log("🔧 Initializing RunAnywhere SDK...");
         await RunAnywhere.initialize({
           environment: SDKEnvironment.Development,
           debug: true,
         });
         LlamaCPP.register();
-        console.log('✅ RunAnywhere SDK ready');
+        console.log("✅ RunAnywhere SDK ready");
 
         // 1. Init database
         setProgress(10);
         await databaseService.initialize();
-        console.log('✅ Database ready');
+        console.log("✅ Database ready");
 
         // 2. Ensure a conversation exists
         setProgress(20);
         const conversations = await databaseService.getConversations();
         if (conversations.length === 0) {
-          const newId = await databaseService.createConversation('My Chat');
+          const newId = await databaseService.createConversation("My Chat");
           setConversationId(newId);
         } else {
           setConversationId(conversations[0].id!);
         }
-        console.log('✅ Conversation ready');
+        console.log("✅ Conversation ready");
 
         // 3. Check if model file exists
         setProgress(30);
@@ -80,7 +88,7 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
 
         if (!localPath) {
           // Model not on device – ask user to download
-          console.log('📥 Model not present – waiting for user download');
+          console.log("📥 Model not present – waiting for user download");
           setProgress(0);
           setAppState(ModelLoadingState.NOT_DOWNLOADED);
           return;
@@ -89,10 +97,11 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
         // 4. Model already downloaded – load it straight away
         await loadModel(localPath);
       } catch (err) {
-        const msg = err instanceof Error ? err.message : 'Initialisation failed';
+        const msg =
+          err instanceof Error ? err.message : "Initialisation failed";
         setError(msg);
         setAppState(ModelLoadingState.ERROR);
-        console.error('❌ Init failed:', msg);
+        console.error("❌ Init failed:", msg);
       }
     }
 
@@ -106,7 +115,7 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
     try {
       setAppState(ModelLoadingState.LOADING);
       setProgress(50);
-      console.log('📦 Loading model into LLM engine…');
+      console.log("📦 Loading model into LLM engine…");
 
       const modelPath = await modelService.prepareFromLocalPath(localPath);
       setProgress(80);
@@ -115,12 +124,12 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
       setProgress(100);
 
       setAppState(ModelLoadingState.READY);
-      console.log('🎉 LLM ready!');
+      console.log("🎉 LLM ready!");
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Failed to load model';
+      const msg = err instanceof Error ? err.message : "Failed to load model";
       setError(msg);
       setAppState(ModelLoadingState.ERROR);
-      console.error('❌ Model load failed:', msg);
+      console.error("❌ Model load failed:", msg);
     }
   }
 
@@ -143,15 +152,15 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
       },
       // onComplete
       async (localPath) => {
-        console.log('✅ Download complete, loading model…');
+        console.log("✅ Download complete, loading model…");
         await loadModel(localPath);
       },
       // onError
       (err) => {
         setError(err.message);
         setAppState(ModelLoadingState.NOT_DOWNLOADED);
-        console.error('❌ Download error:', err.message);
-      }
+        console.error("❌ Download error:", err.message);
+      },
     );
   }, []);
 
@@ -188,7 +197,7 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
 export function useLLMContext() {
   const context = useContext(LLMContext);
   if (!context) {
-    throw new Error('useLLMContext must be used within LLMProvider');
+    throw new Error("useLLMContext must be used within LLMProvider");
   }
   return context;
 }

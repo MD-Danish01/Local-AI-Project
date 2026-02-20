@@ -1,6 +1,6 @@
-import { QWEN_MODEL_CONFIG } from './config';
-import { modelDownloadService } from './ModelDownloadService';
-import { ModelLoadingState } from '@/types/llm';
+import { ModelLoadingState } from "@/types/llm";
+import { QWEN_MODEL_CONFIG } from "./config";
+import { modelDownloadService } from "./ModelDownloadService";
 
 /**
  * ModelService
@@ -41,16 +41,16 @@ export class ModelService {
   async prepareFromLocalPath(localPath: string): Promise<string> {
     try {
       this.modelLoadingState = ModelLoadingState.LOADING;
-      console.log('📦 Preparing model from local path:', localPath);
+      console.log("📦 Preparing model from local path:", localPath);
 
       this.modelLocalUri = localPath;
       this.modelLoadingState = ModelLoadingState.READY;
-      console.log('✅ Model ready');
+      console.log("✅ Model ready");
 
       return this.modelLocalUri;
     } catch (error) {
       this.modelLoadingState = ModelLoadingState.ERROR;
-      console.error('❌ Failed to prepare model:', error);
+      console.error("❌ Failed to prepare model:", error);
       throw error;
     }
   }

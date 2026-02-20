@@ -1,12 +1,11 @@
-import { File, Paths } from 'expo-file-system';
-import { QWEN_MODEL_CONFIG } from './config';
-import { loggingService } from '@/services/logging/LoggingService';
+import { loggingService } from "@/services/logging/LoggingService";
+import { QWEN_MODEL_CONFIG } from "./config";
 
 // expo-file-system v19 removed DownloadResumable from its public TS types.
 // The implementation still lives in the legacy sub-module which Metro resolves
 // at runtime. We load it via require() and declare only what we need.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-const LegacyFS = require('expo-file-system/legacy') as {
+const LegacyFS = require("expo-file-system/legacy") as {
   documentDirectory: string | null;
   getInfoAsync(uri: string): Promise<{ exists: boolean; size?: number }>;
   deleteAsync(uri: string, options?: { idempotent?: boolean }): Promise<void>;
@@ -14,7 +13,10 @@ const LegacyFS = require('expo-file-system/legacy') as {
     uri: string,
     fileUri: string,
     options: Record<string, unknown>,
-    callback?: (d: { totalBytesWritten: number; totalBytesExpectedToWrite: number }) => void
+    callback?: (d: {
+      totalBytesWritten: number;
+      totalBytesExpectedToWrite: number;
+    }) => void,
   ): {
     downloadAsync(): Promise<{ uri: string } | undefined>;
     pauseAsync(): Promise<void>;
@@ -22,7 +24,11 @@ const LegacyFS = require('expo-file-system/legacy') as {
   };
 };
 
-export type DownloadProgressCallback = (progress: number, downloadedBytes: number, totalBytes: number) => void;
+export type DownloadProgressCallback = (
+  progress: number,
+  downloadedBytes: number,
+  totalBytes: number,
+) => void;
 
 type DownloadHandle = ReturnType<typeof LegacyFS.createDownloadResumable>;
 
@@ -40,7 +46,7 @@ export class ModelDownloadService {
   private downloadHandle: DownloadHandle | null = null;
 
   private constructor() {
-    const docDir = LegacyFS.documentDirectory ?? '';
+    const docDir = LegacyFS.documentDirectory ?? "";
     this.modelPath = `${docDir}${QWEN_MODEL_CONFIG.localFileName}`;
   }
 
@@ -58,7 +64,9 @@ export class ModelDownloadService {
       if (!info.exists) return false;
       // Guard against zero-byte or very small partial files
       if (info.size !== undefined && info.size < 1024 * 1024) {
-        console.warn('⚠️ Model file found but seems too small – treating as incomplete');
+        console.warn(
+          "⚠️ Model file found but seems too small – treating as incomplete",
+        );
         return false;
       }
       return true;
@@ -76,17 +84,21 @@ export class ModelDownloadService {
   async downloadModel(
     onProgress: DownloadProgressCallback,
     onComplete: (localPath: string) => void,
-    onError: (err: Error) => void
+    onError: (err: Error) => void,
   ): Promise<void> {
     try {
-      loggingService.info('Download', 'Starting model download from HuggingFace', {
-        url: QWEN_MODEL_CONFIG.url,
-        destination: this.modelPath,
-        size: this.getFormattedSize(),
-      });
-      console.log('⬇️  Starting model download from HuggingFace…');
-      console.log('   URL :', QWEN_MODEL_CONFIG.url);
-      console.log('   Dest:', this.modelPath);
+      loggingService.info(
+        "Download",
+        "Starting model download from HuggingFace",
+        {
+          url: QWEN_MODEL_CONFIG.url,
+          destination: this.modelPath,
+          size: this.getFormattedSize(),
+        },
+      );
+      console.log("⬇️  Starting model download from HuggingFace…");
+      console.log("   URL :", QWEN_MODEL_CONFIG.url);
+      console.log("   Dest:", this.modelPath);
 
       // Remove any left-over partial file
       await this.deleteModel();
@@ -96,31 +108,41 @@ export class ModelDownloadService {
         this.modelPath,
         {},
         ({ totalBytesWritten, totalBytesExpectedToWrite }) => {
-          const total = totalBytesExpectedToWrite > 0
-            ? totalBytesExpectedToWrite
-            : QWEN_MODEL_CONFIG.size;
+          const total =
+            totalBytesExpectedToWrite > 0
+              ? totalBytesExpectedToWrite
+              : QWEN_MODEL_CONFIG.size;
           const pct = Math.min(100, (totalBytesWritten / total) * 100);
           onProgress(pct, totalBytesWritten, total);
-        }
+        },
       );
 
       const result = await this.downloadHandle.downloadAsync();
 
       if (!result?.uri) {
-        const error = new Error('Download finished but no file URI was returned');
-        loggingService.error('Download', 'Download completed but no URI returned');
+        const error = new Error(
+          "Download finished but no file URI was returned",
+        );
+        loggingService.error(
+          "Download",
+          "Download completed but no URI returned",
+        );
         throw error;
       }
 
-      loggingService.info('Download', 'Model downloaded successfully', { path: result.uri });
-      console.log('✅ Model downloaded to:', result.uri);
+      loggingService.info("Download", "Model downloaded successfully", {
+        path: result.uri,
+      });
+      console.log("✅ Model downloaded to:", result.uri);
       this.downloadHandle = null;
       onComplete(result.uri);
     } catch (err) {
       this.downloadHandle = null;
       const error = err instanceof Error ? err : new Error(String(err));
-      loggingService.error('Download', 'Model download failed', { error: error.message });
-      console.error('❌ Model download failed:', error.message);
+      loggingService.error("Download", "Model download failed", {
+        error: error.message,
+      });
+      console.error("❌ Model download failed:", error.message);
       // Clean up the partial file so next attempt starts fresh
       await this.deleteModel().catch(() => {});
       onError(error);
@@ -131,7 +153,7 @@ export class ModelDownloadService {
   async pauseDownload(): Promise<void> {
     if (this.downloadHandle) {
       await this.downloadHandle.pauseAsync();
-      console.log('⏸  Download paused');
+      console.log("⏸  Download paused");
     }
   }
 
@@ -146,7 +168,7 @@ export class ModelDownloadService {
       this.downloadHandle = null;
     }
     await this.deleteModel().catch(() => {});
-    console.log('🚫 Download cancelled');
+    console.log("🚫 Download cancelled");
   }
 
   /** Delete the model file from device storage */
@@ -155,10 +177,10 @@ export class ModelDownloadService {
       const info = await LegacyFS.getInfoAsync(this.modelPath);
       if (info.exists) {
         await LegacyFS.deleteAsync(this.modelPath, { idempotent: true });
-        console.log('🗑  Model file deleted');
+        console.log("🗑  Model file deleted");
       }
     } catch (err) {
-      console.warn('Could not delete model file:', err);
+      console.warn("Could not delete model file:", err);
     }
   }
 

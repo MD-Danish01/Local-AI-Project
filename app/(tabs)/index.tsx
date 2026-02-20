@@ -1,11 +1,11 @@
-import React from 'react';
-import { StyleSheet, View, SafeAreaView } from 'react-native';
-import { useLLMContext } from '@/contexts/LLMContext';
-import { useLLMChat } from '@/hooks/useLLMChat';
-import { LoadingScreen } from '@/components/ui/LoadingScreen';
-import { ModelDownloadScreen } from '@/components/ui/ModelDownloadScreen';
-import { MessageList } from '@/components/chat/MessageList';
-import { InputBar } from '@/components/chat/InputBar';
+import { InputBar } from "@/components/chat/InputBar";
+import { MessageList } from "@/components/chat/MessageList";
+import { LoadingScreen } from "@/components/ui/LoadingScreen";
+import { ModelDownloadScreen } from "@/components/ui/ModelDownloadScreen";
+import { useLLMContext } from "@/contexts/LLMContext";
+import { useLLMChat } from "@/hooks/useLLMChat";
+import React from "react";
+import { SafeAreaView, StyleSheet, View } from "react-native";
 
 export default function ChatScreen() {
   const {
@@ -42,21 +42,13 @@ export default function ChatScreen() {
   // ---- Loading DB / model into memory ----
   if (isLoading || (!isReady && !error)) {
     return (
-      <LoadingScreen
-        progress={progress}
-        message="Initialising AI model…"
-      />
+      <LoadingScreen progress={progress} message="Initialising AI model…" />
     );
   }
 
   // ---- Fatal error ----
   if (error) {
-    return (
-      <LoadingScreen
-        progress={0}
-        message={`Error: ${error}`}
-      />
-    );
+    return <LoadingScreen progress={0} message={`Error: ${error}`} />;
   }
 
   // ---- Chat UI ----
@@ -81,7 +73,7 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0E1A',
+    backgroundColor: "#0A0E1A",
   },
   content: {
     flex: 1,

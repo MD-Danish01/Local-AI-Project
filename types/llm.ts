@@ -19,11 +19,11 @@ export interface GenerateOptions {
 }
 
 export enum ModelLoadingState {
-  IDLE = 'idle',
+  IDLE = "idle",
   /** Model file not present; waiting for user to initiate download */
-  NOT_DOWNLOADED = 'not_downloaded',
-  DOWNLOADING = 'downloading',
-  LOADING = 'loading',
-  READY = 'ready',
-  ERROR = 'error',
+  NOT_DOWNLOADED = "not_downloaded",
+  DOWNLOADING = "downloading",
+  LOADING = "loading",
+  READY = "ready",
+  ERROR = "error",
 }
