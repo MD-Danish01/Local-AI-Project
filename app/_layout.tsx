@@ -11,6 +11,8 @@ import "react-native-reanimated";
 
 import { LLMProvider } from "@/contexts/LLMContext";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+// Initialize console logger to capture logs
+import "@/services/ConsoleLogger";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

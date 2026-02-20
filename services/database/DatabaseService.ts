@@ -1,16 +1,21 @@
 import * as SQLite from 'expo-sqlite';
 import { createTablesSQL } from './schema';
 import type { Message, Conversation } from '@/types/chat';
+import { loggingService } from '@/services/logging/LoggingService';
 
 class DatabaseService {
   private db: SQLite.SQLiteDatabase | null = null;
 
   async initialize(): Promise<void> {
     try {
+      loggingService.info('Database', 'Initializing database');
       this.db = await SQLite.openDatabaseAsync('localai.db');
       await this.db.execAsync(createTablesSQL);
+      loggingService.info('Database', 'Database initialized successfully');
       console.log('✅ Database initialized successfully');
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      loggingService.error('Database', 'Database initialization failed', { error: errorMessage });
       console.error('❌ Database initialization failed:', error);
       throw error;
     }

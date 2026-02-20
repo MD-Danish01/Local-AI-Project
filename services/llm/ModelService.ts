@@ -1,11 +1,11 @@
-import { Asset } from 'expo-asset';
 import { QWEN_MODEL_CONFIG } from './config';
+import { modelDownloadService } from './ModelDownloadService';
 import { ModelLoadingState } from '@/types/llm';
 
 /**
- * ModelService handles model registration and loading using Runanywhere SDK
- * This is a simplified version - actual SDK integration will be done based on 
- * the starter app pattern when running on device
+ * ModelService
+ * Validates that the model is present on-device and returns its local path.
+ * Downloading is handled separately by ModelDownloadService.
  */
 export class ModelService {
   private static instance: ModelService;
@@ -21,28 +21,32 @@ export class ModelService {
     return ModelService.instance;
   }
 
-  async prepareModel(): Promise<string> {
+  /**
+   * Check whether the model exists.
+   * Returns undefined if NOT downloaded (caller should trigger download UI).
+   * Returns the local file path when model is ready.
+   */
+  async checkModel(): Promise<string | undefined> {
+    const downloaded = await modelDownloadService.isModelDownloaded();
+    if (!downloaded) {
+      this.modelLoadingState = ModelLoadingState.NOT_DOWNLOADED;
+      return undefined;
+    }
+    return modelDownloadService.modelPath;
+  }
+
+  /**
+   * Called after a successful download to hand the path to the LLM engine.
+   */
+  async prepareFromLocalPath(localPath: string): Promise<string> {
     try {
       this.modelLoadingState = ModelLoadingState.LOADING;
-      console.log('📦 Loading model asset...');
-      
-      // Get the bundled model asset
-      // Note: The actual filename should match what you copied to assets/models/
-      const modelAsset = Asset.fromModule(
-        require('@/assets/models/qwen2.5-0.5b-instruct-q4_0.gguf')
-      );
+      console.log('📦 Preparing model from local path:', localPath);
 
-      // Download asset to device file system (if not already cached)
-      await modelAsset.downloadAsync();
-
-      if (!modelAsset.localUri) {
-        throw new Error('Failed to load model asset');
-      }
-
-      this.modelLocalUri = modelAsset.localUri;
+      this.modelLocalUri = localPath;
       this.modelLoadingState = ModelLoadingState.READY;
-      console.log('✅ Model asset ready:', this.modelLocalUri);
-      
+      console.log('✅ Model ready');
+
       return this.modelLocalUri;
     } catch (error) {
       this.modelLoadingState = ModelLoadingState.ERROR;

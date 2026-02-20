@@ -43,7 +43,9 @@ app-example
 /android
 
 # LLM model files (large binaries)
-assets/models/*.gguf
+# NOTE: Models are temporarily included in git for EAS Build
+# In production, use EAS Secrets or download models at runtime
+# assets/models/*.gguf
 assets/models/*.bin
 assets/models/*.ggml
 assets/models/*.pt
@@ -58,3 +60,7 @@ assets/models/*.safetensors
 # Editor
 .vscode/
 .idea/
+
+assets/models/*.gguf
+assets/models/*.bin
+assets/models/*.ggml

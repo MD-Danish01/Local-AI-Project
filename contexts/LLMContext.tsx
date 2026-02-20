@@ -1,77 +1,185 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { RunAnywhere, SDKEnvironment } from '@runanywhere/core';
+import { LlamaCPP } from '@runanywhere/llamacpp';
 import { modelService } from '@/services/llm/ModelService';
+import { modelDownloadService } from '@/services/llm/ModelDownloadService';
 import { llmService } from '@/services/llm/LLMService';
 import { databaseService } from '@/services/database/DatabaseService';
 import { ModelLoadingState } from '@/types/llm';
 
 interface LLMContextType {
+  /** Model is loaded and LLM is ready to generate */
   isReady: boolean;
+  /** App is initialising DB / loading model into memory */
   isLoading: boolean;
+  /** Waiting for user to press Download */
+  needsDownload: boolean;
+  /** Download is actively in progress */
+  isDownloading: boolean;
+  /** 0-100 during download or model-load phase */
+  progress: number;
+  /** Bytes received so far (during download) */
+  downloadedBytes: number;
+  /** Total expected bytes (during download) */
+  totalBytes: number;
   error: string | null;
-  loadingProgress: number;
   conversationId: number | null;
+  /** Call this when the user taps the Download button */
+  startDownload: () => void;
+  /** Call this to cancel an in-flight download */
+  cancelDownload: () => void;
 }
 
 const LLMContext = createContext<LLMContextType | undefined>(undefined);
 
 export function LLMProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<ModelLoadingState>(ModelLoadingState.IDLE);
+  const [appState, setAppState] = useState<ModelLoadingState>(ModelLoadingState.IDLE);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+  const [downloadedBytes, setDownloadedBytes] = useState(0);
+  const [totalBytes, setTotalBytes] = useState(0);
   const [conversationId, setConversationId] = useState<number | null>(null);
 
+  // ------------------------------------------------------------------
+  // Step A: initialise DB and check whether the model is already present
+  // ------------------------------------------------------------------
   useEffect(() => {
-    async function initialize() {
+    async function initApp() {
       try {
-        console.log('🚀 Starting app initialization...');
-        
-        // Step 1: Initialize database
+        console.log('🚀 Starting app initialisation…');
+
+        // 0. Initialize RunAnywhere SDK
+        setProgress(5);
+        console.log('🔧 Initializing RunAnywhere SDK...');
+        await RunAnywhere.initialize({
+          environment: SDKEnvironment.Development,
+          debug: true,
+        });
+        LlamaCPP.register();
+        console.log('✅ RunAnywhere SDK ready');
+
+        // 1. Init database
         setProgress(10);
         await databaseService.initialize();
         console.log('✅ Database ready');
-        
-        // Step 2: Create or get first conversation
+
+        // 2. Ensure a conversation exists
         setProgress(20);
         const conversations = await databaseService.getConversations();
         if (conversations.length === 0) {
-          const newConvId = await databaseService.createConversation('My Chat');
-          setConversationId(newConvId);
+          const newId = await databaseService.createConversation('My Chat');
+          setConversationId(newId);
         } else {
           setConversationId(conversations[0].id!);
         }
         console.log('✅ Conversation ready');
-        
-        // Step 3: Prepare model asset
-        setProgress(40);
-        setState(ModelLoadingState.LOADING);
-        const modelPath = await modelService.prepareModel();
-        console.log('✅ Model asset ready');
-        
-        // Step 4: Initialize LLM
-        setProgress(70);
-        await llmService.initialize(modelPath);
-        console.log('✅ LLM ready');
-        
-        setProgress(100);
-        setState(ModelLoadingState.READY);
-        console.log('🎉 App fully initialized!');
+
+        // 3. Check if model file exists
+        setProgress(30);
+        const localPath = await modelService.checkModel();
+
+        if (!localPath) {
+          // Model not on device – ask user to download
+          console.log('📥 Model not present – waiting for user download');
+          setProgress(0);
+          setAppState(ModelLoadingState.NOT_DOWNLOADED);
+          return;
+        }
+
+        // 4. Model already downloaded – load it straight away
+        await loadModel(localPath);
       } catch (err) {
-        const errorMsg = err instanceof Error ? err.message : 'Failed to initialize';
-        setError(errorMsg);
-        setState(ModelLoadingState.ERROR);
-        console.error('❌ Initialization failed:', errorMsg);
+        const msg = err instanceof Error ? err.message : 'Initialisation failed';
+        setError(msg);
+        setAppState(ModelLoadingState.ERROR);
+        console.error('❌ Init failed:', msg);
       }
     }
 
-    initialize();
+    initApp();
   }, []);
 
+  // ------------------------------------------------------------------
+  // Load model into memory (after download or on subsequent launches)
+  // ------------------------------------------------------------------
+  async function loadModel(localPath: string) {
+    try {
+      setAppState(ModelLoadingState.LOADING);
+      setProgress(50);
+      console.log('📦 Loading model into LLM engine…');
+
+      const modelPath = await modelService.prepareFromLocalPath(localPath);
+      setProgress(80);
+
+      await llmService.initialize(modelPath);
+      setProgress(100);
+
+      setAppState(ModelLoadingState.READY);
+      console.log('🎉 LLM ready!');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to load model';
+      setError(msg);
+      setAppState(ModelLoadingState.ERROR);
+      console.error('❌ Model load failed:', msg);
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // User-initiated download
+  // ------------------------------------------------------------------
+  const startDownload = useCallback(() => {
+    setAppState(ModelLoadingState.DOWNLOADING);
+    setProgress(0);
+    setDownloadedBytes(0);
+    setTotalBytes(0);
+    setError(null);
+
+    modelDownloadService.downloadModel(
+      // onProgress
+      (pct, received, total) => {
+        setProgress(pct);
+        setDownloadedBytes(received);
+        setTotalBytes(total);
+      },
+      // onComplete
+      async (localPath) => {
+        console.log('✅ Download complete, loading model…');
+        await loadModel(localPath);
+      },
+      // onError
+      (err) => {
+        setError(err.message);
+        setAppState(ModelLoadingState.NOT_DOWNLOADED);
+        console.error('❌ Download error:', err.message);
+      }
+    );
+  }, []);
+
+  const cancelDownload = useCallback(async () => {
+    await modelDownloadService.cancelDownload();
+    setAppState(ModelLoadingState.NOT_DOWNLOADED);
+    setProgress(0);
+    setDownloadedBytes(0);
+    setTotalBytes(0);
+  }, []);
+
+  // ------------------------------------------------------------------
+  // Derived booleans
+  // ------------------------------------------------------------------
   const value: LLMContextType = {
-    isReady: state === ModelLoadingState.READY,
-    isLoading: state === ModelLoadingState.LOADING || state === ModelLoadingState.DOWNLOADING,
+    isReady: appState === ModelLoadingState.READY,
+    isLoading:
+      appState === ModelLoadingState.IDLE ||
+      appState === ModelLoadingState.LOADING,
+    needsDownload: appState === ModelLoadingState.NOT_DOWNLOADED,
+    isDownloading: appState === ModelLoadingState.DOWNLOADING,
+    progress,
+    downloadedBytes,
+    totalBytes,
     error,
-    loadingProgress: progress,
     conversationId,
+    startDownload,
+    cancelDownload,
   };
 
   return <LLMContext.Provider value={value}>{children}</LLMContext.Provider>;

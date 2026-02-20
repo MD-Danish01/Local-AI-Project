@@ -1,32 +1,45 @@
-import { LlamaCpp } from '@runanywhere/llamacpp';
+import { RunAnywhere } from '@runanywhere/core';
+import { LlamaCPP } from '@runanywhere/llamacpp';
 import type { GenerateOptions } from '@/types/llm';
 import { QWEN_MODEL_CONFIG, DEFAULT_GENERATION_OPTIONS } from './config';
+import { loggingService } from '@/services/logging/LoggingService';
 
 /**
- * LLMService handles text generation using the Runanywhere LlamaCpp SDK
+ * LLMService handles text generation using the RunAnywhere LlamaCpp SDK
  */
 class LLMService {
   private modelId = QWEN_MODEL_CONFIG.id;
   private isInitialized = false;
+  private isModelLoaded = false;
 
   async initialize(modelPath: string): Promise<void> {
     if (this.isInitialized) {
-      console.log('⚠️ Model already initialized');
+      loggingService.warn('LLM', 'Model already initialized, skipping');
       return;
     }
 
     try {
-      console.log('🚀 Initializing LLM with Runanywhere SDK...');
+      loggingService.info('LLM', 'Initializing LLM with RunAnywhere SDK', { modelPath });
       
-      // Initialize the LlamaCpp model with the local file path
-      // Note: Actual initialization will depend on SDK API
-      // This is a placeholder that follows the starter app pattern
+      // Validate model path exists
+      if (!modelPath || modelPath.trim() === '') {
+        throw new Error('Invalid model path: path is empty');
+      }
+
+      loggingService.debug('LLM', `Loading model from: ${modelPath}`);
       
+      // Load the model into memory using RunAnywhere SDK
+      await RunAnywhere.loadModel(modelPath);
+      
+      this.isModelLoaded = true;
       this.isInitialized = true;
-      console.log('✅ LLM initialized successfully');
+      loggingService.info('LLM', 'LLM initialized successfully');
     } catch (error) {
-      console.error('❌ LLM initialization failed:', error);
-      throw error;
+      this.isInitialized = false;
+      this.isModelLoaded = false;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      loggingService.error('LLM', 'LLM initialization failed', { error: errorMessage, modelPath });
+      throw new Error(`Failed to initialize LLM: ${errorMessage}`);
     }
   }
 
@@ -35,41 +48,103 @@ class LLMService {
     options: Partial<GenerateOptions> = {},
     onToken?: (token: string) => void
   ): Promise<string> {
-    if (!this.isInitialized) {
-      throw new Error('LLM not initialized. Call initialize() first.');
+    if (!this.isInitialized || !this.isModelLoaded) {
+      const error = 'LLM not initialized. Call initialize() first.';
+      loggingService.error('LLM', error);
+      throw new Error(error);
     }
 
     const finalOptions = { ...DEFAULT_GENERATION_OPTIONS, ...options };
 
     try {
-      let fullResponse = '';
-      
-      console.log('💬 Generating response...');
-      console.log('📝 Prompt length:', prompt.length);
-      console.log('⚙️  Options:', finalOptions);
+      loggingService.info('LLM', 'Starting text generation', {
+        promptLength: prompt.length,
+        maxTokens: finalOptions.maxTokens,
+        temperature: finalOptions.temperature,
+        streaming: !!onToken,
+      });
 
-      // TODO: Replace with actual Runanywhere SDK generation call
-      // Based on the starter app, it should be something like:
-      // await LlamaCpp.generate(this.modelId, prompt, finalOptions, onToken);
-      
-      // For now, this is a placeholder that will be replaced with actual SDK integration
-      // when we test on device with the model file present
-      
-      console.log('✅ Generation complete');
-      return fullResponse;
+      if (onToken) {
+        // Streaming generation
+        loggingService.debug('LLM', 'Using streaming mode');
+        const streamResult = await RunAnywhere.generateStream(prompt, {
+          maxTokens: finalOptions.maxTokens,
+          temperature: finalOptions.temperature,
+          topP: finalOptions.topP,
+          stopSequences: finalOptions.stopSequences,
+        });
+
+        let fullResponse = '';
+        let tokenCount = 0;
+        
+        for await (const token of streamResult.stream) {
+          fullResponse += token;
+          tokenCount++;
+          onToken(token);
+        }
+
+        const result = await streamResult.result;
+        loggingService.info('LLM', 'Generation complete (streaming)', {
+          tokensGenerated: result.tokensUsed || tokenCount,
+          responseLength: fullResponse.length,
+        });
+        
+        return fullResponse;
+      } else {
+        // Non-streaming generation
+        loggingService.debug('LLM', 'Using non-streaming mode');
+        const result = await RunAnywhere.generate(prompt, {
+          maxTokens: finalOptions.maxTokens,
+          temperature: finalOptions.temperature,
+          topP: finalOptions.topP,
+          stopSequences: finalOptions.stopSequences,
+        });
+
+        loggingService.info('LLM', 'Generation complete (non-streaming)', {
+          tokensGenerated: result.tokensUsed || result.text.split(' ').length,
+          responseLength: result.text.length,
+        });
+        
+        return result.text;
+      }
     } catch (error) {
-      console.error('❌ Generation failed:', error);
-      throw error;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      loggingService.error('LLM', 'Generation failed', { 
+        error: errorMessage,
+        promptLength: prompt.length,
+      });
+      throw new Error(`Generation failed: ${errorMessage}`);
     }
   }
 
   async stopGeneration(): Promise<void> {
-    console.log('🛑 Stopping generation...');
-    // Implement cancellation if SDK supports it
+    loggingService.info('LLM', 'Stopping generation...');
+    try {
+      await RunAnywhere.cancelGeneration();
+      loggingService.info('LLM', 'Generation cancelled successfully');
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      loggingService.error('LLM', 'Failed to cancel generation', { error: errorMessage });
+    }
+  }
+
+  async unload(): Promise<void> {
+    if (this.isModelLoaded) {
+      loggingService.info('LLM', 'Unloading model...');
+      try {
+        await RunAnywhere.unloadModel();
+        this.isModelLoaded = false;
+        this.isInitialized = false;
+        loggingService.info('LLM', 'Model unloaded successfully');
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        loggingService.error('LLM', 'Failed to unload model', { error: errorMessage });
+      }
+    }
   }
 
   isReady(): boolean {
-    return this.isInitialized;
+    return this.isInitialized && this.isModelLoaded;
   }
 }
 

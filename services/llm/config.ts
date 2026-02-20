@@ -3,9 +3,11 @@ import type { ModelConfig } from '@/types/llm';
 export const QWEN_MODEL_CONFIG: ModelConfig = {
   id: 'qwen2.5-0.5b-q4',
   name: 'Qwen2.5 0.5B Q4',
-  // For bundled model, URL will be set to local file path after asset loading
-  url: 'file://assets/models/qwen2.5-0.5b-instruct-q4_0.gguf',
-  size: 350 * 1024 * 1024, // 350MB
+  // Direct HuggingFace download URL (resolve/ gives the raw file)
+  url: 'https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_0.gguf',
+  // Local filename saved to device storage
+  localFileName: 'qwen2.5-0.5b-instruct-q4_0.gguf',
+  size: 397 * 1024 * 1024, // ~397 MB
   contextLength: 1024,
 };
 

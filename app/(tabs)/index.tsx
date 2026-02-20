@@ -3,35 +3,63 @@ import { StyleSheet, View, SafeAreaView } from 'react-native';
 import { useLLMContext } from '@/contexts/LLMContext';
 import { useLLMChat } from '@/hooks/useLLMChat';
 import { LoadingScreen } from '@/components/ui/LoadingScreen';
+import { ModelDownloadScreen } from '@/components/ui/ModelDownloadScreen';
 import { MessageList } from '@/components/chat/MessageList';
 import { InputBar } from '@/components/chat/InputBar';
 
 export default function ChatScreen() {
-  const { isReady, isLoading, error, loadingProgress, conversationId } = useLLMContext();
+  const {
+    isReady,
+    isLoading,
+    needsDownload,
+    isDownloading,
+    progress,
+    downloadedBytes,
+    totalBytes,
+    error,
+    conversationId,
+    startDownload,
+    cancelDownload,
+  } = useLLMContext();
 
-  // Only initialize chat hook when we have a conversation ID and model is ready
   const chat = useLLMChat(conversationId || 0);
 
-  // Show loading screen while model initializes
-  if (isLoading || !isReady) {
+  // ---- Model not yet on device ----
+  if (needsDownload || isDownloading) {
     return (
-      <LoadingScreen 
-        progress={loadingProgress}
-        message={error || 'Initializing AI model...'}
+      <ModelDownloadScreen
+        isDownloading={isDownloading}
+        progress={progress}
+        downloadedBytes={downloadedBytes}
+        totalBytes={totalBytes}
+        error={error}
+        onStartDownload={startDownload}
+        onCancelDownload={cancelDownload}
       />
     );
   }
 
-  // Show error state
+  // ---- Loading DB / model into memory ----
+  if (isLoading || (!isReady && !error)) {
+    return (
+      <LoadingScreen
+        progress={progress}
+        message="Initialising AI model…"
+      />
+    );
+  }
+
+  // ---- Fatal error ----
   if (error) {
     return (
-      <LoadingScreen 
+      <LoadingScreen
         progress={0}
         message={`Error: ${error}`}
       />
     );
   }
 
+  // ---- Chat UI ----
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>

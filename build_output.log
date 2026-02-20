@@ -4,32 +4,30 @@ Then follow the instructions here to enable USB debugging:
 https://developer.android.com/studio/run/device.html#developer-device-options. If you are using Genymotion go to Settings -> ADB, select "Use custom Android SDK tools", and point it at your Android SDK directory.
 
 
-EBS build error ->
+EBS build logs ->
 
 Run gradlew
 
-6m 16s
+5m 15s
 
 
-Running 'gradlew :app:assembleRelease' in /home/expo/workingdir/build/android
+Running 'gradlew :app:assembleRelease -PreactNativeArchitectures=arm64-v8a' in /home/expo/workingdir/build/android
 Downloading https://services.gradle.org/distributions/gradle-8.14.3-bin.zip
-10%
+10%.
 20%.
-30%
+30%.
 40%.
 50%.
 60%.
-70
-%.
+70%.
 80%.
-90
-%.
+90%.
 100%
 Welcome to Gradle 8.14.3!
 Here are the highlights of this release:
  - Java 24 support
 - GraalVM Native Image toolchain selection
-- Enhancements to test reporting
+ - Enhancements to test reporting
 - Build Authoring improvements
 For more details see https://docs.gradle.org/8.14.3/release-notes.html
 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
@@ -38,16 +36,16 @@ Daemon will be stopped at the end of the build
 w: file:///home/expo/workingdir/build/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-plugin/build.gradle.kts:25:3: 'kotlinOptions(KotlinJvmOptionsDeprecated /* = KotlinJvmOptions */.() -> Unit): Unit' is deprecated. Please migrate to the compilerOptions DSL. More details are here: https://kotl.in/u1r8ln
 > Configure project :expo-gradle-plugin:expo-autolinking-settings-plugin
 w: file:///home/expo/workingdir/build/node_modules/expo-modules-autolinking/android/expo-gradle-plugin/expo-autolinking-settings-plugin/build.gradle.kts:30:3: 'kotlinOptions(KotlinJvmOptionsDeprecated /* = KotlinJvmOptions */.() -> Unit): Unit' is deprecated. Please migrate to the compilerOptions DSL. More details are here: https://kotl.in/u1r8ln
+> Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :expo-gradle-plugin:expo-autolinking-settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :expo-gradle-plugin:expo-autolinking-plugin-shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :expo-gradle-plugin:expo-autolinking-settings-plugin:pluginDescriptors
 > Task :gradle-plugin:settings-plugin:pluginDescriptors
-> Task :gradle-plugin:settings-plugin:processResources
+> Task :expo-gradle-plugin:expo-autolinking-settings-plugin:pluginDescriptors
 > Task :expo-gradle-plugin:expo-autolinking-settings-plugin:processResources
-> Task :gradle-plugin:shared:processResources NO-SOURCE
+> Task :gradle-plugin:settings-plugin:processResources
 > Task :expo-gradle-plugin:expo-autolinking-plugin-shared:processResources NO-SOURCE
+> Task :gradle-plugin:shared:processResources NO-SOURCE
 > Task :gradle-plugin:shared:compileKotlin
 > Task :gradle-plugin:shared:compileJava NO-SOURCE
 > Task :gradle-plugin:shared:classes UP-TO-DATE
@@ -69,10 +67,10 @@ NO-SOURCE
 w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/expo-dev-launcher-gradle-plugin/build.gradle.kts:25:3: 'kotlinOptions(KotlinJvmOptionsDeprecated /* = KotlinJvmOptions */.() -> Unit): Unit' is deprecated. Please migrate to the compilerOptions DSL. More details are here: https://kotl.in/u1r8ln
 > Configure project :expo-module-gradle-plugin
 w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/expo-module-gradle-plugin/build.gradle.kts:58:3: 'kotlinOptions(KotlinJvmOptionsDeprecated /* = KotlinJvmOptions */.() -> Unit): Unit' is deprecated. Please migrate to the compilerOptions DSL. More details are here: https://kotl.in/u1r8ln
-> Task :expo-dev-launcher-gradle-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :gradle-plugin:react-native-gradle-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :expo-gradle-plugin:expo-autolinking-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :gradle-plugin:react-native-gradle-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :expo-module-gradle-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :expo-dev-launcher-gradle-plugin:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :expo-module-gradle-plugin:pluginDescriptors
 > Task :expo-dev-launcher-gradle-plugin:pluginDescriptors
 > Task :expo-dev-launcher-gradle-plugin:processResources
@@ -90,8 +88,7 @@ w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/expo-module
 > Task :gradle-plugin:react-native-gradle-plugin:classes
 > Task :gradle-plugin:react-native-gradle-plugin:jar
 > Task :expo-dev-launcher-gradle-plugin:compileKotlin
-> Task :expo-dev-launcher-gradle-plugin:compileJava
-NO-SOURCE
+> Task :expo-dev-launcher-gradle-plugin:compileJava NO-SOURCE
 > Task :expo-dev-launcher-gradle-plugin:classes
 > Task :expo-dev-launcher-gradle-plugin:jar
 > Task :expo-module-gradle-plugin:compileKotlin
@@ -101,9 +98,9 @@ w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/expo-module
 > Task :expo-module-gradle-plugin:jar
 > Configure project :
 [ExpoRootProject] Using the following versions:
-- buildTools:  36.0.0
+  - buildTools:  36.0.0
   - minSdk:      24
-  - compileSdk:  36
+- compileSdk:  36
   - targetSdk:   36
   - ndk:         27.1.12297006
   - kotlin:      2.1.20
@@ -117,7 +114,7 @@ Using expo modules
   - expo-dev-launcher (6.0.20)
 - expo-dev-menu (7.0.18)
   - expo-dev-menu-interface (2.0.0)
-  - expo-json-utils (0.15.0)
+- expo-json-utils (0.15.0)
 - expo-manifests (1.0.10)
 - expo-modules-core (3.0.29)
 - expo-updates-interface (2.0.0)
@@ -129,8 +126,8 @@ Using expo modules
   - [📦] expo-keep-awake (15.0.8)
   - [📦] expo-linking (8.0.11)
   - [📦] expo-splash-screen (31.0.13)
-  - [📦] expo-sqlite (16.0.10)
-- [📦] expo-system-ui (6.0.9)
+- [📦] expo-sqlite (16.0.10)
+  - [📦] expo-system-ui (6.0.9)
   - [📦] expo-web-browser (15.0.10)
 > Configure project :react-native-nitro-modules
 [NitroModules] 🔥 Your app is boosted by nitro modules!
@@ -156,14 +153,14 @@ Installing Android SDK Build-Tools 36 in /home/expo/Android/Sdk/build-tools/36.0
 "Install Android SDK Build-Tools 36 v.36.0.0" finished.
 [=========                              ] 25%
 [=======================================] 100% Fetch remote repository...       
-> Task :expo-dev-menu:preBuild UP-TO-DATE
 > Task :expo-dev-menu-interface:preBuild UP-TO-DATE
 > Task :expo-dev-launcher:preBuild UP-TO-DATE
-> Task :expo-json-utils:preBuild UP-TO-DATE
 > Task :expo-dev-client:preBuild UP-TO-DATE
+> Task :expo-json-utils:preBuild UP-TO-DATE
 > Task :expo-manifests:preBuild UP-TO-DATE
-> Task :expo-modules-core:preBuild UP-TO-DATE
+> Task :expo-dev-menu:preBuild UP-TO-DATE
 > Task :expo-updates-interface:preBuild UP-TO-DATE
+> Task :expo-modules-core:preBuild UP-TO-DATE
 > Task :app:generateAutolinkingNewArchitectureFiles
 > Task :app:generateAutolinkingPackageList
 > Task :app:generateCodegenSchemaFromJavaScript SKIPPED
@@ -171,64 +168,67 @@ Installing Android SDK Build-Tools 36 in /home/expo/Android/Sdk/build-tools/36.0
 > Task :app:generateReactNativeEntryPoint
 > Task :react-native-reanimated:assertMinimalReactNativeVersionTask
 > Task :react-native-reanimated:assertNewArchitectureEnabledTask SKIPPED
+> Task :react-native-reanimated:assertWorkletsVersionTask
 > Task :react-native-worklets:assertMinimalReactNativeVersionTask
 > Task :react-native-worklets:assertNewArchitectureEnabledTask SKIPPED
-> Task :react-native-reanimated:assertWorkletsVersionTask
 > Task :expo-constants:createExpoConfig
-> Task :expo-constants:preBuild
 The NODE_ENV environment variable is required but was not specified. Ensure the project is bundled with Expo CLI or NODE_ENV is set. Using only .env.local and .env
+> Task :expo-constants:preBuild
+> Task :react-native-nitro-modules:generateCodegenSchemaFromJavaScript
+> Task :runanywhere_core:downloadNativeLibs
+[RunAnywhereCore] ✅ Using bundled native libraries from npm package for ABIs: arm64-v8a
 > Task :react-native-gesture-handler:generateCodegenSchemaFromJavaScript
 > Task :react-native-safe-area-context:generateCodegenSchemaFromJavaScript
 > Task :react-native-screens:generateCodegenSchemaFromJavaScript
-> Task :react-native-nitro-modules:generateCodegenSchemaFromJavaScript
-> Task :react-native-worklets:generateCodegenSchemaFromJavaScript
 > Task :react-native-reanimated:generateCodegenSchemaFromJavaScript
-> Task :react-native-safe-area-context:generateCodegenArtifactsFromSchema
-> Task :react-native-safe-area-context:preBuild
-> Task :react-native-gesture-handler:generateCodegenArtifactsFromSchema
-> Task :react-native-gesture-handler:preBuild
-> Task :expo-constants:preReleaseBuild
+> Task :react-native-worklets:generateCodegenSchemaFromJavaScript
 > Task :react-native-nitro-modules:generateCodegenArtifactsFromSchema
 > Task :expo:generatePackagesList
 > Task :expo:preBuild
+> Task :react-native-gesture-handler:generateCodegenArtifactsFromSchema
+> Task :react-native-gesture-handler:preBuild
 > Task :expo:preReleaseBuild
+> Task :runanywhere_core:generateCodegenSchemaFromJavaScript
+> Task :react-native-safe-area-context:generateCodegenArtifactsFromSchema
+> Task :react-native-safe-area-context:preBuild
+> Task :expo-constants:preReleaseBuild
 > Task :react-native-screens:generateCodegenArtifactsFromSchema
 > Task :react-native-screens:preBuild
 > Task :expo-dev-client:preReleaseBuild UP-TO-DATE
-> Task :react-native-worklets:generateCodegenArtifactsFromSchema
-> Task :react-native-worklets:prepareWorkletsHeadersForPrefabs
-> Task :react-native-worklets:preBuild
-> Task :react-native-worklets:preReleaseBuild
-> Task :expo:mergeReleaseJniLibFolders
+No modules to process in combine-js-to-schema-cli. If this is unexpected, please check if you set up your NativeComponent correctly. See combine-js-to-schema.js for how codegen finds modules.
 > Task :expo-dev-client:mergeReleaseJniLibFolders
+> Task :expo:mergeReleaseJniLibFolders
 > Task :expo:mergeReleaseNativeLibs NO-SOURCE
-> Task :expo-dev-client:mergeReleaseNativeLibs
-NO-SOURCE
+> Task :expo-dev-client:mergeReleaseNativeLibs NO-SOURCE
 > Task :expo:copyReleaseJniLibsProjectOnly
 > Task :expo-dev-client:copyReleaseJniLibsProjectOnly
 > Task :expo-dev-launcher:preReleaseBuild UP-TO-DATE
 > Task :expo-dev-menu:preReleaseBuild UP-TO-DATE
-> Task :react-native-reanimated:generateCodegenArtifactsFromSchema
-> Task :expo-dev-menu:mergeReleaseJniLibFolders
 > Task :expo-dev-launcher:mergeReleaseJniLibFolders
-> Task :expo-dev-launcher:mergeReleaseNativeLibs NO-SOURCE
+> Task :expo-dev-menu:mergeReleaseJniLibFolders
 > Task :expo-dev-menu:mergeReleaseNativeLibs NO-SOURCE
-> Task :expo-dev-launcher:copyReleaseJniLibsProjectOnly
+> Task :expo-dev-launcher:mergeReleaseNativeLibs NO-SOURCE
 > Task :expo-dev-menu:copyReleaseJniLibsProjectOnly
 > Task :expo-dev-menu-interface:preReleaseBuild UP-TO-DATE
+> Task :expo-dev-launcher:copyReleaseJniLibsProjectOnly
 > Task :expo-json-utils:preReleaseBuild UP-TO-DATE
-> Task :expo-dev-menu-interface:mergeReleaseJniLibFolders
+> Task :react-native-reanimated:generateCodegenArtifactsFromSchema
+> Task :react-native-worklets:generateCodegenArtifactsFromSchema
 > Task :expo-json-utils:mergeReleaseJniLibFolders
+> Task :expo-dev-menu-interface:mergeReleaseJniLibFolders
 > Task :expo-dev-menu-interface:mergeReleaseNativeLibs NO-SOURCE
 > Task :expo-json-utils:mergeReleaseNativeLibs NO-SOURCE
 > Task :expo-json-utils:copyReleaseJniLibsProjectOnly
-> Task :expo-dev-menu-interface:copyReleaseJniLibsProjectOnly
 > Task :expo-manifests:preReleaseBuild UP-TO-DATE
+> Task :expo-dev-menu-interface:copyReleaseJniLibsProjectOnly
 > Task :expo-modules-core:preReleaseBuild UP-TO-DATE
 > Task :expo-manifests:mergeReleaseJniLibFolders
 > Task :expo-manifests:mergeReleaseNativeLibs NO-SOURCE
 > Task :expo-manifests:copyReleaseJniLibsProjectOnly
 > Task :expo-updates-interface:preReleaseBuild UP-TO-DATE
+> Task :react-native-worklets:prepareWorkletsHeadersForPrefabs
+> Task :react-native-worklets:preBuild
+> Task :react-native-worklets:preReleaseBuild
 > Task :expo-updates-interface:mergeReleaseJniLibFolders
 > Task :expo-updates-interface:mergeReleaseNativeLibs NO-SOURCE
 > Task :react-native-reanimated:prepareReanimatedHeadersForPrefabs
@@ -242,93 +242,84 @@ NO-SOURCE
 > Task :react-native-safe-area-context:mergeReleaseNativeLibs NO-SOURCE
 > Task :react-native-safe-area-context:copyReleaseJniLibsProjectOnly
 > Task :react-native-screens:preReleaseBuild
+> Task :runanywhere_core:generateCodegenArtifactsFromSchema
+> Task :runanywhere_core:preBuild
+> Task :runanywhere_core:preReleaseBuild
 > Task :expo-updates-interface:copyReleaseJniLibsProjectOnly
 > Task :react-native-gesture-handler:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :expo-constants:mergeReleaseJniLibFolders
+> Task :runanywhere_llamacpp:downloadNativeLibs
+[RunAnywhereLlama] ✅ Using bundled native libraries from npm package for ABIs: arm64-v8a
 > Task :expo-constants:mergeReleaseNativeLibs NO-SOURCE
-> Task :expo-constants:copyReleaseJniLibsProjectOnly
-> Task :react-native-reanimated:generateReleaseBuildConfig
 > Task :react-native-gesture-handler:generateReleaseBuildConfig
 > Task :react-native-gesture-handler:generateReleaseResValues
-> Task :react-native-reanimated:generateReleaseResValues
+> Task :expo-constants:copyReleaseJniLibsProjectOnly
 > Task :react-native-gesture-handler:generateReleaseResources
+> Task :react-native-reanimated:generateReleaseBuildConfig
+> Task :react-native-reanimated:generateReleaseResValues
 > Task :react-native-reanimated:generateReleaseResources
+> Task :react-native-reanimated:packageReleaseResources
 > Task :react-native-nitro-modules:prepareHeaders
 > Task :react-native-nitro-modules:preBuild
 > Task :react-native-nitro-modules:preReleaseBuild
 > Task :react-native-gesture-handler:packageReleaseResources
-> Task :react-native-reanimated:packageReleaseResources
-> Task :runanywhere_core:downloadNativeLibs
-[RunAnywhereCore] ⚠️ Bundled libs found for arm64-v8a but missing for: armeabi-v7a, x86
-[RunAnywhereCore] Attempting to download missing ABIs from GitHub releases...
-[RunAnywhereCore] ✅ Downloaded missing ABIs successfully
-> Task :runanywhere_llamacpp:downloadNativeLibs
-[RunAnywhereLlama] ⚠️ Bundled libs found for arm64-v8a but missing for: armeabi-v7a, x86
-[RunAnywhereLlama] Attempting to download missing ABIs from GitHub releases...
-[RunAnywhereLlama] ⚠️ Could not download missing ABIs: https://github.com/RunanywhereAI/runanywhere-sdks/releases/download/core-v0.1.4/RABackendLlamaCPP-android-v0.1.4.zip
-[RunAnywhereLlama] Building with available ABIs only (arm64-v8a)
+> Task :runanywhere_core:mergeReleaseJniLibFolders
+> Task :runanywhere_core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :runanywhere_core:generateReleaseBuildConfig
+> Task :runanywhere_core:generateReleaseResValues
+> Task :runanywhere_core:generateReleaseResources
+> Task :runanywhere_core:packageReleaseResources
 > Task :runanywhere_llamacpp:generateCodegenSchemaFromJavaScript
-> Task :runanywhere_core:generateCodegenSchemaFromJavaScript
 No modules to process in combine-js-to-schema-cli. If this is unexpected, please check if you set up your NativeComponent correctly. See combine-js-to-schema.js for how codegen finds modules.
-No modules to process in combine-js-to-schema-cli. If this is unexpected, please check if you set up your NativeComponent correctly. See combine-js-to-schema.js for how codegen finds modules.
-> Task :runanywhere_core:generateCodegenArtifactsFromSchema
-> Task :runanywhere_core:preBuild
-> Task :runanywhere_core:preReleaseBuild
 > Task :runanywhere_llamacpp:generateCodegenArtifactsFromSchema
 > Task :runanywhere_llamacpp:preBuild
 > Task :app:preBuild
 > Task :app:preReleaseBuild
 > Task :app:mergeReleaseJniLibFolders
 > Task :runanywhere_llamacpp:preReleaseBuild
+> Task :runanywhere_core:parseReleaseLocalResources
 > Task :react-native-reanimated:parseReleaseLocalResources
 > Task :react-native-gesture-handler:parseReleaseLocalResources
-> Task :runanywhere_core:mergeReleaseJniLibFolders
-> Task :runanywhere_core:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :runanywhere_core:generateReleaseBuildConfig
-> Task :runanywhere_core:generateReleaseResValues
-> Task :runanywhere_core:generateReleaseResources
+> Task :runanywhere_core:javaPreCompileRelease
 > Task :react-native-gesture-handler:generateReleaseRFile
 > Task :react-native-reanimated:generateReleaseRFile
-> Task :react-native-reanimated:javaPreCompileRelease
-> Task :react-native-gesture-handler:javaPreCompileRelease
+> Task :runanywhere_core:generateReleaseRFile
 > Task :react-native-safe-area-context:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :expo:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :expo:generateReleaseBuildConfig
-> Task :expo:generateReleaseResValues
 > Task :react-native-safe-area-context:generateReleaseBuildConfig
-> Task :react-native-safe-area-context:generateReleaseResValues
-> Task :expo:generateReleaseResources
-> Task :react-native-safe-area-context:generateReleaseResources
-> Task :expo:packageReleaseResources
-> Task :react-native-safe-area-context:packageReleaseResources
-> Task :react-native-safe-area-context:parseReleaseLocalResources
-> Task :expo:parseReleaseLocalResources
-> Task :expo:generateReleaseRFile
-> Task :react-native-safe-area-context:generateReleaseRFile
+> Task :react-native-gesture-handler:javaPreCompileRelease
+> Task :react-native-reanimated:javaPreCompileRelease
+> Task :expo:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :expo-constants:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-safe-area-context:generateReleaseResValues
+> Task :expo:generateReleaseBuildConfig
+> Task :react-native-safe-area-context:generateReleaseResources
+> Task :expo:generateReleaseResValues
 > Task :expo-constants:generateReleaseBuildConfig
-> Task :react-native-safe-area-context:javaPreCompileRelease
 > Task :expo-constants:generateReleaseResValues
+> Task :expo:generateReleaseResources
 > Task :expo-constants:generateReleaseResources
+> Task :react-native-safe-area-context:packageReleaseResources
 > Task :expo-constants:packageReleaseResources
-> Task :runanywhere_llamacpp:mergeReleaseJniLibFolders
-> Task :runanywhere_llamacpp:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :runanywhere_core:packageReleaseResources
-> Task :runanywhere_llamacpp:generateReleaseBuildConfig
+> Task :expo:packageReleaseResources
+> Task :react-native-safe-area-context:javaPreCompileRelease
+> Task :react-native-safe-area-context:parseReleaseLocalResources
 > Task :expo-constants:parseReleaseLocalResources
-> Task :runanywhere_llamacpp:generateReleaseResValues
-> Task :runanywhere_llamacpp:generateReleaseResources
-> Task :runanywhere_llamacpp:packageReleaseResources
-> Task :runanywhere_core:javaPreCompileRelease
-> Task :runanywhere_llamacpp:javaPreCompileRelease
-> Task :runanywhere_core:parseReleaseLocalResources
+> Task :expo:parseReleaseLocalResources
+> Task :react-native-safe-area-context:generateReleaseRFile
 > Task :expo-constants:generateReleaseRFile
 > Task :expo-constants:javaPreCompileRelease
 > Task :expo-dev-client:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :runanywhere_core:generateReleaseRFile
+> Task :expo:generateReleaseRFile
 > Task :expo-dev-launcher:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :runanywhere_llamacpp:mergeReleaseJniLibFolders
+> Task :runanywhere_llamacpp:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :runanywhere_llamacpp:generateReleaseBuildConfig
+> Task :runanywhere_llamacpp:generateReleaseResValues
+> Task :runanywhere_llamacpp:generateReleaseResources
+> Task :runanywhere_llamacpp:packageReleaseResources
 > Task :runanywhere_llamacpp:parseReleaseLocalResources
-> Task :react-native-worklets:configureCMakeRelWithDebInfo[arm64-v8a]
+> Task :runanywhere_llamacpp:generateReleaseRFile
+> Task :expo-modules-core:configureCMakeRelWithDebInfo[arm64-v8a]
 Checking the license for package CMake 3.22.1 in /home/expo/Android/Sdk/licenses
 License for package CMake 3.22.1 accepted.
 Preparing "Install CMake 3.22.1 v.3.22.1".
@@ -336,7 +327,7 @@ Preparing "Install CMake 3.22.1 v.3.22.1".
 Installing CMake 3.22.1 in /home/expo/Android/Sdk/cmake/3.22.1
 "Install CMake 3.22.1 v.3.22.1" complete.
 "Install CMake 3.22.1 v.3.22.1" finished.
-> Task :runanywhere_llamacpp:generateReleaseRFile
+> Task :runanywhere_llamacpp:javaPreCompileRelease
 > Task :expo-dev-menu:generateReleaseResValues
 > Task :expo-dev-menu:generateReleaseResources
 > Task :expo-dev-menu:packageReleaseResources
@@ -347,44 +338,44 @@ Installing CMake 3.22.1 in /home/expo/Android/Sdk/cmake/3.22.1
 > Task :expo-dev-menu-interface:packageReleaseResources
 > Task :expo-dev-menu-interface:parseReleaseLocalResources
 > Task :expo-dev-menu-interface:generateReleaseRFile
-> Task :expo-json-utils:generateReleaseResValues
-> Task :expo-json-utils:generateReleaseResources
-> Task :expo-json-utils:packageReleaseResources
-> Task :expo-json-utils:parseReleaseLocalResources
 > Task :expo-dev-client:generateReleaseResValues
 > Task :expo-dev-client:generateReleaseResources
 > Task :expo-dev-client:dataBindingMergeDependencyArtifactsRelease
 > Task :expo-dev-client:packageReleaseResources
+> Task :expo-json-utils:generateReleaseResValues
+> Task :expo-json-utils:generateReleaseResources
 > Task :expo-dev-client:parseReleaseLocalResources
+> Task :expo-dev-client:generateReleaseBuildConfig
+> Task :expo-json-utils:packageReleaseResources
+> Task :expo-json-utils:parseReleaseLocalResources
 > Task :expo-json-utils:generateReleaseRFile
 > Task :expo-manifests:generateReleaseResValues
 > Task :expo-manifests:generateReleaseResources
 > Task :expo-manifests:packageReleaseResources
 > Task :expo-manifests:parseReleaseLocalResources
-> Task :expo-dev-client:dataBindingGenBaseClassesRelease
-> Task :expo-dev-client:generateReleaseBuildConfig
 > Task :expo-manifests:generateReleaseRFile
-> Task :expo-dev-client:generateReleaseRFile
 > Task :expo-updates-interface:generateReleaseResValues
 > Task :expo-updates-interface:generateReleaseResources
 > Task :expo-updates-interface:packageReleaseResources
+> Task :expo-dev-client:dataBindingGenBaseClassesRelease
+> Task :expo-updates-interface:parseReleaseLocalResources
 > Task :expo-dev-client:javaPreCompileRelease
+> Task :expo-dev-client:generateReleaseRFile
 > Task :expo-dev-menu:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :expo-dev-menu:generateReleaseBuildConfig
 > Task :expo-dev-menu-interface:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :expo-dev-menu-interface:generateReleaseBuildConfig
-> Task :expo-updates-interface:parseReleaseLocalResources
-> Task :expo-dev-menu-interface:javaPreCompileRelease
-> Task :expo-json-utils:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :expo-json-utils:generateReleaseBuildConfig
 > Task :expo-updates-interface:generateReleaseRFile
+> Task :expo-json-utils:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :expo-dev-menu-interface:javaPreCompileRelease
 > Task :expo-manifests:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :expo-json-utils:javaPreCompileRelease
-> Task :expo-dev-menu:javaPreCompileRelease
+> Task :expo-json-utils:generateReleaseBuildConfig
 > Task :expo-manifests:generateReleaseBuildConfig
+> Task :expo-manifests:javaPreCompileRelease
+> Task :expo-json-utils:javaPreCompileRelease
 > Task :expo-updates-interface:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :expo-updates-interface:generateReleaseBuildConfig
-> Task :expo-manifests:javaPreCompileRelease
+> Task :expo-dev-menu:javaPreCompileRelease
 > Task :expo-updates-interface:javaPreCompileRelease
 > Task :expo:javaPreCompileRelease
 > Task :expo:writeReleaseAarMetadata
@@ -399,13 +390,13 @@ Installing CMake 3.22.1 in /home/expo/Android/Sdk/cmake/3.22.1
 > Task :react-native-reanimated:writeReleaseAarMetadata
 > Task :react-native-safe-area-context:writeReleaseAarMetadata
 > Task :runanywhere_core:writeReleaseAarMetadata
-> Task :runanywhere_llamacpp:writeReleaseAarMetadata
-> Task :expo:extractDeepLinksRelease
 > Task :app:checkReleaseDuplicateClasses
+> Task :runanywhere_llamacpp:writeReleaseAarMetadata
 > Task :app:buildKotlinToolingMetadata
 > Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :expo:processReleaseManifest
+> Task :expo:extractDeepLinksRelease
 > Task :app:generateReleaseBuildConfig
+> Task :expo:processReleaseManifest
 > Task :expo-constants:extractDeepLinksRelease
 > Task :expo-constants:processReleaseManifest
 > Task :expo-dev-client:extractDeepLinksRelease
@@ -442,6 +433,8 @@ Recommendation: remove package="com.margelo.nitro.runanywhere.llama" from the so
 > Task :expo:compileReleaseLibraryResources
 > Task :expo-constants:compileReleaseLibraryResources
 > Task :expo-dev-client:compileReleaseLibraryResources
+> Task :react-native-safe-area-context:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/node_modules/react-native-safe-area-context/android/src/main/java/com/th3rdwave/safeareacontext/SafeAreaView.kt:59:23 'val uiImplementation: UIImplementation!' is deprecated. Deprecated in Java.
 > Task :expo-dev-menu:compileReleaseLibraryResources
 > Task :expo-dev-menu-interface:compileReleaseLibraryResources
 > Task :expo-json-utils:compileReleaseLibraryResources
@@ -449,7 +442,6 @@ Recommendation: remove package="com.margelo.nitro.runanywhere.llama" from the so
 > Task :expo-updates-interface:compileReleaseLibraryResources
 > Task :react-native-gesture-handler:compileReleaseLibraryResources
 > Task :react-native-reanimated:compileReleaseLibraryResources
-> Task :react-native-safe-area-context:compileReleaseLibraryResources
 > Task :runanywhere_core:compileReleaseLibraryResources
 > Task :runanywhere_llamacpp:compileReleaseLibraryResources
 > Task :expo:prepareReleaseArtProfile
@@ -462,7 +454,6 @@ Recommendation: remove package="com.margelo.nitro.runanywhere.llama" from the so
 > Task :expo-updates-interface:prepareReleaseArtProfile
 > Task :react-native-gesture-handler:prepareReleaseArtProfile
 > Task :react-native-reanimated:prepareReleaseArtProfile
-> Task :react-native-safe-area-context:prepareReleaseArtProfile
 > Task :runanywhere_core:prepareReleaseArtProfile
 > Task :runanywhere_llamacpp:prepareReleaseArtProfile
 > Task :expo:mergeReleaseShaders
@@ -490,7 +481,8 @@ Recommendation: remove package="com.margelo.nitro.runanywhere.llama" from the so
 > Task :expo-json-utils:generateReleaseAssets UP-TO-DATE
 > Task :expo-json-utils:mergeReleaseAssets
 > Task :expo-manifests:mergeReleaseShaders
-> Task :expo-manifests:compileReleaseShaders NO-SOURCE
+> Task :expo-manifests:compileReleaseShaders
+NO-SOURCE
 > Task :expo-manifests:generateReleaseAssets UP-TO-DATE
 > Task :expo-manifests:mergeReleaseAssets
 > Task :expo-updates-interface:mergeReleaseShaders
@@ -505,10 +497,6 @@ Recommendation: remove package="com.margelo.nitro.runanywhere.llama" from the so
 > Task :react-native-reanimated:compileReleaseShaders NO-SOURCE
 > Task :react-native-reanimated:generateReleaseAssets UP-TO-DATE
 > Task :react-native-reanimated:mergeReleaseAssets
-> Task :react-native-safe-area-context:mergeReleaseShaders
-> Task :react-native-safe-area-context:compileReleaseShaders NO-SOURCE
-> Task :react-native-safe-area-context:generateReleaseAssets UP-TO-DATE
-> Task :react-native-safe-area-context:mergeReleaseAssets
 > Task :runanywhere_core:mergeReleaseShaders
 > Task :runanywhere_core:compileReleaseShaders NO-SOURCE
 > Task :runanywhere_core:generateReleaseAssets UP-TO-DATE
@@ -538,8 +526,6 @@ Recommendation: remove package="com.margelo.nitro.runanywhere.llama" from the so
 > Task :react-native-reanimated:extractProguardFiles
 > Task :react-native-reanimated:prepareLintJarForPublish
 > Task :react-native-gesture-handler:prepareLintJarForPublish
-> Task :react-native-safe-area-context:extractProguardFiles
-> Task :react-native-safe-area-context:prepareLintJarForPublish
 > Task :runanywhere_core:extractProguardFiles
 > Task :runanywhere_core:prepareLintJarForPublish
 > Task :runanywhere_llamacpp:extractProguardFiles
@@ -547,15 +533,10 @@ Recommendation: remove package="com.margelo.nitro.runanywhere.llama" from the so
 > Task :runanywhere_llamacpp:extractDeepLinksForAarRelease
 > Task :runanywhere_core:extractDeepLinksForAarRelease
 > Task :react-native-gesture-handler:extractDeepLinksForAarRelease
-> Task :react-native-safe-area-context:stripReleaseDebugSymbols NO-SOURCE
-> Task :react-native-safe-area-context:copyReleaseJniLibsProjectAndLocalJars
-> Task :react-native-safe-area-context:extractDeepLinksForAarRelease
 > Task :expo:stripReleaseDebugSymbols NO-SOURCE
 > Task :expo:copyReleaseJniLibsProjectAndLocalJars
 > Task :expo:extractDeepLinksForAarRelease
 > Task :react-native-reanimated:extractDeepLinksForAarRelease
-> Task :react-native-safe-area-context:compileReleaseKotlin
-w: file:///home/expo/workingdir/build/node_modules/react-native-safe-area-context/android/src/main/java/com/th3rdwave/safeareacontext/SafeAreaView.kt:59:23 'val uiImplementation: UIImplementation!' is deprecated. Deprecated in Java.
 > Task :react-native-reanimated:mergeReleaseJavaResource
 > Task :expo-dev-menu:stripReleaseDebugSymbols NO-SOURCE
 > Task :expo-dev-menu:copyReleaseJniLibsProjectAndLocalJars
@@ -588,7 +569,6 @@ w: file:///home/expo/workingdir/build/node_modules/react-native-safe-area-contex
 > Task :expo:writeReleaseLintModelMetadata
 > Task :react-native-reanimated:writeReleaseLintModelMetadata
 > Task :react-native-gesture-handler:writeReleaseLintModelMetadata
-> Task :react-native-safe-area-context:writeReleaseLintModelMetadata
 > Task :runanywhere_core:writeReleaseLintModelMetadata
 > Task :runanywhere_llamacpp:writeReleaseLintModelMetadata
 > Task :app:createBundleReleaseJsAndAssets
@@ -601,9 +581,26 @@ Starting Metro Bundler
 > Task :expo-dev-launcher:generateReleaseBuildConfig
 > Task :expo-dev-launcher:checkApolloVersions
 > Task :expo-dev-launcher:parseReleaseLocalResources
-> Task :expo-dev-launcher:generateServiceApolloOptions
+> Task :react-native-nitro-modules:configureCMakeRelWithDebInfo[arm64-v8a]
+> Task :react-native-screens:configureCMakeRelWithDebInfo[arm64-v8a]
+> Task :react-native-worklets:configureCMakeRelWithDebInfo[arm64-v8a]
+> Task :react-native-worklets:generateJsonModelRelease
+> Task :react-native-worklets:prefabReleaseConfigurePackage
 > Task :expo-dev-launcher:dataBindingGenBaseClassesRelease
+> Task :app:createBundleReleaseJsAndAssets
+Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1413/1413)
+Android Bundled 2777ms node_modules/expo-router/entry.js (1413 modules)
+Writing bundle output to: /home/expo/workingdir/build/android/app/build/generated/assets/createBundleReleaseJsAndAssets/index.android.bundle
+Writing sourcemap output to: /home/expo/workingdir/build/android/app/build/intermediates/sourcemaps/react/release/index.android.bundle.packager.map
+Copying 48 asset files
+Done writing bundle output
+Done writing sourcemap output
 > Task :expo-dev-launcher:generateReleaseRFile
+> Task :expo-dev-launcher:generateServiceApolloOptions
+> Task :expo-dev-launcher:generateServiceApolloSources
+w: /home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/graphql/GetBranches.graphql: (21, 11): Apollo: Use of deprecated field `runtimeVersion`
+w: /home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/graphql/GetBranches.graphql: (34, 3): Apollo: Variable `platform` is unused
+w: /home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/graphql/GetUpdates.graphql: (14, 11): Apollo: Use of deprecated field `runtimeVersion`
 > Task :expo-dev-launcher:javaPreCompileRelease
 > Task :expo-dev-launcher:writeReleaseAarMetadata
 > Task :expo-dev-launcher:extractDeepLinksRelease
@@ -620,248 +617,73 @@ Starting Metro Bundler
 > Task :expo-dev-launcher:copyReleaseJniLibsProjectAndLocalJars
 > Task :expo-dev-launcher:extractDeepLinksForAarRelease
 > Task :expo-dev-launcher:writeReleaseLintModelMetadata
-> Task :expo-dev-launcher:generateServiceApolloSources
-w: /home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/graphql/GetBranches.graphql: (21, 11): Apollo: Use of deprecated field `runtimeVersion`
-w: /home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/graphql/GetBranches.graphql: (34, 3): Apollo: Variable `platform` is unused
-w: /home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/graphql/GetUpdates.graphql: (14, 11): Apollo: Use of deprecated field `runtimeVersion`
-> Task :react-native-screens:configureCMakeRelWithDebInfo[arm64-v8a]
-> Task :react-native-nitro-modules:configureCMakeRelWithDebInfo[arm64-v8a]
-> Task :expo-modules-core:configureCMakeRelWithDebInfo[arm64-v8a]
-> Task :app:createBundleReleaseJsAndAssets
-Android node_modules/expo-router/entry.js ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (1405/1405)
-Android Bundled 2524ms node_modules/expo-router/entry.js (1405 modules)
-Writing bundle output to: /home/expo/workingdir/build/android/app/build/generated/assets/createBundleReleaseJsAndAssets/index.android.bundle
-Writing sourcemap output to: /home/expo/workingdir/build/android/app/build/intermediates/sourcemaps/react/release/index.android.bundle.packager.map
-Copying 48 asset files
-Done writing bundle output
-Done writing sourcemap output
-> Task :react-native-worklets:configureCMakeRelWithDebInfo[armeabi-v7a]
-> Task :react-native-worklets:configureCMakeRelWithDebInfo[x86]
-> Task :react-native-worklets:configureCMakeRelWithDebInfo[x86_64]
-> Task :react-native-worklets:generateJsonModelRelease
-> Task :react-native-worklets:prefabReleaseConfigurePackage
-> Task :react-native-reanimated:configureCMakeRelWithDebInfo[arm64-v8a]
 > Task :react-native-safe-area-context:compileReleaseJavaWithJavac
-> Task :react-native-reanimated:configureCMakeRelWithDebInfo[armeabi-v7a]
+> Task :react-native-safe-area-context:compileReleaseLibraryResources
 > Task :react-native-safe-area-context:bundleLibRuntimeToDirRelease
 > Task :react-native-safe-area-context:bundleLibCompileToJarRelease
+> Task :react-native-safe-area-context:prepareReleaseArtProfile
 > Task :react-native-safe-area-context:bundleLibRuntimeToJarRelease
-> Task :react-native-reanimated:configureCMakeRelWithDebInfo[x86]
-> Task :react-native-screens:buildCMakeRelWithDebInfo[arm64-v8a]
-> Task :react-native-reanimated:configureCMakeRelWithDebInfo[x86_64]
-> Task :react-native-reanimated:generateJsonModelRelease
-> Task :react-native-reanimated:prefabReleaseConfigurePackage
-> Task :react-native-screens:configureCMakeRelWithDebInfo[armeabi-v7a]
+> Task :react-native-safe-area-context:mergeReleaseShaders
+> Task :react-native-safe-area-context:compileReleaseShaders NO-SOURCE
+> Task :react-native-safe-area-context:generateReleaseAssets UP-TO-DATE
+> Task :react-native-safe-area-context:mergeReleaseAssets
 > Task :react-native-safe-area-context:processReleaseJavaRes
 > Task :react-native-safe-area-context:createFullJarRelease
-> Task :react-native-gesture-handler:configureCMakeRelWithDebInfo[arm64-v8a]
-> Task :react-native-gesture-handler:configureCMakeRelWithDebInfo[armeabi-v7a]
-> Task :app:generateReleaseResValues
-> Task :app:generateReleaseResources
-> Task :react-native-nitro-modules:buildCMakeRelWithDebInfo[arm64-v8a]
-> Task :expo-modules-core:buildCMakeRelWithDebInfo[arm64-v8a]
-> Task :app:packageReleaseResources
-> Task :app:createReleaseCompatibleScreenManifests
-> Task :app:parseReleaseLocalResources
-> Task :app:extractDeepLinksRelease
-> Task :app:javaPreCompileRelease
-> Task :app:desugarReleaseFileDependencies
-> Task :app:mergeReleaseStartupProfile
-> Task :react-native-gesture-handler:configureCMakeRelWithDebInfo[x86]
-> Task :react-native-gesture-handler:configureCMakeRelWithDebInfo[x86_64]
-> Task :react-native-nitro-modules:configureCMakeRelWithDebInfo[armeabi-v7a]
-> Task :react-native-screens:buildCMakeRelWithDebInfo[armeabi-v7a]
-> Task :react-native-worklets:buildCMakeRelWithDebInfo[arm64-v8a][worklets]
-> Task :react-native-screens:configureCMakeRelWithDebInfo[x86]
-> Task :expo-modules-core:configureCMakeRelWithDebInfo[armeabi-v7a]
-> Task :react-native-safe-area-context:generateReleaseLintModel
-> Task :react-native-screens:buildCMakeRelWithDebInfo[x86]
-> Task :react-native-screens:configureCMakeRelWithDebInfo[x86_64]
-> Task :app:mergeExtDexRelease
-> Task :react-native-nitro-modules:buildCMakeRelWithDebInfo[armeabi-v7a]
-> Task :react-native-nitro-modules:configureCMakeRelWithDebInfo[x86]
-> Task :expo-modules-core:buildCMakeRelWithDebInfo[armeabi-v7a]
-> Task :react-native-screens:buildCMakeRelWithDebInfo[x86_64]
-> Task :react-native-worklets:buildCMakeRelWithDebInfo[armeabi-v7a][worklets]
-> Task :expo-modules-core:configureCMakeRelWithDebInfo[x86]
-> Task :react-native-nitro-modules:buildCMakeRelWithDebInfo[x86]
-> Task :react-native-nitro-modules:configureCMakeRelWithDebInfo[x86_64]
+> Task :react-native-safe-area-context:extractProguardFiles
+> Task :react-native-screens:buildCMakeRelWithDebInfo[arm64-v8a]
 > Task :react-native-screens:mergeReleaseJniLibFolders
-> Task :expo-modules-core:buildCMakeRelWithDebInfo[x86]
-> Task :react-native-worklets:buildCMakeRelWithDebInfo[x86][worklets]
-> Task :expo-modules-core:configureCMakeRelWithDebInfo[x86_64]
-> Task :react-native-nitro-modules:buildCMakeRelWithDebInfo[x86_64]
-> Task :react-native-nitro-modules:externalNativeBuildRelease
-> Task :react-native-nitro-modules:generateJsonModelRelease
-> Task :react-native-nitro-modules:prefabReleaseConfigurePackage
-> Task :react-native-nitro-modules:prefabReleasePackage
-> Task :react-native-nitro-modules:mergeReleaseJniLibFolders
-> Task :react-native-nitro-modules:mergeReleaseNativeLibs
-> Task :react-native-nitro-modules:copyReleaseJniLibsProjectOnly
-> Task :react-native-nitro-modules:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :react-native-nitro-modules:generateReleaseBuildConfig
-> Task :react-native-nitro-modules:generateReleaseResValues
-> Task :react-native-nitro-modules:generateReleaseResources
-> Task :react-native-nitro-modules:packageReleaseResources
-> Task :react-native-screens:mergeReleaseNativeLibs
-> Task :react-native-screens:copyReleaseJniLibsProjectOnly
-> Task :react-native-nitro-modules:parseReleaseLocalResources
-> Task :react-native-nitro-modules:javaPreCompileRelease
 > Task :react-native-screens:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :react-native-screens:generateReleaseBuildConfig
 > Task :react-native-screens:generateReleaseResValues
+> Task :react-native-screens:mergeReleaseNativeLibs
 > Task :react-native-screens:generateReleaseResources
+> Task :react-native-screens:copyReleaseJniLibsProjectOnly
 > Task :react-native-screens:packageReleaseResources
-> Task :react-native-nitro-modules:generateReleaseRFile
 > Task :react-native-screens:parseReleaseLocalResources
-> Task :react-native-screens:generateReleaseRFile
-> Task :react-native-nitro-modules:writeReleaseAarMetadata
 > Task :react-native-screens:javaPreCompileRelease
-> Task :react-native-nitro-modules:extractDeepLinksRelease
-> Task :react-native-nitro-modules:processReleaseManifest
-> Task :react-native-nitro-modules:compileReleaseLibraryResources
-> Task :react-native-nitro-modules:prepareReleaseArtProfile
-> Task :react-native-nitro-modules:mergeReleaseShaders
-> Task :react-native-nitro-modules:compileReleaseShaders NO-SOURCE
-> Task :react-native-nitro-modules:generateReleaseAssets UP-TO-DATE
-> Task :react-native-nitro-modules:mergeReleaseAssets
-> Task :react-native-nitro-modules:extractProguardFiles
-> Task :runanywhere_llamacpp:configureCMakeRelWithDebInfo[arm64-v8a]
-> Task :react-native-nitro-modules:prepareLintJarForPublish
-> Task :react-native-nitro-modules:compileReleaseKotlin
-> Task :react-native-nitro-modules:compileReleaseJavaWithJavac
-> Task :react-native-nitro-modules:bundleLibCompileToJarRelease
-> Task :react-native-nitro-modules:bundleLibRuntimeToDirRelease
+> Task :react-native-screens:generateReleaseRFile
 > Task :react-native-screens:writeReleaseAarMetadata
 > Task :react-native-screens:extractDeepLinksRelease
 > Task :react-native-screens:processReleaseManifest
 > Task :react-native-screens:compileReleaseLibraryResources
 > Task :react-native-screens:prepareReleaseArtProfile
-> Task :react-native-nitro-modules:bundleLibRuntimeToJarRelease
 > Task :react-native-screens:mergeReleaseShaders
 > Task :react-native-screens:compileReleaseShaders NO-SOURCE
 > Task :react-native-screens:generateReleaseAssets UP-TO-DATE
 > Task :react-native-screens:mergeReleaseAssets
-> Task :react-native-nitro-modules:processReleaseJavaRes
-> Task :react-native-nitro-modules:createFullJarRelease
-> Task :react-native-nitro-modules:generateReleaseLintModel
 > Task :react-native-screens:extractProguardFiles
 > Task :react-native-screens:prepareLintJarForPublish
 > Task :react-native-screens:stripReleaseDebugSymbols
 > Task :react-native-screens:copyReleaseJniLibsProjectAndLocalJars
 > Task :react-native-screens:extractDeepLinksForAarRelease
-> Task :react-native-nitro-modules:stripReleaseDebugSymbols
-> Task :react-native-nitro-modules:copyReleaseJniLibsProjectAndLocalJars
-> Task :react-native-nitro-modules:extractDeepLinksForAarRelease
-> Task :expo-modules-core:buildCMakeRelWithDebInfo[x86_64]
-> Task :expo-modules-core:mergeReleaseJniLibFolders
-> Task :expo-modules-core:mergeReleaseNativeLibs
-> Task :expo-modules-core:copyReleaseJniLibsProjectOnly
-> Task :expo-modules-core:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :expo-modules-core:generateReleaseBuildConfig
-> Task :expo-modules-core:generateReleaseResValues
-> Task :expo-modules-core:generateReleaseResources
-> Task :expo-modules-core:packageReleaseResources
-> Task :expo-modules-core:parseReleaseLocalResources
-> Task :expo-modules-core:generateReleaseRFile
+> Task :react-native-screens:writeReleaseLintModelMetadata
+> Task :react-native-safe-area-context:generateReleaseLintModel
+> Task :react-native-safe-area-context:prepareLintJarForPublish
+> Task :react-native-safe-area-context:stripReleaseDebugSymbols NO-SOURCE
+> Task :react-native-safe-area-context:copyReleaseJniLibsProjectAndLocalJars
+> Task :react-native-safe-area-context:extractDeepLinksForAarRelease
+> Task :react-native-nitro-modules:buildCMakeRelWithDebInfo[arm64-v8a]
+> Task :react-native-reanimated:configureCMakeRelWithDebInfo[arm64-v8a]
+> Task :react-native-worklets:buildCMakeRelWithDebInfo[arm64-v8a][worklets]
+> Task :expo-modules-core:buildCMakeRelWithDebInfo[arm64-v8a]
+> Task :app:generateReleaseResValues
+> Task :app:generateReleaseResources
+> Task :app:packageReleaseResources
+> Task :app:createReleaseCompatibleScreenManifests
+> Task :app:extractDeepLinksRelease
+> Task :app:parseReleaseLocalResources
+> Task :app:javaPreCompileRelease
+> Task :app:desugarReleaseFileDependencies
+> Task :app:mergeReleaseStartupProfile
+> Task :react-native-nitro-modules:externalNativeBuildRelease
+> Task :react-native-nitro-modules:generateJsonModelRelease
+> Task :react-native-nitro-modules:prefabReleaseConfigurePackage
+> Task :react-native-nitro-modules:prefabReleasePackage
 > Task :react-native-safe-area-context:extractReleaseAnnotations
-> Task :react-native-nitro-modules:extractReleaseAnnotations
-> Task :react-native-safe-area-context:mergeReleaseGeneratedProguardFiles
-> Task :react-native-nitro-modules:mergeReleaseGeneratedProguardFiles
-> Task :react-native-safe-area-context:mergeReleaseConsumerProguardFiles
-> Task :react-native-nitro-modules:mergeReleaseConsumerProguardFiles
-> Task :react-native-nitro-modules:mergeReleaseJavaResource
-> Task :react-native-nitro-modules:syncReleaseLibJars
-> Task :react-native-safe-area-context:mergeReleaseJavaResource
-> Task :react-native-safe-area-context:syncReleaseLibJars
-> Task :react-native-safe-area-context:bundleReleaseLocalLintAar
-> Task :react-native-nitro-modules:bundleReleaseLocalLintAar
-> Task :react-native-worklets:buildCMakeRelWithDebInfo[x86_64][worklets]
-> Task :runanywhere_core:configureCMakeRelWithDebInfo[arm64-v8a]
-> Task :app:configureCMakeRelWithDebInfo[arm64-v8a]
-> Task :runanywhere_llamacpp:buildCMakeRelWithDebInfo[arm64-v8a]
-C/C++: ninja: Entering directory `/home/expo/workingdir/build/node_modules/@runanywhere/llamacpp/android/.cxx/RelWithDebInfo/55a6ir4x/arm64-v8a'
-C/C++: /home/expo/workingdir/build/node_modules/@runanywhere/llamacpp/cpp/HybridRunAnywhereLlama.cpp:63:13: warning: unused function 'extractStringValue' [-Wunused-function]
-C/C++:    63 | std::string extractStringValue(const std::string& json, const std::string& key, const std::string& defaultValue = "") {
-C/C++:       |             ^~~~~~~~~~~~~~~~~~
-C/C++: 1 warning generated.
-> Task :app:configureCMakeRelWithDebInfo[armeabi-v7a]
-> Task :runanywhere_core:buildCMakeRelWithDebInfo[arm64-v8a]
-C/C++: ninja: Entering directory `/home/expo/workingdir/build/node_modules/@runanywhere/core/android/.cxx/RelWithDebInfo/4j3a405u/arm64-v8a'
-C/C++: /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/InitBridge.cpp:729:17: warning: variable 'levelStr' set but not used [-Wunused-but-set-variable]
-C/C++:   729 |     const char* levelStr = "INFO";
-C/C++:       |                 ^
-C/C++: 1 warning generated.
-> Task :app:configureCMakeRelWithDebInfo[x86]
-> Task :app:configureCMakeRelWithDebInfo[x86_64]
-> Task :expo-modules-core:javaPreCompileRelease
-> Task :expo-modules-core:writeReleaseAarMetadata
-> Task :expo-modules-core:extractDeepLinksRelease
-> Task :expo-modules-core:processReleaseManifest
-/home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/AndroidManifest.xml:8:9-11:45 Warning:
-	meta-data#com.facebook.soloader.enabled@android:value was tagged at AndroidManifest.xml:8 to replace other declarations but no other declaration present
-> Task :expo-modules-core:compileReleaseLibraryResources
-> Task :expo-modules-core:prepareReleaseArtProfile
-> Task :app:mergeReleaseShaders
-> Task :app:compileReleaseShaders NO-SOURCE
-> Task :app:generateReleaseAssets UP-TO-DATE
-> Task :expo-modules-core:mergeReleaseShaders
-> Task :expo-modules-core:compileReleaseShaders NO-SOURCE
-> Task :expo-modules-core:generateReleaseAssets UP-TO-DATE
-> Task :expo-modules-core:mergeReleaseAssets
-> Task :app:extractReleaseVersionControlInfo
-> Task :app:extractProguardFiles
-> Task :expo-modules-core:extractProguardFiles
-> Task :expo-modules-core:prepareLintJarForPublish
-> Task :expo-modules-core:stripReleaseDebugSymbols
 > Task :react-native-worklets:externalNativeBuildRelease
-> Task :expo-modules-core:copyReleaseJniLibsProjectAndLocalJars
-> Task :expo-modules-core:extractDeepLinksForAarRelease
-> Task :expo-modules-core:writeReleaseLintModelMetadata
 > Task :react-native-worklets:prefabReleasePackage
-> Task :runanywhere_llamacpp:configureCMakeRelWithDebInfo[armeabi-v7a]
-C/C++: CMake Warning at CMakeLists.txt:22 (message):
-C/C++:   [RunAnywhereLlama] RABackendLlamaCPP not found for armeabi-v7a at
-C/C++:   /home/expo/workingdir/build/node_modules/@runanywhere/llamacpp/android/src/main/jniLibs/armeabi-v7a/librac_backend_llamacpp.so
-C/C++:   This ABI will not be functional.  To fix, run: ./gradlew
-C/C++:   :runanywhere_llamacpp:downloadNativeLibs
-C/C++:   Or set reactNativeArchitectures=arm64-v8a in gradle.properties to skip this
-C/C++:   ABI.
-C/C++: CMake Warning:
-C/C++:   Manually-specified variables were not used by the project:
-C/C++:     REACT_NATIVE_NITRO_BUILD_DIR
+> Task :react-native-nitro-modules:mergeReleaseJniLibFolders
 > Task :react-native-worklets:mergeReleaseJniLibFolders
-> Task :react-native-worklets:mergeReleaseNativeLibs
-> Task :react-native-screens:compileReleaseKotlin
-> Task :react-native-worklets:copyReleaseJniLibsProjectOnly
-> Task :runanywhere_llamacpp:buildCMakeRelWithDebInfo[armeabi-v7a]
-> Task :runanywhere_llamacpp:configureCMakeRelWithDebInfo[x86]
-C/C++: CMake Warning at CMakeLists.txt:22 (message):
-C/C++:   [RunAnywhereLlama] RABackendLlamaCPP not found for x86 at
-C/C++:   /home/expo/workingdir/build/node_modules/@runanywhere/llamacpp/android/src/main/jniLibs/x86/librac_backend_llamacpp.so
-C/C++:   This ABI will not be functional.  To fix, run: ./gradlew
-C/C++:   :runanywhere_llamacpp:downloadNativeLibs
-C/C++:   Or set reactNativeArchitectures=arm64-v8a in gradle.properties to skip this
-C/C++:   ABI.
-C/C++: CMake Warning:
-C/C++:   Manually-specified variables were not used by the project:
-C/C++:     REACT_NATIVE_NITRO_BUILD_DIR
-> Task :runanywhere_llamacpp:buildCMakeRelWithDebInfo[x86]
-> Task :runanywhere_llamacpp:configureCMakeRelWithDebInfo[x86_64]
-> Task :react-native-worklets:generateReleaseBuildConfig
-> Task :react-native-worklets:generateReleaseResValues
-> Task :react-native-worklets:generateReleaseResources
-> Task :react-native-worklets:packageReleaseResources
-> Task :react-native-worklets:parseReleaseLocalResources
-> Task :react-native-worklets:generateReleaseRFile
-> Task :react-native-worklets:javaPreCompileRelease
-> Task :react-native-worklets:compileReleaseJavaWithJavac
-Note: /home/expo/workingdir/build/node_modules/react-native-worklets/android/src/main/java/com/swmansion/worklets/WorkletsPackage.java uses unchecked or unsafe operations.
-Note: Recompile with -Xlint:unchecked for details.
-> Task :react-native-worklets:bundleLibCompileToJarRelease
-> Task :react-native-worklets:bundleLibRuntimeToDirRelease
-> Task :react-native-worklets:writeReleaseAarMetadata
-> Task :app:checkReleaseAarMetadata
 > Task :react-native-screens:compileReleaseKotlin
 w: file:///home/expo/workingdir/build/node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/RNScreensPackage.kt:56:9 The corresponding parameter in the supertype 'BaseReactPackage' is named 'name'. This may cause problems when calling this function with named arguments.
 w: file:///home/expo/workingdir/build/node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/RNScreensPackage.kt:57:9 The corresponding parameter in the supertype 'BaseReactPackage' is named 'reactContext'. This may cause problems when calling this function with named arguments.
@@ -920,98 +742,155 @@ w: file:///home/expo/workingdir/build/node_modules/react-native-screens/android/
 w: file:///home/expo/workingdir/build/node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/bottomsheet/DimmingView.kt:68:9 The corresponding parameter in the supertype 'ReactCompoundViewGroup' is named 'touchX'. This may cause problems when calling this function with named arguments.
 w: file:///home/expo/workingdir/build/node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/bottomsheet/DimmingView.kt:69:9 The corresponding parameter in the supertype 'ReactCompoundViewGroup' is named 'touchY'. This may cause problems when calling this function with named arguments.
 w: file:///home/expo/workingdir/build/node_modules/react-native-screens/android/src/main/java/com/swmansion/rnscreens/gamma/tabs/TabsHostViewManager.kt:37:9 The corresponding parameter in the supertype 'TabsHostViewManager' is named 'view'. This may cause problems when calling this function with named arguments.
-> Task :expo-modules-core:compileReleaseKotlin
-> Task :app:mapReleaseSourceSetPaths
-> Task :react-native-safe-area-context:lintVitalAnalyzeRelease
+> Task :runanywhere_core:configureCMakeRelWithDebInfo[arm64-v8a]
+> Task :app:mergeExtDexRelease
+> Task :expo-modules-core:mergeReleaseJniLibFolders
+> Task :runanywhere_core:buildCMakeRelWithDebInfo[arm64-v8a]
+C/C++: ninja: Entering directory `/home/expo/workingdir/build/node_modules/@runanywhere/core/android/.cxx/RelWithDebInfo/4j3a405u/arm64-v8a'
+C/C++: /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/InitBridge.cpp:729:17: warning: variable 'levelStr' set but not used [-Wunused-but-set-variable]
+C/C++:   729 |     const char* levelStr = "INFO";
+C/C++:       |                 ^
+C/C++: 1 warning generated.
+> Task :react-native-worklets:mergeReleaseNativeLibs
+> Task :react-native-nitro-modules:mergeReleaseNativeLibs
+> Task :expo-modules-core:mergeReleaseNativeLibs
+> Task :react-native-nitro-modules:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :react-native-nitro-modules:generateReleaseBuildConfig
+> Task :react-native-nitro-modules:generateReleaseResValues
+> Task :react-native-nitro-modules:generateReleaseResources
+> Task :react-native-nitro-modules:packageReleaseResources
+> Task :react-native-nitro-modules:copyReleaseJniLibsProjectOnly
+> Task :expo-modules-core:copyReleaseJniLibsProjectOnly
+> Task :react-native-worklets:generateReleaseBuildConfig
+> Task :react-native-worklets:generateReleaseResValues
+> Task :react-native-worklets:copyReleaseJniLibsProjectOnly
+> Task :react-native-worklets:generateReleaseResources
+> Task :react-native-worklets:packageReleaseResources
+> Task :react-native-nitro-modules:parseReleaseLocalResources
+> Task :react-native-nitro-modules:javaPreCompileRelease
+> Task :react-native-worklets:parseReleaseLocalResources
+> Task :react-native-worklets:javaPreCompileRelease
+> Task :expo-modules-core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :expo-modules-core:generateReleaseBuildConfig
+> Task :expo-modules-core:generateReleaseResValues
+> Task :expo-modules-core:generateReleaseResources
+> Task :expo-modules-core:packageReleaseResources
+> Task :react-native-nitro-modules:generateReleaseRFile
+> Task :react-native-worklets:generateReleaseRFile
+> Task :expo-modules-core:parseReleaseLocalResources
+> Task :runanywhere_llamacpp:configureCMakeRelWithDebInfo[arm64-v8a]
+> Task :react-native-reanimated:generateJsonModelRelease
+> Task :react-native-reanimated:prefabReleaseConfigurePackage
+> Task :react-native-worklets:compileReleaseJavaWithJavac
+Note: /home/expo/workingdir/build/node_modules/react-native-worklets/android/src/main/java/com/swmansion/worklets/WorkletsPackage.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+> Task :react-native-nitro-modules:compileReleaseKotlin
+> Task :expo-modules-core:generateReleaseRFile
+> Task :react-native-worklets:bundleLibCompileToJarRelease
 > Task :react-native-screens:compileReleaseJavaWithJavac
+> Task :react-native-nitro-modules:compileReleaseJavaWithJavac
+> Task :react-native-nitro-modules:bundleLibCompileToJarRelease
+> Task :react-native-nitro-modules:bundleLibRuntimeToDirRelease
 > Task :react-native-screens:bundleLibRuntimeToDirRelease
+> Task :react-native-worklets:bundleLibRuntimeToDirRelease
+> Task :react-native-nitro-modules:writeReleaseAarMetadata
+> Task :react-native-worklets:writeReleaseAarMetadata
+> Task :react-native-nitro-modules:extractDeepLinksRelease
+> Task :react-native-nitro-modules:processReleaseManifest
 > Task :react-native-worklets:extractDeepLinksRelease
-> Task :react-native-nitro-modules:lintVitalAnalyzeRelease
 > Task :react-native-worklets:processReleaseManifest
+> Task :react-native-nitro-modules:compileReleaseLibraryResources
 > Task :react-native-worklets:compileReleaseLibraryResources
-> Task :react-native-worklets:prepareReleaseArtProfile
 > Task :react-native-screens:bundleLibCompileToJarRelease
+> Task :react-native-nitro-modules:prepareReleaseArtProfile
+> Task :react-native-worklets:prepareReleaseArtProfile
+> Task :react-native-screens:bundleLibRuntimeToJarRelease
+> Task :expo-modules-core:javaPreCompileRelease
+> Task :expo-modules-core:writeReleaseAarMetadata
+> Task :expo-modules-core:extractDeepLinksRelease
+> Task :expo-modules-core:processReleaseManifest
+/home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/AndroidManifest.xml:8:9-11:45 Warning:
+	meta-data#com.facebook.soloader.enabled@android:value was tagged at AndroidManifest.xml:8 to replace other declarations but no other declaration present
+> Task :expo-modules-core:compileReleaseLibraryResources
+> Task :expo-modules-core:prepareReleaseArtProfile
+> Task :react-native-nitro-modules:bundleLibRuntimeToJarRelease
 > Task :react-native-worklets:bundleLibRuntimeToJarRelease
-> Task :app:mergeReleaseResources
-> Task :react-native-screens:processReleaseJavaRes
+> Task :expo-modules-core:mergeReleaseShaders
+> Task :expo-modules-core:compileReleaseShaders NO-SOURCE
+> Task :expo-modules-core:generateReleaseAssets UP-TO-DATE
+> Task :expo-modules-core:mergeReleaseAssets
+> Task :react-native-nitro-modules:mergeReleaseShaders
+> Task :react-native-nitro-modules:compileReleaseShaders NO-SOURCE
+> Task :react-native-nitro-modules:generateReleaseAssets UP-TO-DATE
+> Task :react-native-nitro-modules:mergeReleaseAssets
 > Task :react-native-worklets:mergeReleaseShaders
 > Task :react-native-worklets:compileReleaseShaders NO-SOURCE
 > Task :react-native-worklets:generateReleaseAssets UP-TO-DATE
-> Task :react-native-screens:bundleLibRuntimeToJarRelease
-> Task :react-native-nitro-modules:writeReleaseLintModelMetadata
+> Task :expo-modules-core:extractProguardFiles
 > Task :react-native-worklets:mergeReleaseAssets
 > Task :react-native-worklets:processReleaseJavaRes NO-SOURCE
 > Task :react-native-worklets:createFullJarRelease
+> Task :expo-modules-core:prepareLintJarForPublish
 > Task :react-native-worklets:extractProguardFiles
-> Task :react-native-nitro-modules:generateReleaseLintVitalModel
-> Task :react-native-safe-area-context:generateReleaseLintVitalModel
-> Task :app:processReleaseMainManifest
-/home/expo/workingdir/build/android/app/src/main/AndroidManifest.xml Warning:
-	provider#expo.modules.filesystem.FileSystemFileProvider@android:authorities was tagged at AndroidManifest.xml:0 to replace other declarations but no other declaration present
-> Task :app:processReleaseManifest
-> Task :react-native-screens:generateReleaseLintModel
-> Task :app:processReleaseManifestForPackage
-> Task :app:mergeReleaseArtProfile
+> Task :react-native-nitro-modules:processReleaseJavaRes
+> Task :react-native-nitro-modules:createFullJarRelease
+> Task :react-native-nitro-modules:extractProguardFiles
+> Task :react-native-nitro-modules:generateReleaseLintModel
+> Task :react-native-nitro-modules:prepareLintJarForPublish
+> Task :react-native-screens:processReleaseJavaRes
 > Task :react-native-screens:createFullJarRelease
+> Task :react-native-screens:generateReleaseLintModel
+> Task :react-native-safe-area-context:mergeReleaseGeneratedProguardFiles
+> Task :react-native-safe-area-context:mergeReleaseConsumerProguardFiles
+> Task :react-native-safe-area-context:mergeReleaseJavaResource
+> Task :react-native-safe-area-context:syncReleaseLibJars
+> Task :react-native-safe-area-context:bundleReleaseLocalLintAar
 > Task :react-native-screens:extractReleaseAnnotations
 > Task :react-native-screens:mergeReleaseGeneratedProguardFiles
 > Task :react-native-screens:mergeReleaseConsumerProguardFiles
-> Task :runanywhere_llamacpp:buildCMakeRelWithDebInfo[x86_64]
-C/C++: ninja: Entering directory `/home/expo/workingdir/build/node_modules/@runanywhere/llamacpp/android/.cxx/RelWithDebInfo/55a6ir4x/x86_64'
+> Task :react-native-screens:mergeReleaseJavaResource
+> Task :react-native-screens:syncReleaseLibJars
+> Task :react-native-screens:bundleReleaseLocalLintAar
+> Task :react-native-nitro-modules:stripReleaseDebugSymbols
+> Task :react-native-nitro-modules:copyReleaseJniLibsProjectAndLocalJars
+> Task :react-native-nitro-modules:extractDeepLinksForAarRelease
+> Task :react-native-nitro-modules:extractReleaseAnnotations
+> Task :react-native-nitro-modules:mergeReleaseGeneratedProguardFiles
+> Task :react-native-nitro-modules:mergeReleaseConsumerProguardFiles
+> Task :react-native-nitro-modules:mergeReleaseJavaResource
+> Task :react-native-nitro-modules:syncReleaseLibJars
+> Task :react-native-nitro-modules:bundleReleaseLocalLintAar
+> Task :expo-modules-core:stripReleaseDebugSymbols
+> Task :expo-modules-core:copyReleaseJniLibsProjectAndLocalJars
+> Task :expo-modules-core:extractDeepLinksForAarRelease
+> Task :expo-modules-core:writeReleaseLintModelMetadata
+> Task :react-native-worklets:generateReleaseLintModel
+> Task :react-native-worklets:prepareLintJarForPublish
+> Task :react-native-worklets:stripReleaseDebugSymbols
+> Task :runanywhere_llamacpp:buildCMakeRelWithDebInfo[arm64-v8a]
+C/C++: ninja: Entering directory `/home/expo/workingdir/build/node_modules/@runanywhere/llamacpp/android/.cxx/RelWithDebInfo/55a6ir4x/arm64-v8a'
 C/C++: /home/expo/workingdir/build/node_modules/@runanywhere/llamacpp/cpp/HybridRunAnywhereLlama.cpp:63:13: warning: unused function 'extractStringValue' [-Wunused-function]
 C/C++:    63 | std::string extractStringValue(const std::string& json, const std::string& key, const std::string& defaultValue = "") {
 C/C++:       |             ^~~~~~~~~~~~~~~~~~
 C/C++: 1 warning generated.
-> Task :react-native-screens:mergeReleaseJavaResource
-> Task :react-native-reanimated:buildCMakeRelWithDebInfo[arm64-v8a][reanimated]
-> Task :react-native-screens:syncReleaseLibJars
-> Task :react-native-screens:bundleReleaseLocalLintAar
-> Task :react-native-screens:writeReleaseLintModelMetadata
-> Task :react-native-screens:generateReleaseLintVitalModel
-> Task :react-native-worklets:generateReleaseLintModel
-> Task :react-native-worklets:prepareLintJarForPublish
+> Task :runanywhere_llamacpp:mergeReleaseNativeLibs
+> Task :runanywhere_llamacpp:copyReleaseJniLibsProjectOnly
+> Task :runanywhere_llamacpp:stripReleaseDebugSymbols
+> Task :runanywhere_llamacpp:copyReleaseJniLibsProjectAndLocalJars
+> Task :react-native-worklets:copyReleaseJniLibsProjectAndLocalJars
 > Task :react-native-worklets:extractDeepLinksForAarRelease
 > Task :react-native-worklets:extractReleaseAnnotations
 > Task :react-native-worklets:mergeReleaseGeneratedProguardFiles
 > Task :react-native-worklets:mergeReleaseConsumerProguardFiles
 > Task :react-native-worklets:mergeReleaseJavaResource
 > Task :react-native-worklets:syncReleaseLibJars
-> Task :react-native-worklets:writeReleaseLintModelMetadata
-> Task :react-native-worklets:stripReleaseDebugSymbols
-> Task :react-native-worklets:copyReleaseJniLibsProjectAndLocalJars
 > Task :react-native-worklets:bundleReleaseLocalLintAar
-> Task :app:mergeReleaseAssets
-> Task :app:compressReleaseAssets
-> Task :react-native-worklets:generateReleaseLintVitalModel
-> Task :app:collectReleaseDependencies
-> Task :runanywhere_llamacpp:mergeReleaseNativeLibs
-> Task :app:processReleaseResources
-> Task :app:sdkReleaseDependencyData
-> Task :runanywhere_llamacpp:stripReleaseDebugSymbols
-> Task :runanywhere_llamacpp:copyReleaseJniLibsProjectAndLocalJars
-> Task :app:validateSigningRelease
-> Task :app:writeReleaseAppMetadata
-> Task :app:writeReleaseSigningConfigVersions
-> Task :runanywhere_llamacpp:copyReleaseJniLibsProjectOnly
-> Task :app:optimizeReleaseResources
+> Task :react-native-worklets:writeReleaseLintModelMetadata
+> Task :react-native-nitro-modules:writeReleaseLintModelMetadata
+> Task :react-native-reanimated:buildCMakeRelWithDebInfo[arm64-v8a][reanimated]
+> Task :react-native-safe-area-context:writeReleaseLintModelMetadata
+> Task :react-native-gesture-handler:configureCMakeRelWithDebInfo[arm64-v8a]
 > Task :expo-modules-core:compileReleaseKotlin
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/adapters/react/apploader/RNHeadlessAppLoader.kt:48:87 'val reactNativeHost: ReactNativeHost' is deprecated. You should not use ReactNativeHost directly in the New Architecture. Use ReactHost instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/adapters/react/apploader/RNHeadlessAppLoader.kt:91:85 'val reactNativeHost: ReactNativeHost' is deprecated. You should not use ReactNativeHost directly in the New Architecture. Use ReactHost instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/adapters/react/apploader/RNHeadlessAppLoader.kt:120:83 'val reactNativeHost: ReactNativeHost' is deprecated. You should not use ReactNativeHost directly in the New Architecture. Use ReactHost instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/apploader/AppLoaderProvider.kt:34:52 Unchecked cast of 'Class<*>!' to 'Class<out HeadlessAppLoader>'.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/AppContext.kt:30:8 'typealias ErrorManagerModule = JSLoggerModule' is deprecated. Use JSLoggerModule instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/AppContext.kt:253:21 'typealias ErrorManagerModule = JSLoggerModule' is deprecated. Use JSLoggerModule instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/AppContext.kt:343:21 'val DEFAULT: Int' is deprecated. UIManagerType.DEFAULT will be deleted in the next release of React Native. Use [LEGACY] instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/defaultmodules/NativeModulesProxyModule.kt:16:5 'fun Constants(legacyConstantsProvider: () -> Map<String, Any?>): Unit' is deprecated. Use `Constant` or `Property` instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/jni/PromiseImpl.kt:65:51 'val errorManager: JSLoggerModule?' is deprecated. Use AppContext.jsLogger instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/jni/PromiseImpl.kt:69:22 'fun reportExceptionToLogBox(codedException: CodedException): Unit' is deprecated. Use appContext.jsLogger.error(...) instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/views/ViewDefinitionBuilder.kt:464:16 'val errorManager: JSLoggerModule?' is deprecated. Use AppContext.jsLogger instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/views/ViewDefinitionBuilder.kt:464:30 'fun reportExceptionToLogBox(codedException: CodedException): Unit' is deprecated. Use appContext.jsLogger.error(...) instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/views/ViewManagerDefinition.kt:41:16 'val errorManager: JSLoggerModule?' is deprecated. Use AppContext.jsLogger instead.
-w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/views/ViewManagerDefinition.kt:41:30 'fun reportExceptionToLogBox(codedException: CodedException): Unit' is deprecated. Use appContext.jsLogger.error(...) instead.
-> Task :expo-modules-core:compileReleaseJavaWithJavac
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
 > Task :runanywhere_core:buildCMakeRelWithDebInfo[arm64-v8a]
 C/C++: /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:1158:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
 C/C++:  1158 |     return Promise<std::string>::async([this, path, bodyJson]() -> std::string {
@@ -1068,166 +947,449 @@ C/C++: /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunA
 C/C++:  2474 |     return Promise<std::string>::async([this, text]() -> std::string {
 C/C++:       |                                         ^~~~~
 C/C++: 16 warnings generated.
-C/C++: : && /home/expo/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android24 --sysroot=/home/expo/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fPIC -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -frtti -fexceptions -Wall -fstack-protector-all -O2 -g -DNDEBUG  -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--no-undefined-version -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments  -Wl,-z,max-page-size=16384 -Wl,--gc-sections   -Wl,-z,max-page-size=16384 -shared -Wl,-soname,librunanywherecore.so -o ../../../../build/intermediates/cxx/RelWithDebInfo/4j3a405u/obj/arm64-v8a/librunanywherecore.so CMakeFiles/runanywherecore.dir/src/main/cpp/cpp-adapter.cpp.o 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/AuthBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/DeviceBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/DownloadBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/EventBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/HTTPBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/InitBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ModelRegistryBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/StorageBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/TelemetryBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/android/runanywherecoreOnLoad.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/shared/c++/HybridRunAnywhereCoreSpec.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/shared/c++/HybridRunAnywhereDeviceInfoSpec.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/android/c++/JHybridRunAnywhereDeviceInfoSpec.cpp.o' -L/home/expo/workingdir/build/node_modules/@runanywhere/core/android/src/main/jniLibs/arm64-v8a /home/expo/.gradle/caches/8.14.3/transforms/6347936a505aab872d9b18fa868e791d/transformed/fbjni-0.7.0/prefab/modules/fbjni/libs/android.arm64-v8a/libfbjni.so  /home/expo/.gradle/caches/8.14.3/transforms/cd9fd1633b8cbb585ae18556210d590b/transformed/react-android-0.81.5-release/prefab/modules/jsi/libs/android.arm64-v8a/libjsi.so  /home/expo/workingdir/build/node_modules/react-native-nitro-modules/android/build/intermediates/cxx/RelWithDebInfo/721h6l3c/obj/arm64-v8a/libNitroModules.so  /home/expo/.gradle/caches/8.14.3/transforms/cd9fd1633b8cbb585ae18556210d590b/transformed/react-android-0.81.5-release/prefab/modules/reactnative/libs/android.arm64-v8a/libreactnative.so  /home/expo/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/24/liblog.so  -landroid  -lrac_commons  -latomic -lm && :
-C/C++: ld.lld: error: undefined symbol: rac_tool_call_parse
-C/C++: >>> referenced by ToolCallingBridge.cpp:28 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:28)
-C/C++: >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::parseToolCall(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-C/C++: ld.lld: error: undefined symbol: rac_tool_call_free
-C/C++: >>> referenced by ToolCallingBridge.cpp:58 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:58)
-C/C++: >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::parseToolCall(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-C/C++: ld.lld: error: undefined symbol: rac_tool_call_format_prompt_json_with_format_name
-C/C++: >>> referenced by ToolCallingBridge.cpp:68 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:68)
-C/C++: >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::formatToolsPrompt(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-C/C++: ld.lld: error: undefined symbol: rac_tool_call_format_from_name
-C/C++: >>> referenced by ToolCallingBridge.cpp:118 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:118)
-C/C++: >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::buildInitialPrompt(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-C/C++: ld.lld: error: undefined symbol: rac_tool_call_build_initial_prompt
-C/C++: >>> referenced by ToolCallingBridge.cpp:132 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:132)
-C/C++: >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::buildInitialPrompt(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-C/C++: ld.lld: error: undefined symbol: rac_tool_call_build_followup_prompt
-C/C++: >>> referenced by ToolCallingBridge.cpp:156 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:156)
-C/C++: >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::buildFollowupPrompt(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, bool))
-C/C++: ld.lld: error: undefined symbol: rac_tool_call_normalize_json
-C/C++: >>> referenced by ToolCallingBridge.cpp:176 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:176)
-C/C++: >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::normalizeJson(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-C/C++: clang++: error: linker command failed with exit code 1 (use -v to see invocation)
-C/C++: ninja: build stopped: subcommand failed.
-> Task :runanywhere_core:buildCMakeRelWithDebInfo[arm64-v8a] FAILED
-> Task :react-native-worklets:lintVitalAnalyzeRelease
+> Task :runanywhere_core:mergeReleaseNativeLibs
+> Task :runanywhere_core:copyReleaseJniLibsProjectOnly
+> Task :react-native-nitro-modules:lintVitalAnalyzeRelease
+> Task :app:configureCMakeRelWithDebInfo[arm64-v8a]
+> Task :runanywhere_core:stripReleaseDebugSymbols
+> Task :runanywhere_core:copyReleaseJniLibsProjectAndLocalJars
+> Task :react-native-safe-area-context:lintVitalAnalyzeRelease
+> Task :react-native-nitro-modules:generateReleaseLintVitalModel
+> Task :runanywhere_core:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/node_modules/@runanywhere/core/android/src/main/java/com/margelo/nitro/runanywhere/ArchiveUtility.kt:178:65 'val nextTarEntry: TarArchiveEntry!' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/@runanywhere/core/android/src/main/java/com/margelo/nitro/runanywhere/ArchiveUtility.kt:184:51 'val nextTarEntry: TarArchiveEntry!' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/@runanywhere/core/android/src/main/java/com/margelo/nitro/runanywhere/ArchiveUtility.kt:196:51 'val nextTarEntry: TarArchiveEntry!' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/@runanywhere/core/android/src/main/java/com/margelo/nitro/runanywhere/ArchiveUtility.kt:227:47 'val nextTarEntry: TarArchiveEntry!' is deprecated. Deprecated in Java.
+> Task :react-native-safe-area-context:generateReleaseLintVitalModel
+> Task :react-native-screens:generateReleaseLintVitalModel
+> Task :react-native-worklets:generateReleaseLintVitalModel
+> Task :runanywhere_core:compileReleaseJavaWithJavac
+> Task :runanywhere_core:bundleLibCompileToJarRelease
+> Task :runanywhere_core:bundleLibRuntimeToDirRelease
+> Task :runanywhere_llamacpp:compileReleaseKotlin
+> Task :runanywhere_core:bundleLibRuntimeToJarRelease
+> Task :runanywhere_llamacpp:compileReleaseJavaWithJavac
+> Task :runanywhere_llamacpp:bundleLibRuntimeToDirRelease
+> Task :runanywhere_llamacpp:bundleLibCompileToJarRelease
+> Task :runanywhere_llamacpp:bundleLibRuntimeToJarRelease
+> Task :runanywhere_core:processReleaseJavaRes
+> Task :runanywhere_core:createFullJarRelease
+> Task :runanywhere_llamacpp:processReleaseJavaRes
+> Task :runanywhere_llamacpp:createFullJarRelease
+> Task :runanywhere_llamacpp:extractReleaseAnnotations
+> Task :runanywhere_llamacpp:mergeReleaseGeneratedProguardFiles
+> Task :runanywhere_llamacpp:mergeReleaseConsumerProguardFiles
+> Task :runanywhere_llamacpp:mergeReleaseJavaResource
+> Task :runanywhere_llamacpp:syncReleaseLibJars
+> Task :runanywhere_core:generateReleaseLintModel
+> Task :runanywhere_core:extractReleaseAnnotations
+> Task :runanywhere_core:mergeReleaseGeneratedProguardFiles
+> Task :runanywhere_core:mergeReleaseConsumerProguardFiles
+> Task :runanywhere_core:mergeReleaseJavaResource
+> Task :runanywhere_llamacpp:bundleReleaseLocalLintAar
+> Task :runanywhere_core:syncReleaseLibJars
+> Task :runanywhere_llamacpp:generateReleaseLintModel
+> Task :runanywhere_core:bundleReleaseLocalLintAar
+> Task :expo-modules-core:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/adapters/react/apploader/RNHeadlessAppLoader.kt:48:87 'val reactNativeHost: ReactNativeHost' is deprecated. You should not use ReactNativeHost directly in the New Architecture. Use ReactHost instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/adapters/react/apploader/RNHeadlessAppLoader.kt:91:85 'val reactNativeHost: ReactNativeHost' is deprecated. You should not use ReactNativeHost directly in the New Architecture. Use ReactHost instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/adapters/react/apploader/RNHeadlessAppLoader.kt:120:83 'val reactNativeHost: ReactNativeHost' is deprecated. You should not use ReactNativeHost directly in the New Architecture. Use ReactHost instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/apploader/AppLoaderProvider.kt:34:52 Unchecked cast of 'Class<*>!' to 'Class<out HeadlessAppLoader>'.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/AppContext.kt:30:8 'typealias ErrorManagerModule = JSLoggerModule' is deprecated. Use JSLoggerModule instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/AppContext.kt:253:21 'typealias ErrorManagerModule = JSLoggerModule' is deprecated. Use JSLoggerModule instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/AppContext.kt:343:21 'val DEFAULT: Int' is deprecated. UIManagerType.DEFAULT will be deleted in the next release of React Native. Use [LEGACY] instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/defaultmodules/NativeModulesProxyModule.kt:16:5 'fun Constants(legacyConstantsProvider: () -> Map<String, Any?>): Unit' is deprecated. Use `Constant` or `Property` instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/jni/PromiseImpl.kt:65:51 'val errorManager: JSLoggerModule?' is deprecated. Use AppContext.jsLogger instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/jni/PromiseImpl.kt:69:22 'fun reportExceptionToLogBox(codedException: CodedException): Unit' is deprecated. Use appContext.jsLogger.error(...) instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/views/ViewDefinitionBuilder.kt:464:16 'val errorManager: JSLoggerModule?' is deprecated. Use AppContext.jsLogger instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/views/ViewDefinitionBuilder.kt:464:30 'fun reportExceptionToLogBox(codedException: CodedException): Unit' is deprecated. Use appContext.jsLogger.error(...) instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/views/ViewManagerDefinition.kt:41:16 'val errorManager: JSLoggerModule?' is deprecated. Use AppContext.jsLogger instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-modules-core/android/src/main/java/expo/modules/kotlin/views/ViewManagerDefinition.kt:41:30 'fun reportExceptionToLogBox(codedException: CodedException): Unit' is deprecated. Use appContext.jsLogger.error(...) instead.
+> Task :runanywhere_llamacpp:lintVitalAnalyzeRelease
+> Task :runanywhere_core:generateReleaseLintVitalModel
+> Task :runanywhere_llamacpp:generateReleaseLintVitalModel
+> Task :expo-modules-core:compileReleaseJavaWithJavac
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+> Task :expo-modules-core:bundleLibCompileToJarRelease
+> Task :expo-modules-core:bundleLibRuntimeToDirRelease
+> Task :expo-dev-client:compileReleaseKotlin NO-SOURCE
+> Task :expo-dev-client:compileReleaseJavaWithJavac
+> Task :expo-dev-client:bundleLibCompileToJarRelease
+> Task :expo-constants:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/node_modules/expo-constants/android/src/main/java/expo/modules/constants/ConstantsModule.kt:12:5 'fun Constants(legacyConstantsProvider: () -> Map<String, Any?>): Unit' is deprecated. Use `Constant` or `Property` instead.
+> Task :expo-dev-menu-interface:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu-interface/android/src/main/java/expo/interfaces/devmenu/DevMenuInterfacePackage.kt:14:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu-interface/android/src/main/java/expo/interfaces/devmenu/ReactHostWrapper.kt:5:8 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu-interface/android/src/main/java/expo/interfaces/devmenu/ReactHostWrapper.kt:19:41 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu-interface/android/src/main/java/expo/interfaces/devmenu/ReactHostWrapper.kt:20:33 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+> Task :expo-constants:compileReleaseJavaWithJavac
+> Task :expo-constants:bundleLibCompileToJarRelease
+> Task :expo-dev-menu-interface:compileReleaseJavaWithJavac
+> Task :expo-dev-menu-interface:bundleLibCompileToJarRelease
+> Task :expo-updates-interface:compileReleaseKotlin
+> Task :expo-json-utils:compileReleaseKotlin
+> Task :expo-updates-interface:compileReleaseJavaWithJavac
+> Task :expo-updates-interface:bundleLibCompileToJarRelease
+> Task :expo-json-utils:compileReleaseJavaWithJavac
+> Task :expo-dev-menu-interface:bundleLibRuntimeToDirRelease
+> Task :expo-json-utils:bundleLibCompileToJarRelease
+> Task :expo-manifests:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/EmbeddedManifest.kt:19:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///home/expo/workingdir/build/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/EmbeddedManifest.kt:19:86 'fun getLegacyID(): String' is deprecated. Prefer scopeKey or projectId depending on use case.
+w: file:///home/expo/workingdir/build/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/ExpoUpdatesManifest.kt:16:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///home/expo/workingdir/build/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/Manifest.kt:13:3 Deprecations and opt-ins on a method overridden from 'Any' may not be reported.
+w: file:///home/expo/workingdir/build/node_modules/expo-manifests/android/src/main/java/expo/modules/manifests/core/Manifest.kt:15:12 'fun getRawJson(): JSONObject' is deprecated. Prefer to use specific field getters.
+> Task :expo-manifests:compileReleaseJavaWithJavac
+> Task :expo-manifests:bundleLibCompileToJarRelease
 > Task :react-native-screens:lintVitalAnalyzeRelease
+> Task :react-native-worklets:lintVitalAnalyzeRelease
+> Task :expo-constants:bundleLibRuntimeToDirRelease
+> Task :expo-dev-client:bundleLibRuntimeToDirRelease
+> Task :expo-manifests:bundleLibRuntimeToDirRelease
+> Task :runanywhere_core:lintVitalAnalyzeRelease
+> Task :expo-json-utils:bundleLibRuntimeToDirRelease
+> Task :expo-updates-interface:bundleLibRuntimeToDirRelease
+> Task :expo-dev-menu-interface:bundleLibRuntimeToJarRelease
+> Task :expo-constants:bundleLibRuntimeToJarRelease
+> Task :expo-dev-client:bundleLibRuntimeToJarRelease
+> Task :expo-manifests:bundleLibRuntimeToJarRelease
+> Task :expo-modules-core:bundleLibRuntimeToJarRelease
+> Task :expo-json-utils:bundleLibRuntimeToJarRelease
+> Task :expo-updates-interface:bundleLibRuntimeToJarRelease
+> Task :expo-constants:processReleaseJavaRes
+> Task :expo-constants:createFullJarRelease
+> Task :expo-modules-core:processReleaseJavaRes
+> Task :expo-modules-core:createFullJarRelease
+> Task :expo-modules-core:generateReleaseLintModel
+> Task :expo-constants:generateReleaseLintModel
+> Task :expo-dev-client:processReleaseJavaRes NO-SOURCE
+> Task :expo-dev-client:createFullJarRelease
+> Task :expo-dev-client:generateReleaseLintModel
+> Task :expo-dev-menu-interface:processReleaseJavaRes
+> Task :expo-dev-menu-interface:createFullJarRelease
+> Task :expo-dev-menu-interface:generateReleaseLintModel
+> Task :expo-json-utils:processReleaseJavaRes
+> Task :expo-json-utils:createFullJarRelease
+> Task :expo-json-utils:generateReleaseLintModel
+> Task :expo-manifests:processReleaseJavaRes
+> Task :expo-manifests:createFullJarRelease
+> Task :expo-manifests:generateReleaseLintModel
+> Task :expo-updates-interface:processReleaseJavaRes
+> Task :expo-updates-interface:createFullJarRelease
+> Task :expo-updates-interface:generateReleaseLintModel
+> Task :expo-dev-menu-interface:extractReleaseAnnotations
+> Task :expo-dev-menu-interface:mergeReleaseGeneratedProguardFiles
+> Task :expo-dev-menu-interface:mergeReleaseConsumerProguardFiles
+> Task :expo-dev-menu-interface:mergeReleaseJavaResource
+> Task :expo-dev-menu-interface:syncReleaseLibJars
+> Task :expo-dev-menu-interface:bundleReleaseLocalLintAar
+> Task :expo-modules-core:extractReleaseAnnotations
+> Task :expo-modules-core:mergeReleaseGeneratedProguardFiles
+> Task :expo-modules-core:mergeReleaseConsumerProguardFiles
+> Task :expo-modules-core:mergeReleaseJavaResource
+> Task :expo-constants:extractReleaseAnnotations
+> Task :expo-constants:mergeReleaseGeneratedProguardFiles
+> Task :expo-constants:mergeReleaseConsumerProguardFiles
+> Task :expo-constants:mergeReleaseJavaResource
+> Task :expo-constants:syncReleaseLibJars
+> Task :expo-constants:bundleReleaseLocalLintAar
+> Task :expo-dev-client:extractReleaseAnnotations
+> Task :expo-dev-client:mergeReleaseGeneratedProguardFiles
+> Task :expo-dev-client:mergeReleaseConsumerProguardFiles
+> Task :expo-dev-client:mergeReleaseJavaResource
+> Task :expo-dev-client:syncReleaseLibJars
+> Task :expo-dev-client:bundleReleaseLocalLintAar
+> Task :expo-manifests:extractReleaseAnnotations
+> Task :expo-manifests:mergeReleaseGeneratedProguardFiles
+> Task :expo-manifests:mergeReleaseConsumerProguardFiles
+> Task :expo-manifests:mergeReleaseJavaResource
+> Task :expo-manifests:syncReleaseLibJars
+> Task :expo-manifests:bundleReleaseLocalLintAar
+> Task :expo-json-utils:extractReleaseAnnotations
+> Task :expo-json-utils:mergeReleaseGeneratedProguardFiles
+> Task :expo-json-utils:mergeReleaseConsumerProguardFiles
+> Task :expo-json-utils:mergeReleaseJavaResource
+> Task :expo-json-utils:syncReleaseLibJars
+> Task :expo-json-utils:bundleReleaseLocalLintAar
+> Task :expo-updates-interface:extractReleaseAnnotations
+> Task :expo-updates-interface:mergeReleaseGeneratedProguardFiles
+> Task :expo-modules-core:syncReleaseLibJars
+> Task :expo-updates-interface:mergeReleaseConsumerProguardFiles
+> Task :expo-updates-interface:mergeReleaseJavaResource
+> Task :expo-updates-interface:syncReleaseLibJars
+> Task :expo-updates-interface:bundleReleaseLocalLintAar
+> Task :expo-modules-core:bundleReleaseLocalLintAar
+> Task :expo-constants:generateReleaseLintVitalModel
+> Task :expo-dev-client:lintVitalAnalyzeRelease
+> Task :expo-constants:lintVitalAnalyzeRelease
+> Task :expo-json-utils:lintVitalAnalyzeRelease
+> Task :expo-manifests:lintVitalAnalyzeRelease
+> Task :expo-updates-interface:lintVitalAnalyzeRelease
+> Task :expo-dev-client:generateReleaseLintVitalModel
+> Task :expo-dev-menu-interface:generateReleaseLintVitalModel
+> Task :expo-json-utils:generateReleaseLintVitalModel
+> Task :expo-manifests:generateReleaseLintVitalModel
+> Task :expo-modules-core:generateReleaseLintVitalModel
+> Task :expo-updates-interface:generateReleaseLintVitalModel
+> Task :expo-dev-menu-interface:lintVitalAnalyzeRelease
+> Task :expo-dev-menu:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu/android/src/main/java/com/facebook/react/devsupport/DevMenuSettingsBase.kt:6:8 'class PreferenceManager : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu/android/src/main/java/com/facebook/react/devsupport/DevMenuSettingsBase.kt:18:51 'class PreferenceManager : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu/android/src/main/java/com/facebook/react/devsupport/DevMenuSettingsBase.kt:18:69 'static fun getDefaultSharedPreferences(p0: Context!): SharedPreferences!' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu/android/src/main/java/com/facebook/react/devsupport/DevMenuSettingsBase.kt:51:13 This code uses error suppression for 'NOTHING_TO_OVERRIDE'. While it might compile and work, the compiler behavior is UNSPECIFIED and WILL NOT BE PRESERVED. Please report your use case to the Kotlin issue tracker instead: https://kotl.in/issue
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu/android/src/main/java/com/facebook/react/devsupport/DevMenuSettingsBase.kt:58:13 This code uses error suppression for 'NOTHING_TO_OVERRIDE'. While it might compile and work, the compiler behavior is UNSPECIFIED and WILL NOT BE PRESERVED. Please report your use case to the Kotlin issue tracker instead: https://kotl.in/issue
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu/android/src/main/java/expo/modules/devmenu/DevMenuPackage.kt:28:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu/android/src/main/java/expo/modules/devmenu/DevMenuPackage.kt:47:78 'val reactNativeHost: ReactNativeHost' is deprecated. You should not use ReactNativeHost directly in the New Architecture. Use ReactHost instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-menu/android/src/release/java/expo/modules/devmenu/DevMenuManager.kt:80:43 The corresponding parameter in the supertype 'DevMenuManagerInterface' is named 'shouldAutoLaunch'. This may cause problems when calling this function with named arguments.
+> Task :expo-dev-menu:compileReleaseJavaWithJavac
+> Task :expo-dev-menu:bundleLibCompileToJarRelease
+> Task :expo-dev-menu:bundleLibRuntimeToJarRelease
+> Task :expo-dev-menu:bundleLibRuntimeToDirRelease
+> Task :expo-dev-menu:processReleaseJavaRes
+> Task :expo-dev-menu:createFullJarRelease
+> Task :expo-dev-menu:generateReleaseLintModel
+> Task :expo-dev-menu:extractReleaseAnnotations
+> Task :expo-dev-menu:mergeReleaseGeneratedProguardFiles
+> Task :expo-dev-menu:mergeReleaseConsumerProguardFiles
+> Task :expo-dev-menu:mergeReleaseJavaResource
+> Task :expo-dev-menu:syncReleaseLibJars
+> Task :expo-dev-menu:bundleReleaseLocalLintAar
+> Task :expo-dev-menu:generateReleaseLintVitalModel
+> Task :react-native-reanimated:externalNativeBuildRelease
+> Task :react-native-reanimated:prefabReleasePackage
+> Task :react-native-reanimated:mergeReleaseNativeLibs
+> Task :expo-dev-launcher:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/DevLauncherPackage.kt:15:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/DevLauncherRecentlyOpenedAppsRegistry.kt:33:47 Unchecked cast of 'MutableMap<Any?, Any?>' to 'MutableMap<String, Any>'.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/DevLauncherRecentlyOpenedAppsRegistry.kt:51:27 'fun getRawJson(): JSONObject' is deprecated. Prefer to use specific field getters.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:37:23 'constructor(p0: String!, p1: Bitmap!, p2: Int): ActivityManager.TaskDescription' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:63:61 'static field FLAG_TRANSLUCENT_STATUS: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:92:45 'var systemUiVisibility: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:95:68 'static field SYSTEM_UI_FLAG_LIGHT_STATUS_BAR: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:99:67 'static field SYSTEM_UI_FLAG_LIGHT_STATUS_BAR: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:103:67 'static field SYSTEM_UI_FLAG_LIGHT_STATUS_BAR: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:107:15 'var systemUiVisibility: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:115:59 'static field FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:116:61 'static field FLAG_FORCE_NOT_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:118:59 'static field FLAG_FORCE_NOT_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:119:61 'static field FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:131:23 'fun replaceSystemWindowInsets(p0: Int, p1: Int, p2: Int, p3: Int): WindowInsets' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:132:25 'val systemWindowInsetLeft: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:134:25 'val systemWindowInsetRight: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:135:25 'val systemWindowInsetBottom: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:150:15 'var statusBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:160:63 'static field FLAG_TRANSLUCENT_NAVIGATION: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:161:25 'var navigationBarColor: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:171:63 'static field FLAG_TRANSLUCENT_NAVIGATION: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:175:33 'var systemUiVisibility: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:176:33 'static field SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:177:21 'var systemUiVisibility: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:190:29 'var systemUiVisibility: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:191:62 'static field SYSTEM_UI_FLAG_HIDE_NAVIGATION: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:191:101 'static field SYSTEM_UI_FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:192:63 'static field SYSTEM_UI_FLAG_HIDE_NAVIGATION: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:192:102 'static field SYSTEM_UI_FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:192:136 'static field SYSTEM_UI_FLAG_IMMERSIVE: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:193:70 'static field SYSTEM_UI_FLAG_HIDE_NAVIGATION: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:193:109 'static field SYSTEM_UI_FLAG_FULLSCREEN: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:193:143 'static field SYSTEM_UI_FLAG_IMMERSIVE_STICKY: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/main/java/expo/modules/devlauncher/launcher/configurators/DevLauncherExpoActivityConfigurator.kt:196:17 'var systemUiVisibility: Int' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/release/java/expo/modules/devlauncher/DevLauncherController.kt:111:81 'val reactNativeHost: ReactNativeHost' is deprecated. You should not use ReactNativeHost directly in the New Architecture. Use ReactHost instead.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/release/java/expo/modules/devlauncher/launcher/DevLauncherReactNativeHost.kt:4:8 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo-dev-launcher/android/src/release/java/expo/modules/devlauncher/launcher/DevLauncherReactNativeHost.kt:8:83 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+> Task :react-native-reanimated:compileReleaseJavaWithJavac
+> Task :react-native-reanimated:bundleLibCompileToJarRelease
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+> Task :react-native-reanimated:bundleLibRuntimeToDirRelease
+> Task :react-native-reanimated:bundleLibRuntimeToJarRelease
+> Task :react-native-reanimated:copyReleaseJniLibsProjectOnly
+> Task :react-native-reanimated:createFullJarRelease
+> Task :react-native-reanimated:generateReleaseLintModel
+> Task :react-native-reanimated:extractReleaseAnnotations
+> Task :react-native-reanimated:mergeReleaseGeneratedProguardFiles
+> Task :react-native-reanimated:mergeReleaseConsumerProguardFiles
+> Task :react-native-reanimated:syncReleaseLibJars
+> Task :react-native-reanimated:generateReleaseLintVitalModel
+> Task :react-native-reanimated:stripReleaseDebugSymbols
+> Task :expo-dev-launcher:compileReleaseJavaWithJavac
+> Task :expo-dev-launcher:bundleLibCompileToJarRelease
+> Task :react-native-reanimated:copyReleaseJniLibsProjectAndLocalJars
+> Task :expo-dev-launcher:bundleLibRuntimeToDirRelease
+> Task :expo-dev-launcher:bundleLibRuntimeToJarRelease
+> Task :expo-dev-launcher:processReleaseJavaRes
+> Task :expo-dev-launcher:createFullJarRelease
+> Task :react-native-reanimated:bundleReleaseLocalLintAar
+> Task :expo-dev-launcher:generateReleaseLintModel
+> Task :expo-dev-launcher:extractReleaseAnnotations
+> Task :expo-dev-launcher:mergeReleaseGeneratedProguardFiles
+> Task :expo-dev-launcher:mergeReleaseConsumerProguardFiles
+> Task :expo-dev-launcher:mergeReleaseJavaResource
+> Task :expo-dev-launcher:syncReleaseLibJars
+> Task :expo-dev-launcher:bundleReleaseLocalLintAar
+> Task :expo-dev-launcher:generateReleaseLintVitalModel
+> Task :app:buildCMakeRelWithDebInfo[arm64-v8a]
+> Task :react-native-reanimated:lintVitalAnalyzeRelease
+> Task :app:checkReleaseAarMetadata
+> Task :expo:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ExpoModulesPackage.kt:34:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ExpoReactHostFactory.kt:8:8 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ExpoReactHostFactory.kt:80:22 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactActivityDelegateWrapper.kt:24:8 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactActivityDelegateWrapper.kt:58:33 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactActivityDelegateWrapper.kt:105:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactActivityDelegateWrapper.kt:105:38 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactActivityDelegateWrapper.kt:113:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactActivityDelegateWrapper.kt:114:21 'val reactInstanceManager: ReactInstanceManager' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactActivityDelegateWrapper.kt:168:36 'constructor(activity: Activity, reactNativeHost: ReactNativeHost?, appKey: String?, launchOptions: Bundle?, fabricEnabled: Boolean): ReactDelegate' is deprecated. Deprecated since 0.81.0, use one of the other constructors instead.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactActivityDelegateWrapper.kt:279:77 'val reactInstanceManager: ReactInstanceManager' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactActivityDelegateWrapper.kt:282:22 'val reactInstanceManager: ReactInstanceManager' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactActivityDelegateWrapper.kt:286:54 'val reactInstanceManager: ReactInstanceManager' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactNativeHostWrapper.kt:6:8 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactNativeHostWrapper.kt:15:9 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactNativeHostWrapper.kt:47:60 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactNativeHostWrapperBase.kt:7:8 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactNativeHostWrapperBase.kt:16:23 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactNativeHostWrapperBase.kt:89:16 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/ReactNativeHostWrapperBase.kt:101:38 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/fetch/ExpoFetchModule.kt:30:39 'constructor(reactContext: ReactContext): ForwardingCookieHandler' is deprecated. Use the default constructor.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/fetch/NativeResponse.kt:42:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///home/expo/workingdir/build/node_modules/expo/android/src/main/java/expo/modules/fetch/NativeResponse.kt:44:11 'fun deallocate(): Unit' is deprecated. Use sharedObjectDidRelease() instead.
+> Task :app:mapReleaseSourceSetPaths
+> Task :react-native-gesture-handler:buildCMakeRelWithDebInfo[arm64-v8a]
+> Task :react-native-gesture-handler:mergeReleaseNativeLibs
+> Task :expo:compileReleaseJavaWithJavac
+> Task :react-native-gesture-handler:copyReleaseJniLibsProjectOnly
+> Task :react-native-gesture-handler:stripReleaseDebugSymbols
+> Task :expo:bundleLibCompileToJarRelease
+> Task :react-native-gesture-handler:copyReleaseJniLibsProjectAndLocalJars
+> Task :expo:bundleLibRuntimeToJarRelease
+> Task :expo:processReleaseJavaRes
+> Task :expo:bundleLibRuntimeToDirRelease
+> Task :expo:createFullJarRelease
+> Task :expo:generateReleaseLintModel
+> Task :expo:extractReleaseAnnotations
+> Task :expo:mergeReleaseGeneratedProguardFiles
+> Task :expo:mergeReleaseConsumerProguardFiles
+> Task :expo:mergeReleaseJavaResource
+> Task :expo:syncReleaseLibJars
+> Task :expo:bundleReleaseLocalLintAar
+> Task :expo:generateReleaseLintVitalModel
+> Task :app:mergeReleaseResources
+> Task :react-native-gesture-handler:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/node_modules/react-native-gesture-handler/android/src/main/java/com/swmansion/gesturehandler/react/RNGestureHandlerRootView.kt:41:43 The corresponding parameter in the supertype 'ReactViewGroup' is named 'ev'. This may cause problems when calling this function with named arguments.
+> Task :app:mergeReleaseNativeLibs
+> Task :app:processReleaseMainManifest
+/home/expo/workingdir/build/android/app/src/main/AndroidManifest.xml Warning:
+	provider#expo.modules.filesystem.FileSystemFileProvider@android:authorities was tagged at AndroidManifest.xml:0 to replace other declarations but no other declaration present
+> Task :app:processReleaseManifest
+> Task :app:processReleaseManifestForPackage
+> Task :app:mergeReleaseArtProfile
+> Task :react-native-gesture-handler:compileReleaseJavaWithJavac
+> Task :app:stripReleaseDebugSymbols
+> Task :react-native-gesture-handler:bundleLibRuntimeToDirRelease
+> Task :react-native-gesture-handler:bundleLibCompileToJarRelease
+> Task :expo:lintVitalAnalyzeRelease
+> Task :react-native-gesture-handler:processReleaseJavaRes
+> Task :react-native-gesture-handler:bundleLibRuntimeToJarRelease
+> Task :react-native-gesture-handler:generateReleaseLintModel
+> Task :react-native-gesture-handler:createFullJarRelease
+> Task :react-native-gesture-handler:extractReleaseAnnotations
+> Task :react-native-gesture-handler:mergeReleaseGeneratedProguardFiles
+> Task :react-native-gesture-handler:mergeReleaseConsumerProguardFiles
+> Task :react-native-gesture-handler:mergeReleaseJavaResource
+> Task :react-native-gesture-handler:syncReleaseLibJars
+> Task :react-native-gesture-handler:bundleReleaseLocalLintAar
+> Task :react-native-gesture-handler:generateReleaseLintVitalModel
+> Task :app:mergeReleaseShaders
+> Task :app:compileReleaseShaders NO-SOURCE
+> Task :app:generateReleaseAssets UP-TO-DATE
+> Task :expo-dev-menu:lintVitalAnalyzeRelease
+> Task :app:mergeReleaseAssets
+> Task :app:compressReleaseAssets
+> Task :expo-dev-launcher:lintVitalAnalyzeRelease
+> Task :app:extractReleaseVersionControlInfo
+> Task :app:extractProguardFiles
+> Task :app:extractReleaseNativeSymbolTables
+> Task :app:collectReleaseDependencies
+> Task :app:sdkReleaseDependencyData
+> Task :app:validateSigningRelease
+> Task :app:writeReleaseAppMetadata
+> Task :app:writeReleaseSigningConfigVersions
+> Task :app:processReleaseResources
+> Task :app:compileReleaseKotlin
+w: file:///home/expo/workingdir/build/android/app/src/main/java/com/localai/chat/MainApplication.kt:9:8 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+w: file:///home/expo/workingdir/build/android/app/src/main/java/com/localai/chat/MainApplication.kt:21:16 This declaration overrides a deprecated member but is not marked as deprecated itself. Add the '@Deprecated' annotation or suppress the diagnostic.
+w: file:///home/expo/workingdir/build/android/app/src/main/java/com/localai/chat/MainApplication.kt:21:33 'class ReactNativeHost : Any' is deprecated. Deprecated in Java.
+> Task :app:mergeReleaseNativeDebugMetadata
+> Task :app:compileReleaseJavaWithJavac
+> Task :expo-modules-core:lintVitalAnalyzeRelease
+> Task :app:dexBuilderRelease
+> Task :app:mergeReleaseGlobalSynthetics
+> Task :app:generateReleaseLintVitalReportModel
+> Task :app:processReleaseJavaRes
+> Task :app:optimizeReleaseResources
+> Task :app:mergeReleaseJavaResource
+> Task :react-native-gesture-handler:lintVitalAnalyzeRelease
+> Task :app:mergeDexRelease
+> Task :app:lintVitalAnalyzeRelease
+> Task :app:lintVitalReportRelease
+> Task :app:lintVitalRelease
+> Task :app:compileReleaseArtProfile
+> Task :app:packageRelease
+> Task :app:createReleaseApkListingFileRedirect
+> Task :app:assembleRelease
 [Incubating] Problems report is available at: file:///home/expo/workingdir/build/android/build/reports/problems/problems-report.html
-FAILURE: Build failed with an exception.
-* What went wrong:
-Execution failed for task ':runanywhere_core:buildCMakeRelWithDebInfo[arm64-v8a]'.
-> com.android.ide.common.process.ProcessException: ninja: Entering directory `/home/expo/workingdir/build/node_modules/@runanywhere/core/android/.cxx/RelWithDebInfo/4j3a405u/arm64-v8a'
-  [1/17] Building CXX object CMakeFiles/runanywherecore.dir/src/main/cpp/cpp-adapter.cpp.o
-  [2/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/AuthBridge.cpp.o'
-  [3/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/HTTPBridge.cpp.o'
-  [4/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/DeviceBridge.cpp.o'
-  [5/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/EventBridge.cpp.o'
-  [6/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/StorageBridge.cpp.o'
-  [7/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/DownloadBridge.cpp.o'
-  [8/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ModelRegistryBridge.cpp.o'
-  [9/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/TelemetryBridge.cpp.o'
-  [10/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/InitBridge.cpp.o'
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/InitBridge.cpp:729:17: warning: variable 'levelStr' set but not used [-Wunused-but-set-variable]
-    729 |     const char* levelStr = "INFO";
-        |                 ^
-  1 warning generated.
-  [11/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/android/runanywherecoreOnLoad.cpp.o'
-  [12/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o'
-  [13/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/shared/c++/HybridRunAnywhereDeviceInfoSpec.cpp.o'
-  [14/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/android/c++/JHybridRunAnywhereDeviceInfoSpec.cpp.o'
-  [15/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/shared/c++/HybridRunAnywhereCoreSpec.cpp.o'
-  [16/17] Building CXX object 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp.o'
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:1158:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   1158 |     return Promise<std::string>::async([this, path, bodyJson]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:1180:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   1180 |     return Promise<std::string>::async([this, path]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:1404:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   1404 |     return Promise<std::string>::async([this, prompt, optionsJson]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:1504:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   1504 |     return Promise<std::string>::async([this, prompt, optionsJson, callback]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:1569:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   1569 |     return Promise<std::string>::async([this, prompt, schema, optionsJson]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:1728:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   1728 |     return Promise<std::string>::async([this, audioBase64, sampleRate, language]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:1800:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   1800 |     return Promise<std::string>::async([this, filePath, language]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:2063:53: warning: format specifies type 'long long' but the argument has type 'int64_t' (aka 'long') [-Wformat]
-   2062 |         LOGI("TTS synthesis complete: %zu bytes, %d Hz, %lld ms",
-        |                                                         ~~~~
-        |                                                         %ld
 Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
 You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
 For more on this, please refer to https://docs.gradle.org/8.14.3/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
-607 actionable tasks: 607 executed
-2063 |              result.audio_size, result.sample_rate, result.duration_ms);
-        |                                                     ^~~~~~~~~~~~~~~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:73:66: note: expanded from macro 'LOGI'
-     73 | #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-        |                                                                  ^~~~~~~~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:2029:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   2029 |     return Promise<std::string>::async([this, text, voiceId, speedRate, pitchShift]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:2179:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   2179 |     return Promise<std::string>::async([this, audioBase64, optionsJson]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:2274:34: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   2274 |     return Promise<bool>::async([this, configJson]() -> bool {
-        |                                  ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:2295:34: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   2295 |     return Promise<bool>::async([this]() -> bool {
-        |                                  ^~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:2375:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   2375 |     return Promise<std::string>::async([this, audioBase64]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:2415:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   2415 |     return Promise<std::string>::async([this, audioBase64]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:2448:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   2448 |     return Promise<std::string>::async([this, prompt]() -> std::string {
-        |                                         ^~~~~
-  /home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp:2474:41: warning: lambda capture 'this' is not used [-Wunused-lambda-capture]
-   2474 |     return Promise<std::string>::async([this, text]() -> std::string {
-        |                                         ^~~~~
-  16 warnings generated.
-  [17/17] Linking CXX shared library ../../../../build/intermediates/cxx/RelWithDebInfo/4j3a405u/obj/arm64-v8a/librunanywherecore.so
-  FAILED: ../../../../build/intermediates/cxx/RelWithDebInfo/4j3a405u/obj/arm64-v8a/librunanywherecore.so 
-  : && /home/expo/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/bin/clang++ --target=aarch64-none-linux-android24 --sysroot=/home/expo/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot -fPIC -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security  -frtti -fexceptions -Wall -fstack-protector-all -O2 -g -DNDEBUG  -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--no-undefined-version -Wl,--fatal-warnings -Wl,--no-undefined -Qunused-arguments  -Wl,-z,max-page-size=16384 -Wl,--gc-sections   -Wl,-z,max-page-size=16384 -shared -Wl,-soname,librunanywherecore.so -o ../../../../build/intermediates/cxx/RelWithDebInfo/4j3a405u/obj/arm64-v8a/librunanywherecore.so CMakeFiles/runanywherecore.dir/src/main/cpp/cpp-adapter.cpp.o 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/HybridRunAnywhereCore.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/AuthBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/DeviceBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/DownloadBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/EventBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/HTTPBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/InitBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ModelRegistryBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/StorageBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/TelemetryBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/android/runanywherecoreOnLoad.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/shared/c++/HybridRunAnywhereCoreSpec.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/shared/c++/HybridRunAnywhereDeviceInfoSpec.cpp.o' 'CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/nitrogen/generated/android/c++/JHybridRunAnywhereDeviceInfoSpec.cpp.o' -L/home/expo/workingdir/build/node_modules/@runanywhere/core/android/src/main/jniLibs/arm64-v8a /home/expo/.gradle/caches/8.14.3/transforms/6347936a505aab872d9b18fa868e791d/transformed/fbjni-0.7.0/prefab/modules/fbjni/libs/android.arm64-v8a/libfbjni.so  /home/expo/.gradle/caches/8.14.3/transforms/cd9fd1633b8cbb585ae18556210d590b/transformed/react-android-0.81.5-release/prefab/modules/jsi/libs/android.arm64-v8a/libjsi.so  /home/expo/workingdir/build/node_modules/react-native-nitro-modules/android/build/intermediates/cxx/RelWithDebInfo/721h6l3c/obj/arm64-v8a/libNitroModules.so  /home/expo/.gradle/caches/8.14.3/transforms/cd9fd1633b8cbb585ae18556210d590b/transformed/react-android-0.81.5-release/prefab/modules/reactnative/libs/android.arm64-v8a/libreactnative.so  /home/expo/Android/Sdk/ndk/27.0.12077973/toolchains/llvm/prebuilt/linux-x86_64/sysroot/usr/lib/aarch64-linux-android/24/liblog.so  -landroid  -lrac_commons  -latomic -lm && :
-  ld.lld: error: undefined symbol: rac_tool_call_parse
-  >>> referenced by ToolCallingBridge.cpp:28 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:28)
-  >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::parseToolCall(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-  
-  ld.lld: error: undefined symbol: rac_tool_call_free
-  >>> referenced by ToolCallingBridge.cpp:58 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:58)
-  >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::parseToolCall(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-  
-  ld.lld: error: undefined symbol: rac_tool_call_format_prompt_json_with_format_name
-  >>> referenced by ToolCallingBridge.cpp:68 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:68)
-  >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::formatToolsPrompt(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-  
-  ld.lld: error: undefined symbol: rac_tool_call_format_from_name
-  >>> referenced by ToolCallingBridge.cpp:118 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:118)
-  >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::buildInitialPrompt(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-  
-  ld.lld: error: undefined symbol: rac_tool_call_build_initial_prompt
-  >>> referenced by ToolCallingBridge.cpp:132 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:132)
-  >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::buildInitialPrompt(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-  
-  ld.lld: error: undefined symbol: rac_tool_call_build_followup_prompt
-  >>> referenced by ToolCallingBridge.cpp:156 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:156)
-  >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::buildFollowupPrompt(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&, bool))
-  
-  ld.lld: error: undefined symbol: rac_tool_call_normalize_json
-  >>> referenced by ToolCallingBridge.cpp:176 (/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp:176)
-  >>>               CMakeFiles/runanywherecore.dir/home/expo/workingdir/build/node_modules/@runanywhere/core/cpp/bridges/ToolCallingBridge.cpp.o:(runanywhere::bridges::ToolCallingBridge::normalizeJson(std::__ndk1::basic_string<char, std::__ndk1::char_traits<char>, std::__ndk1::allocator<char>> const&))
-  clang++: error: linker command failed with exit code 1 (use -v to see invocation)
-  ninja: build stopped: subcommand failed.
-  
-  C++ build system [build] failed while executing:
-      /home/expo/Android/Sdk/cmake/3.22.1/bin/ninja \
-        -C \
-        /home/expo/workingdir/build/node_modules/@runanywhere/core/android/.cxx/RelWithDebInfo/4j3a405u/arm64-v8a \
-        runanywherecore
-    from /home/expo/workingdir/build/node_modules/@runanywhere/core/android
-* Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
-BUILD FAILED in 6m 16s
-Error: Gradle build failed with unknown error. See logs for the "Run gradlew" phase for more information.
-Fail job
+BUILD SUCCESSFUL in 5m 14s
+819 actionable tasks: 819 executed
+Upload application archive
+
+2s
+
+
+Application archives:
+  - /home/expo/workingdir/build/android/app/build/outputs/apk/release/app-release.apk (55.3 MB)
+Uploading application archive...
+Save cache
 
 1s
 
 
-Build failed: Gradle build failed with unknown error. See logs for the "Run gradlew" phase for more information.
+Saving cache key: android-ccache-9df9356386f3934174170904f5c1b3ca4a350e042a6078adcd5a8a6f79b5d84f
+Pruning cache...
+Preparing cache archive...
+Uploading cache...
+Uploaded cache archive to /tmp/save-cache-ajtbrn/cache.tar.gz (9.8 MB).
+Cache stats
+
+1s
+
+
+Cache directory:      /home/expo/.cache/ccache
+Config file:          /home/expo/.config/ccache/ccache.conf
+System config file:   /etc/ccache.conf
+Stats updated:        Fri Feb 20 10:25:06 2026
+Cacheable calls:      314 / 332 (94.58%)
+  Hits:                57 / 314 (18.15%)
+    Direct:            57 /  57 (100.0%)
+    Preprocessed:       0 /  57 ( 0.00%)
+  Misses:             257 / 314 (81.85%)
+Uncacheable calls:     18 / 332 ( 5.42%)
+  Called for linking:  18 /  18 (100.0%)
+Successful lookups:
+  Direct:              57 / 314 (18.15%)
+  Preprocessed:         0 / 257 ( 0.00%)
+Local storage:
+  Cache size (GiB):   0.0 / 5.0 ( 0.19%)
+  Files:              114
+  Cleanups:           200
+  Hits:                57 / 314 (18.15%)
+  Misses:             257 / 314 (81.85%)
+  Reads:              628
+  Writes:             514
