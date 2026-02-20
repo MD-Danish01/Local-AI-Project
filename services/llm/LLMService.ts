@@ -29,13 +29,16 @@ class LLMService {
         throw new Error("Invalid model path: path is empty");
       }
 
-      loggingService.debug("LLM", `Loading model from: ${modelPath}`);
+      // Strip the "file://" URI prefix – llama.cpp's native file opener
+      // needs a raw filesystem path, not a URI scheme.
+      const rawPath = modelPath.replace(/^file:\/\//, "");
+      loggingService.debug("LLM", `Loading model from (raw path): ${rawPath}`);
 
       // Register the LlamaCPP backend module
       LlamaCPP.register();
       loggingService.debug("LLM", "LlamaCPP module registered");
 
-      // Register the model with LlamaCPP so the SDK knows its ID, URL, and local path
+      // Register the model with LlamaCPP (for metadata / future SDK use)
       await LlamaCPP.addModel({
         id: QWEN_MODEL_CONFIG.id,
         name: QWEN_MODEL_CONFIG.name,
@@ -46,9 +49,11 @@ class LLMService {
         modelId: this.modelId,
       });
 
-      // Load the model into memory using the model ID (not the file path)
+      // Pass the raw filesystem path so the native layer can open the file
+      // directly. Using the model ID fails because the file lives outside the
+      // SDK-managed directory (Documents/RunAnywhere/Models/…).
       try {
-        await RunAnywhere.loadModel(this.modelId);
+        await RunAnywhere.loadModel(rawPath);
         loggingService.info("LLM", "Model loaded successfully", {
           modelId: this.modelId,
         });
