@@ -78,8 +78,7 @@ PATH=$PATH:$ANDROID_HOME/platform-tools
 ## 1. Clone & Install
 
 ```bash
-git clone https://github.com/<your-username>/local-ai-chat.git
-cd local-ai-chat
+git clone https://github.com/MD-Danish01/Local-AI-Project.git
 
 npm install
 ```
