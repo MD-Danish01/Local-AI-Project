@@ -22,7 +22,7 @@ export function buildQwenPrompt(
 ): string {
   const {
     maxMessages = CHAT_HISTORY_CONFIG.maxMessages,
-    systemPrompt = "You are a helpful AI assistant.",
+    systemPrompt = "You are a helpful, accurate AI assistant. Always pay close attention to the full conversation history above. When the user refers to previous results or context, use the exact values from earlier messages in your response. Keep answers concise.",
   } = options;
 
   // Take only the last N messages to keep context manageable

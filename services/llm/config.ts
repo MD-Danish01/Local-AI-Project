@@ -8,12 +8,12 @@ export const QWEN_MODEL_CONFIG: ModelConfig = {
   // Local filename saved to device storage
   localFileName: "qwen2.5-0.5b-instruct-q4_0.gguf",
   size: 397 * 1024 * 1024, // ~397 MB
-  contextLength: 1024,
+  contextLength: 2048, // Increased for better multi-turn context
 };
 
 export const DEFAULT_GENERATION_OPTIONS = {
   maxTokens: 256,
-  temperature: 0.7,
+  temperature: 0.4, // Lower temperature for more accurate, context-aware responses
   topP: 0.9,
   topK: 40,
   repeatPenalty: 1.1,

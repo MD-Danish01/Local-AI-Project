@@ -4,7 +4,7 @@ import { buildQwenPrompt } from "@/services/llm/prompts";
 import { autoGenerateTitle } from "@/services/llm/titleGenerator";
 import { loggingService } from "@/services/logging/LoggingService";
 import type { Message } from "@/types/chat";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UseLLMChatOptions {
   /** Callback when conversation title is auto-generated */
@@ -20,6 +20,12 @@ export function useLLMChat(
   const [isGenerating, setIsGenerating] = useState(false);
   const [streamingContent, setStreamingContent] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  // Keep a ref to latest messages so sendMessage always sees current state
+  const messagesRef = useRef<Message[]>(messages);
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   // Load chat history on mount
   useEffect(() => {
@@ -110,7 +116,9 @@ export function useLLMChat(
         setStreamingContent("");
 
         // Build prompt with recent history for context
-        const allMessages = [...messages, tempUserMsg];
+        // Use ref to always get the latest messages (avoids stale closure)
+        const currentMessages = messagesRef.current;
+        const allMessages = [...currentMessages, tempUserMsg];
         const prompt = buildQwenPrompt(allMessages);
 
         loggingService.debug("Chat", "Prompt built with history context", {
@@ -148,7 +156,7 @@ export function useLLMChat(
         console.log("✅ Assistant message saved");
 
         // Auto-generate title after first exchange (2 messages)
-        const totalMessages = messages.length + 2; // existing + user + assistant
+        const totalMessages = currentMessages.length + 2; // existing + user + assistant
         if (totalMessages === 2) {
           // First exchange completed, generate title in background
           autoGenerateTitle(conversationId)
@@ -172,7 +180,7 @@ export function useLLMChat(
         setStreamingContent("");
       }
     },
-    [conversationId, messages, isGenerating, onTitleGenerated],
+    [conversationId, isGenerating, onTitleGenerated],
   );
 
   const clearHistory = useCallback(async () => {
