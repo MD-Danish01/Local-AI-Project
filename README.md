@@ -15,6 +15,25 @@ A fully on-device AI chat application built with React Native & Expo. Run the **
 
 ---
 
+## Installation
+
+Install the latest build directly on any Android device — no Play Store required.
+
+### Latest Build
+
+| Build                    | Date       | Profile   | Download / QR                                                                                                       |
+| ------------------------ | ---------- | --------- | ------------------------------------------------------------------------------------------------------------------- |
+| v1.0.0 — Initial Release | 2026-02-21 | `preview` | [EAS Build Link](https://expo.dev/accounts/danish-expo/projects/my-app/builds/1ca0f36e-ed9d-4281-a371-8ae96c5b2bc6) |
+
+**Scan to install on Android:**
+
+![EAS Build QR Code](assets/images/qr-code-of-expo-eas-build.png)
+
+> Point your Android camera (or any QR scanner) at the code above.  
+> The link opens the Expo build page where you can download and install the APK directly.
+
+---
+
 ## Tech Stack
 
 | Layer       | Library                             |
