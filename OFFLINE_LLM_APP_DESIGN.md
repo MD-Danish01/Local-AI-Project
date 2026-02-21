@@ -25,6 +25,7 @@
 ### What We're Building
 
 A **standalone Android application** that:
+
 - Runs a small LLM (Large Language Model) **entirely on-device**
 - Works **100% offline** — no internet required after installation
 - Bundles the AI model **inside the APK** — no separate download needed
@@ -50,8 +51,8 @@ A **standalone Android application** that:
 │  │   ┌──────────────┐  ┌─────────────┐  ┌───────────┐  │   │
 │  │   │   UI Layer   │  │ Logic Layer │  │  Native   │  │   │
 │  │   │   (React     │  │  (Hooks,    │  │  Layer    │  │   │
-│  │   │   Native)    │  │  Services)  │  │ (llama.   │  │   │
-│  │   │              │  │             │  │  cpp/C++) │  │   │
+│  │   │   Native)    │  │  Services)  │  │(@runanyw- │  │   │
+│  │   │              │  │             │  │ here SDK) │  │   │
 │  │   └──────────────┘  └─────────────┘  └───────────┘  │   │
 │  │                                                      │   │
 │  │   ┌──────────────────────────────────────────────┐  │   │
@@ -79,12 +80,12 @@ A **standalone Android application** that:
 
 ### Target Device Specifications
 
-| Resource | Value | Impact on Design |
-|---|---|---|
-| **Total RAM** | 4GB | Android OS uses ~2GB, leaving **~1.5-2GB** for the app |
-| **Available for Model** | ~1-1.5GB | Must use quantized sub-1B parameter models |
-| **CPU** | ARM (Snapdragon/MediaTek) | llama.cpp uses ARM NEON SIMD optimizations |
-| **Storage** | Varies | APK size will be ~350-450MB |
+| Resource                | Value                     | Impact on Design                                       |
+| ----------------------- | ------------------------- | ------------------------------------------------------ |
+| **Total RAM**           | 4GB                       | Android OS uses ~2GB, leaving **~1.5-2GB** for the app |
+| **Available for Model** | ~1-1.5GB                  | Must use quantized sub-1B parameter models             |
+| **CPU**                 | ARM (Snapdragon/MediaTek) | llama.cpp uses ARM NEON SIMD optimizations             |
+| **Storage**             | Varies                    | APK size will be ~350-450MB                            |
 
 ### Memory Budget
 
@@ -110,17 +111,18 @@ A **standalone Android application** that:
 
 ### Model Options (Ranked by Suitability)
 
-| Model | Parameters | GGUF Size (Q4_K_M) | RAM at Runtime | Quality | Recommendation |
-|---|---|---|---|---|---|
-| SmolLM2-135M | 135M | ~80MB | ~200MB | Basic, short responses | Too limited |
-| SmolLM2-360M | 360M | ~200MB | ~400MB | Decent for simple tasks | Backup option |
-| **Qwen2.5-0.5B-Instruct** | 0.5B | ~350MB | ~600MB | Good balance | **Recommended ⭐** |
-| TinyLlama-1.1B | 1.1B | ~600MB | ~900MB | Better quality | Tight fit, test first |
-| Phi-3-mini (3.8B) | 3.8B | ~2GB | ~3GB | Excellent | **Won't fit ❌** |
+| Model                     | Parameters | GGUF Size (Q4_K_M) | RAM at Runtime | Quality                 | Recommendation        |
+| ------------------------- | ---------- | ------------------ | -------------- | ----------------------- | --------------------- |
+| SmolLM2-135M              | 135M       | ~80MB              | ~200MB         | Basic, short responses  | Too limited           |
+| SmolLM2-360M              | 360M       | ~200MB             | ~400MB         | Decent for simple tasks | Backup option         |
+| **Qwen2.5-0.5B-Instruct** | 0.5B       | ~350MB             | ~600MB         | Good balance            | **Recommended ⭐**    |
+| TinyLlama-1.1B            | 1.1B       | ~600MB             | ~900MB         | Better quality          | Tight fit, test first |
+| Phi-3-mini (3.8B)         | 3.8B       | ~2GB               | ~3GB           | Excellent               | **Won't fit ❌**      |
 
 ### Chosen Model: Qwen2.5-0.5B-Instruct
 
 **Why this model:**
+
 - 500M parameters — small but capable
 - Instruction-tuned — follows prompts well
 - Q4_K_M quantization — 4-bit precision, ~350MB file
@@ -153,26 +155,26 @@ Quantization trades some accuracy for massive size/speed improvements. Q4_K_M is
 
 ### Core Technologies
 
-| Layer | Technology | Purpose |
-|---|---|---|
-| **UI Framework** | React Native (Expo) | Cross-platform UI (you're already using this) |
-| **Build System** | Expo Prebuild + EAS Build | Generate native Android project |
-| **LLM Engine** | @runanywhere/llamacpp | React Native LLM inference (replaces llama.rn) |
-| **Core SDK** | @runanywhere/core | Model management and infrastructure |
-| **Embeddings** | @runanywhere/onnx | Run ONNX models (STT/TTS/Embeddings) [Phase 2] |
-| **Database** | expo-sqlite | Local SQLite database |
-| **File Access** | expo-document-picker | Import documents [Phase 2] |
-| **File System** | expo-file-system | Read/write local files |
+| Layer            | Technology                | Purpose                                        |
+| ---------------- | ------------------------- | ---------------------------------------------- |
+| **UI Framework** | React Native (Expo)       | Cross-platform UI (you're already using this)  |
+| **Build System** | Expo Prebuild + EAS Build | Generate native Android project                |
+| **LLM Engine**   | @runanywhere/llamacpp     | React Native LLM inference via Runanywhere SDK |
+| **Core SDK**     | @runanywhere/core         | Model management and infrastructure            |
+| **Embeddings**   | @runanywhere/onnx         | Run ONNX models (STT/TTS/Embeddings) [Phase 2] |
+| **Database**     | expo-sqlite               | Local SQLite database                          |
+| **File Access**  | expo-document-picker      | Import documents [Phase 2]                     |
+| **File System**  | expo-file-system          | Read/write local files                         |
 
 ### Runanywhere SDK Packages
 
-This implementation uses the **Runanywhere SDK** instead of llama.rn for better abstraction and ease of use:
+This implementation uses the **Runanywhere SDK** for better abstraction, ease of use, and improved model management:
 
-| Package | Version | Purpose | NPM |
-|---------|---------|---------|-----|
-| `@runanywhere/core` | ^0.16.10 | Core infrastructure, model management | [View](https://www.npmjs.com/package/@runanywhere/core) |
-| `@runanywhere/llamacpp` | ^0.16.10 | LlamaCpp backend for LLM inference | [View](https://www.npmjs.com/package/@runanywhere/llamacpp) |
-| `@runanywhere/onnx` | ^0.16.10 | ONNX runtime for embeddings/STT/TTS [Phase 2] | [View](https://www.npmjs.com/package/@runanywhere/onnx) |
+| Package                 | Version  | Purpose                                       | NPM                                                         |
+| ----------------------- | -------- | --------------------------------------------- | ----------------------------------------------------------- |
+| `@runanywhere/core`     | ^0.16.10 | Core infrastructure, model management         | [View](https://www.npmjs.com/package/@runanywhere/core)     |
+| `@runanywhere/llamacpp` | ^0.16.10 | LlamaCpp backend for LLM inference            | [View](https://www.npmjs.com/package/@runanywhere/llamacpp) |
+| `@runanywhere/onnx`     | ^0.16.10 | ONNX runtime for embeddings/STT/TTS [Phase 2] | [View](https://www.npmjs.com/package/@runanywhere/onnx)     |
 
 **Reference Implementation:** [Runanywhere React Native Starter App](https://github.com/RunanywhereAI/react-native-starter-app)
 
@@ -180,7 +182,7 @@ This implementation uses the **Runanywhere SDK** instead of llama.rn for better 
 
 **Expo Go** is the app you scan QR codes with during development. It only includes Expo's built-in modules.
 
-**llama.rn** is a **native module** — it contains C++ code that must be compiled into the app. This requires:
+**@runanywhere/llamacpp** is a **native module** — it contains C++ code that must be compiled into the app. This requires:
 
 ```
 Expo Go (Limited)              Development Build (Full)
@@ -192,7 +194,7 @@ Expo Go (Limited)              Development Build (Full)
 └─────────────────────┘       └─────────────────────┘
          ❌                            ✓
    Won't work with              Required for
-      llama.rn                    this project
+  @runanywhere/llamacpp           this project
 ```
 
 ### Required Setup (One-Time)
@@ -274,14 +276,14 @@ Expo Go (Limited)              Development Build (Full)
 │  │                     NATIVE LAYER                         │   │
 │  │                                                          │   │
 │  │   ┌──────────────────────────────────────────────────┐  │   │
-│  │   │                   llama.rn                        │  │   │
+│  │   │           @runanywhere/llamacpp                   │  │   │
 │  │   │                                                   │  │   │
 │  │   │  JavaScript API ───► JSI Bridge ───► C++ Code    │  │   │
 │  │   │                                                   │  │   │
 │  │   │  Functions:                                       │  │   │
-│  │   │  - initLlama({ model, n_ctx, n_threads })        │  │   │
-│  │   │  - context.completion({ prompt, ... })            │  │   │
-│  │   │  - context.release()                              │  │   │
+│  │   │  - LlamaCppInference({ model, contextSize })     │  │   │
+│  │   │  - inference.run({ prompt, ... })                 │  │   │
+│  │   │  - inference.dispose()                            │  │   │
 │  │   └──────────────────────────────────────────────────┘  │   │
 │  │                                                          │   │
 │  │   ┌──────────────────────────────────────────────────┐  │   │
@@ -332,13 +334,14 @@ User types "What is AI?"
 │     - Builds prompt │
 │       with history  │
 │     - Calls         │
-│       llama.rn      │
-│       completion()  │
+│       @runanywhere  │
+│       .run()        │
 └──────────┬──────────┘
            │
            ▼
 ┌─────────────────────┐
-│  5. llama.rn        │
+│  5. @runanywhere/   │
+│     llamacpp        │
 │     - Tokenizes     │
 │     - Runs inference│
 │     - Returns text  │
@@ -392,13 +395,16 @@ The model continues from `<|im_start|>assistant` and generates a response.
 **Building the prompt from chat history:**
 
 ```javascript
-function buildPrompt(messages, systemPrompt = "You are a helpful AI assistant.") {
+function buildPrompt(
+  messages,
+  systemPrompt = "You are a helpful AI assistant.",
+) {
   let prompt = `<|im_start|>system\n${systemPrompt}\n<|im_end|>\n`;
-  
+
   for (const msg of messages) {
     prompt += `<|im_start|>${msg.role}\n${msg.content}\n<|im_end|>\n`;
   }
-  
+
   prompt += `<|im_start|>assistant\n`;
   return prompt;
 }
@@ -426,20 +432,20 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 
 -- Index for faster queries
-CREATE INDEX IF NOT EXISTS idx_messages_conversation 
+CREATE INDEX IF NOT EXISTS idx_messages_conversation
 ON messages(conversation_id);
 ```
 
 ### Key Phase 1 Decisions
 
-| Decision | Choice | Rationale |
-|---|---|---|
-| **When to load model** | On app start | Avoid delay when user sends first message |
-| **Loading indicator** | Full-screen splash | Model loading takes 5-15 seconds |
-| **Context window** | 512-1024 tokens | Balance between history and RAM |
-| **History in prompt** | Last 5-10 messages | Don't overflow context window |
-| **Token streaming** | Yes | Makes slow generation feel faster |
-| **Cancel generation** | Yes, essential | Users need control over slow responses |
+| Decision               | Choice             | Rationale                                 |
+| ---------------------- | ------------------ | ----------------------------------------- |
+| **When to load model** | On app start       | Avoid delay when user sends first message |
+| **Loading indicator**  | Full-screen splash | Model loading takes 5-15 seconds          |
+| **Context window**     | 512-1024 tokens    | Balance between history and RAM           |
+| **History in prompt**  | Last 5-10 messages | Don't overflow context window             |
+| **Token streaming**    | Yes                | Makes slow generation feel faster         |
+| **Cancel generation**  | Yes, essential     | Users need control over slow responses    |
 
 ---
 
@@ -578,6 +584,7 @@ Without RAG:                      With RAG:
 ### Chunking Strategy
 
 Documents must be split into chunks because:
+
 1. Embedding models have token limits (~512 tokens)
 2. Smaller chunks = more precise retrieval
 3. LLM context window is limited
@@ -620,17 +627,18 @@ Documents must be split into chunks because:
 ```
 
 **Chunking parameters:**
+
 - **Chunk size:** 300-500 tokens
 - **Overlap:** 50-100 tokens (captures context across boundaries)
 - **Separator:** Split on sentences or paragraphs when possible
 
 ### Embedding Model Selection
 
-| Model | Size | Dimensions | Quality | Speed |
-|---|---|---|---|---|
-| all-MiniLM-L6-v2 | ~80MB | 384 | Good | Fast ⭐ |
-| bge-small-en | ~130MB | 384 | Better | Medium |
-| nomic-embed-text | ~250MB | 768 | Best | Slower |
+| Model            | Size   | Dimensions | Quality | Speed   |
+| ---------------- | ------ | ---------- | ------- | ------- |
+| all-MiniLM-L6-v2 | ~80MB  | 384        | Good    | Fast ⭐ |
+| bge-small-en     | ~130MB | 384        | Better  | Medium  |
+| nomic-embed-text | ~250MB | 768        | Best    | Slower  |
 
 **Recommended:** `all-MiniLM-L6-v2` — small, fast, good quality for RAG.
 
@@ -658,7 +666,7 @@ CREATE TABLE IF NOT EXISTS chunks (
 );
 
 -- Index for document lookups
-CREATE INDEX IF NOT EXISTS idx_chunks_document 
+CREATE INDEX IF NOT EXISTS idx_chunks_document
 ON chunks(document_id);
 ```
 
@@ -671,22 +679,22 @@ function cosineSimilarity(vecA, vecB) {
   let dotProduct = 0;
   let normA = 0;
   let normB = 0;
-  
+
   for (let i = 0; i < vecA.length; i++) {
     dotProduct += vecA[i] * vecB[i];
     normA += vecA[i] * vecA[i];
     normB += vecB[i] * vecB[i];
   }
-  
+
   return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
 function searchSimilarChunks(queryEmbedding, allChunks, topK = 5) {
-  const scored = allChunks.map(chunk => ({
+  const scored = allChunks.map((chunk) => ({
     ...chunk,
-    score: cosineSimilarity(queryEmbedding, chunk.embedding)
+    score: cosineSimilarity(queryEmbedding, chunk.embedding),
   }));
-  
+
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, topK);
 }
@@ -803,19 +811,21 @@ BEFORE (Expo Go):                 AFTER (Development Build):
 └────────────────────┘            │         │          │
                                   │         ▼          │
                                   │  ✓ Native modules  │
-                                  │    (llama.rn) work │
+                                  │  (@runanywhere) ✓  │
                                   └────────────────────┘
 ```
 
 ### Setting Up for Native Builds
 
 **Step 1: Install Android Studio**
+
 - Download from: https://developer.android.com/studio
 - Install Android SDK (API 34+)
 - Install NDK (for C++ compilation)
 - Set up an emulator or connect a physical device
 
 **Step 2: Environment Variables (Windows)**
+
 ```powershell
 # Add to system environment variables:
 ANDROID_HOME = C:\Users\YourName\AppData\Local\Android\Sdk
@@ -827,6 +837,7 @@ JAVA_HOME = C:\Program Files\Eclipse Adoptium\jdk-17...
 ```
 
 **Step 3: Generate Native Project**
+
 ```bash
 # In your project directory:
 npx expo prebuild
@@ -837,6 +848,7 @@ npx expo prebuild
 ```
 
 **Step 4: Build and Run**
+
 ```bash
 # Run on connected device or emulator:
 npx expo run:android
@@ -854,12 +866,14 @@ cd android
 The model file needs to be included in the APK assets:
 
 **Option A: Android assets folder**
+
 ```
 android/app/src/main/assets/models/
 └── qwen2.5-0.5b-q4.gguf
 ```
 
 **Option B: Configure in app.json (Expo)**
+
 ```json
 {
   "expo": {
@@ -871,14 +885,15 @@ android/app/src/main/assets/models/
 ```
 
 **Option C: Metro bundler config (for Expo)**
+
 ```javascript
 // metro.config.js
-const { getDefaultConfig } = require('expo/metro-config');
+const { getDefaultConfig } = require("expo/metro-config");
 
 const config = getDefaultConfig(__dirname);
 
 // Add .gguf and .onnx as asset extensions
-config.resolver.assetExts.push('gguf', 'onnx');
+config.resolver.assetExts.push("gguf", "onnx");
 
 module.exports = config;
 ```
@@ -891,7 +906,7 @@ module.exports = config;
 ├────────────────────────────────────────────────┤
 │  React Native runtime        │     ~15 MB     │
 │  JavaScript bundle           │      ~3 MB     │
-│  llama.rn native library     │      ~5 MB     │
+│  @runanywhere/llamacpp lib   │      ~5 MB     │
 │  Chat model (GGUF)           │    ~350 MB     │
 │  [Phase 2] Embed model       │     ~80 MB     │
 │  Other assets/resources      │      ~2 MB     │
@@ -902,6 +917,7 @@ module.exports = config;
 ```
 
 **Note:** Google Play Store has a 150MB limit for APKs. Solutions:
+
 - For hackathon: Sideload APK directly (no limit)
 - For production: Use Android App Bundle (AAB) + Play Asset Delivery
 
@@ -911,41 +927,41 @@ module.exports = config;
 
 ### Phase 1 Breakdown
 
-| Step | Task | Time Est. | Dependencies |
-|---|---|---|---|
-| **1.1** | Install Android Studio + SDK | 30-60 min | None |
-| **1.2** | Run `npx expo prebuild` | 5 min | Step 1.1 |
-| **1.3** | Add `llama.rn` to project | 15 min | Step 1.2 |
-| **1.4** | Download GGUF model file | 10-30 min | Internet |
-| **1.5** | Configure model bundling | 30 min | Steps 1.3, 1.4 |
-| **1.6** | Create LLMService | 1-2 hours | Step 1.5 |
-| **1.7** | Create DatabaseService for chat | 1 hour | expo-sqlite |
-| **1.8** | Create loading splash screen | 30 min | None |
-| **1.9** | Build chat UI components | 1-2 hours | None |
-| **1.10** | Create useLLMChat hook | 1-2 hours | Steps 1.6, 1.7 |
-| **1.11** | Integrate chat screen | 1 hour | Steps 1.9, 1.10 |
-| **1.12** | Test on device | 1 hour | All above |
-| **1.13** | Add streaming responses | 1 hour | Step 1.12 |
-| **1.14** | Add conversation history | 1-2 hours | Step 1.12 |
+| Step     | Task                                   | Time Est. | Dependencies    |
+| -------- | -------------------------------------- | --------- | --------------- |
+| **1.1**  | Install Android Studio + SDK           | 30-60 min | None            |
+| **1.2**  | Run `npx expo prebuild`                | 5 min     | Step 1.1        |
+| **1.3**  | Add `@runanywhere` packages to project | 15 min    | Step 1.2        |
+| **1.4**  | Download GGUF model file               | 10-30 min | Internet        |
+| **1.5**  | Configure model bundling               | 30 min    | Steps 1.3, 1.4  |
+| **1.6**  | Create LLMService                      | 1-2 hours | Step 1.5        |
+| **1.7**  | Create DatabaseService for chat        | 1 hour    | expo-sqlite     |
+| **1.8**  | Create loading splash screen           | 30 min    | None            |
+| **1.9**  | Build chat UI components               | 1-2 hours | None            |
+| **1.10** | Create useLLMChat hook                 | 1-2 hours | Steps 1.6, 1.7  |
+| **1.11** | Integrate chat screen                  | 1 hour    | Steps 1.9, 1.10 |
+| **1.12** | Test on device                         | 1 hour    | All above       |
+| **1.13** | Add streaming responses                | 1 hour    | Step 1.12       |
+| **1.14** | Add conversation history               | 1-2 hours | Step 1.12       |
 
 **Phase 1 Total: ~10-15 hours**
 
 ### Phase 2 Breakdown
 
-| Step | Task | Time Est. | Dependencies |
-|---|---|---|---|
-| **2.1** | Add `onnxruntime-react-native` | 30 min | Phase 1 |
-| **2.2** | Download MiniLM ONNX model | 10 min | Internet |
-| **2.3** | Create EmbeddingService | 2 hours | Step 2.2 |
-| **2.4** | Add document picker UI | 1 hour | expo-document-picker |
-| **2.5** | Create document parser | 2-3 hours | PDF library |
-| **2.6** | Create chunking logic | 1-2 hours | None |
-| **2.7** | Update database schema | 30 min | None |
-| **2.8** | Create import pipeline | 2 hours | Steps 2.3-2.7 |
-| **2.9** | Create vector search | 1-2 hours | Step 2.3 |
-| **2.10** | Create RAG prompt builder | 1 hour | None |
-| **2.11** | Integrate RAG into chat | 2 hours | Steps 2.9, 2.10 |
-| **2.12** | Add source references UI | 1-2 hours | Step 2.11 |
+| Step     | Task                           | Time Est. | Dependencies         |
+| -------- | ------------------------------ | --------- | -------------------- |
+| **2.1**  | Add `onnxruntime-react-native` | 30 min    | Phase 1              |
+| **2.2**  | Download MiniLM ONNX model     | 10 min    | Internet             |
+| **2.3**  | Create EmbeddingService        | 2 hours   | Step 2.2             |
+| **2.4**  | Add document picker UI         | 1 hour    | expo-document-picker |
+| **2.5**  | Create document parser         | 2-3 hours | PDF library          |
+| **2.6**  | Create chunking logic          | 1-2 hours | None                 |
+| **2.7**  | Update database schema         | 30 min    | None                 |
+| **2.8**  | Create import pipeline         | 2 hours   | Steps 2.3-2.7        |
+| **2.9**  | Create vector search           | 1-2 hours | Step 2.3             |
+| **2.10** | Create RAG prompt builder      | 1 hour    | None                 |
+| **2.11** | Integrate RAG into chat        | 2 hours   | Steps 2.9, 2.10      |
+| **2.12** | Add source references UI       | 1-2 hours | Step 2.11            |
 
 **Phase 2 Total: ~15-20 hours**
 
@@ -965,8 +981,8 @@ If time is limited, implement in this order:
 
 ```typescript
 // services/llm/LLMService.ts
-import { LlamaCpp } from '@runanywhere/llamacpp';
-import type { LlamaCppModel, GenerateOptions } from '@runanywhere/llamacpp';
+import { LlamaCpp } from "@runanywhere/llamacpp";
+import type { LlamaCppModel, GenerateOptions } from "@runanywhere/llamacpp";
 
 class LLMService {
   private model: LlamaCppModel | null = null;
@@ -974,14 +990,14 @@ class LLMService {
 
   async initialize(modelId: string): Promise<void> {
     if (this.isInitialized) return;
-    
+
     try {
       // Load the model that was registered by ModelService
       this.model = await LlamaCpp.loadModel(modelId);
       this.isInitialized = true;
-      console.log('LLM Model loaded successfully');
+      console.log("LLM Model loaded successfully");
     } catch (error) {
-      console.error('Failed to load LLM model:', error);
+      console.error("Failed to load LLM model:", error);
       throw error;
     }
   }
@@ -989,10 +1005,10 @@ class LLMService {
   async generate(
     prompt: string,
     options: Partial<GenerateOptions> = {},
-    onToken?: (token: string) => void
+    onToken?: (token: string) => void,
   ): Promise<string> {
     if (!this.model) {
-      throw new Error('Model not initialized. Call initialize() first.');
+      throw new Error("Model not initialized. Call initialize() first.");
     }
 
     const defaultOptions: GenerateOptions = {
@@ -1001,14 +1017,14 @@ class LLMService {
       topP: 0.9,
       topK: 40,
       repeatPenalty: 1.1,
-      stopSequences: ['<|im_end|>'],
+      stopSequences: ["<|im_end|>"],
     };
 
     const finalOptions = { ...defaultOptions, ...options };
 
     try {
-      let fullResponse = '';
-      
+      let fullResponse = "";
+
       // Stream tokens from the model
       await this.model.generate(prompt, finalOptions, (token: string) => {
         fullResponse += token;
@@ -1019,7 +1035,7 @@ class LLMService {
 
       return fullResponse;
     } catch (error) {
-      console.error('Generation failed:', error);
+      console.error("Generation failed:", error);
       throw error;
     }
   }
@@ -1044,21 +1060,21 @@ export const llmService = new LLMService();
 
 ```typescript
 // hooks/useLLMChat.ts
-import { useState, useCallback, useEffect } from 'react';
-import { llmService } from '@/services/llm';
-import { databaseService } from '@/services/database';
-import { buildPrompt } from '@/services/llm/prompts';
+import { useState, useCallback, useEffect } from "react";
+import { llmService } from "@/services/llm";
+import { databaseService } from "@/services/database";
+import { buildPrompt } from "@/services/llm/prompts";
 
 interface Message {
   id?: number;
-  role: 'user' | 'assistant';
+  role: "user" | "assistant";
   content: string;
 }
 
 export function useLLMChat(conversationId: number) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [streamingContent, setStreamingContent] = useState('');
+  const [streamingContent, setStreamingContent] = useState("");
 
   // Load history on mount
   useEffect(() => {
@@ -1069,40 +1085,45 @@ export function useLLMChat(conversationId: number) {
     loadHistory();
   }, [conversationId]);
 
-  const sendMessage = useCallback(async (content: string) => {
-    // 1. Add user message
-    const userMessage: Message = { role: 'user', content };
-    setMessages(prev => [...prev, userMessage]);
-    await databaseService.saveMessage(conversationId, userMessage);
+  const sendMessage = useCallback(
+    async (content: string) => {
+      // 1. Add user message
+      const userMessage: Message = { role: "user", content };
+      setMessages((prev) => [...prev, userMessage]);
+      await databaseService.saveMessage(conversationId, userMessage);
 
-    // 2. Start generation
-    setIsGenerating(true);
-    setStreamingContent('');
+      // 2. Start generation
+      setIsGenerating(true);
+      setStreamingContent("");
 
-    try {
-      // 3. Build prompt with history
-      const prompt = buildPrompt([...messages, userMessage]);
+      try {
+        // 3. Build prompt with history
+        const prompt = buildPrompt([...messages, userMessage]);
 
-      // 4. Generate with streaming
-      let fullResponse = '';
-      await llmService.generate(prompt, (token) => {
-        fullResponse += token;
-        setStreamingContent(fullResponse);
-      });
+        // 4. Generate with streaming
+        let fullResponse = "";
+        await llmService.generate(prompt, (token) => {
+          fullResponse += token;
+          setStreamingContent(fullResponse);
+        });
 
-      // 5. Add assistant message
-      const assistantMessage: Message = { role: 'assistant', content: fullResponse };
-      setMessages(prev => [...prev, assistantMessage]);
-      await databaseService.saveMessage(conversationId, assistantMessage);
-
-    } catch (error) {
-      console.error('Generation failed:', error);
-      // Handle error in UI
-    } finally {
-      setIsGenerating(false);
-      setStreamingContent('');
-    }
-  }, [conversationId, messages]);
+        // 5. Add assistant message
+        const assistantMessage: Message = {
+          role: "assistant",
+          content: fullResponse,
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+        await databaseService.saveMessage(conversationId, assistantMessage);
+      } catch (error) {
+        console.error("Generation failed:", error);
+        // Handle error in UI
+      } finally {
+        setIsGenerating(false);
+        setStreamingContent("");
+      }
+    },
+    [conversationId, messages],
+  );
 
   return {
     messages,
@@ -1119,7 +1140,7 @@ export function useLLMChat(conversationId: number) {
 // services/llm/prompts.ts
 
 interface Message {
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
 }
 
@@ -1127,7 +1148,7 @@ const DEFAULT_SYSTEM_PROMPT = `You are a helpful AI assistant. Be concise and ac
 
 export function buildPrompt(
   messages: Message[],
-  systemPrompt: string = DEFAULT_SYSTEM_PROMPT
+  systemPrompt: string = DEFAULT_SYSTEM_PROMPT,
 ): string {
   let prompt = `<|im_start|>system\n${systemPrompt}\n<|im_end|>\n`;
 
@@ -1146,11 +1167,11 @@ export function buildPrompt(
 export function buildRAGPrompt(
   query: string,
   contexts: string[],
-  systemPrompt: string = DEFAULT_SYSTEM_PROMPT
+  systemPrompt: string = DEFAULT_SYSTEM_PROMPT,
 ): string {
   const contextSection = contexts
     .map((ctx, i) => `[Source ${i + 1}]: ${ctx}`)
-    .join('\n\n');
+    .join("\n\n");
 
   const ragSystemPrompt = `${systemPrompt}
 
@@ -1159,10 +1180,7 @@ Use the following context to answer the user's question. If the context doesn't 
 Context:
 ${contextSection}`;
 
-  return buildPrompt(
-    [{ role: 'user', content: query }],
-    ragSystemPrompt
-  );
+  return buildPrompt([{ role: "user", content: query }], ragSystemPrompt);
 }
 ```
 
@@ -1170,13 +1188,13 @@ ${contextSection}`;
 
 ```typescript
 // services/database/index.ts
-import * as SQLite from 'expo-sqlite';
+import * as SQLite from "expo-sqlite";
 
 class DatabaseService {
   private db: SQLite.SQLiteDatabase | null = null;
 
   async initialize(): Promise<void> {
-    this.db = await SQLite.openDatabaseAsync('app.db');
+    this.db = await SQLite.openDatabaseAsync("app.db");
 
     await this.db.execAsync(`
       CREATE TABLE IF NOT EXISTS conversations (
@@ -1199,39 +1217,38 @@ class DatabaseService {
 
   async createConversation(title?: string): Promise<number> {
     const result = await this.db!.runAsync(
-      'INSERT INTO conversations (title) VALUES (?)',
-      [title || 'New Chat']
+      "INSERT INTO conversations (title) VALUES (?)",
+      [title || "New Chat"],
     );
     return result.lastInsertRowId;
   }
 
   async getMessages(conversationId: number): Promise<Message[]> {
     return await this.db!.getAllAsync<Message>(
-      'SELECT * FROM messages WHERE conversation_id = ? ORDER BY created_at ASC',
-      [conversationId]
+      "SELECT * FROM messages WHERE conversation_id = ? ORDER BY created_at ASC",
+      [conversationId],
     );
   }
 
   async saveMessage(conversationId: number, message: Message): Promise<number> {
     const result = await this.db!.runAsync(
-      'INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)',
-      [conversationId, message.role, message.content]
+      "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
+      [conversationId, message.role, message.content],
     );
 
     // Update conversation timestamp
     await this.db!.runAsync(
-      'UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      [conversationId]
+      "UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+      [conversationId],
     );
 
     return result.lastInsertRowId;
   }
 
   async deleteConversation(conversationId: number): Promise<void> {
-    await this.db!.runAsync(
-      'DELETE FROM conversations WHERE id = ?',
-      [conversationId]
-    );
+    await this.db!.runAsync("DELETE FROM conversations WHERE id = ?", [
+      conversationId,
+    ]);
   }
 }
 
@@ -1244,14 +1261,14 @@ export const databaseService = new DatabaseService();
 
 ### Common Issues & Solutions
 
-| Problem | Cause | Solution |
-|---|---|---|
-| **App crashes on model load** | Not enough RAM | Use smaller model (SmolLM-360M) |
-| **Model file not found** | Asset not bundled | Check metro.config.js, rebuild |
-| **Very slow generation** | Too many threads | Reduce n_threads to 2-4 |
-| **Out of memory during chat** | Context too large | Reduce n_ctx to 512 |
-| **Garbled output** | Wrong prompt format | Use correct chat template |
-| **Build fails with NDK error** | Missing NDK | Install via Android Studio |
+| Problem                        | Cause               | Solution                        |
+| ------------------------------ | ------------------- | ------------------------------- |
+| **App crashes on model load**  | Not enough RAM      | Use smaller model (SmolLM-360M) |
+| **Model file not found**       | Asset not bundled   | Check metro.config.js, rebuild  |
+| **Very slow generation**       | Too many threads    | Reduce n_threads to 2-4         |
+| **Out of memory during chat**  | Context too large   | Reduce n_ctx to 512             |
+| **Garbled output**             | Wrong prompt format | Use correct chat template       |
+| **Build fails with NDK error** | Missing NDK         | Install via Android Studio      |
 
 ### Performance Optimization
 
@@ -1260,17 +1277,17 @@ export const databaseService = new DatabaseService();
 
 const OPTIMIZED_CONFIG = {
   // Model loading
-  n_ctx: 512,           // Smaller context = less RAM
-  n_threads: 4,         // Match CPU cores (not more)
-  n_batch: 64,          // Smaller batch = less RAM per step
-  
+  n_ctx: 512, // Smaller context = less RAM
+  n_threads: 4, // Match CPU cores (not more)
+  n_batch: 64, // Smaller batch = less RAM per step
+
   // Generation
-  n_predict: 128,       // Shorter responses = faster
-  temperature: 0.7,     // Higher = more random (not faster)
-  
+  n_predict: 128, // Shorter responses = faster
+  temperature: 0.7, // Higher = more random (not faster)
+
   // Memory management
-  use_mmap: true,       // Memory-map model file (default)
-  use_mlock: false,     // Don't lock in RAM (let OS manage)
+  use_mmap: true, // Memory-map model file (default)
+  use_mlock: false, // Don't lock in RAM (let OS manage)
 };
 ```
 
@@ -1288,20 +1305,20 @@ const OPTIMIZED_CONFIG = {
 
 ### Model Downloads
 
-| Model | Link | Size |
-|---|---|---|
-| Qwen2.5-0.5B-Instruct (Q4_K_M) | [HuggingFace](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF) | ~350MB |
-| SmolLM2-360M (Q4_K_M) | [HuggingFace](https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct-GGUF) | ~200MB |
-| all-MiniLM-L6-v2 (ONNX) | [HuggingFace](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2) | ~80MB |
+| Model                          | Link                                                                           | Size   |
+| ------------------------------ | ------------------------------------------------------------------------------ | ------ |
+| Qwen2.5-0.5B-Instruct (Q4_K_M) | [HuggingFace](https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF)          | ~350MB |
+| SmolLM2-360M (Q4_K_M)          | [HuggingFace](https://huggingface.co/HuggingFaceTB/SmolLM2-360M-Instruct-GGUF) | ~200MB |
+| all-MiniLM-L6-v2 (ONNX)        | [HuggingFace](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)   | ~80MB  |
 
 ### Libraries Documentation
 
-| Library | Purpose | Docs |
-|---|---|---|
-| llama.rn | Run GGUF models in RN | [GitHub](https://github.com/mybigday/llama.rn) |
-| onnxruntime-react-native | Run ONNX models | [GitHub](https://github.com/msfrisbie/onnxruntime-react-native) |
-| expo-sqlite | Local database | [Expo Docs](https://docs.expo.dev/versions/latest/sdk/sqlite/) |
-| expo-document-picker | File import | [Expo Docs](https://docs.expo.dev/versions/latest/sdk/document-picker/) |
+| Library                  | Purpose               | Docs                                                                    |
+| ------------------------ | --------------------- | ----------------------------------------------------------------------- |
+| @runanywhere/llamacpp    | Run GGUF models in RN | [NPM](https://www.npmjs.com/package/@runanywhere/llamacpp)              |
+| onnxruntime-react-native | Run ONNX models       | [GitHub](https://github.com/msfrisbie/onnxruntime-react-native)         |
+| expo-sqlite              | Local database        | [Expo Docs](https://docs.expo.dev/versions/latest/sdk/sqlite/)          |
+| expo-document-picker     | File import           | [Expo Docs](https://docs.expo.dev/versions/latest/sdk/document-picker/) |
 
 ### Learning Resources
 
@@ -1314,9 +1331,10 @@ const OPTIMIZED_CONFIG = {
 ## Checklist Summary
 
 ### Phase 1 Checklist
+
 - [ ] Android Studio + SDK installed
 - [ ] `npx expo prebuild` completed
-- [ ] llama.rn added to project
+- [ ] @runanywhere packages added to project (`@runanywhere/core`, `@runanywhere/llamacpp`)
 - [ ] Model file downloaded and placed in assets
 - [ ] metro.config.js updated for .gguf files
 - [ ] LLMService created and tested
@@ -1330,6 +1348,7 @@ const OPTIMIZED_CONFIG = {
 - [ ] Tested on real device
 
 ### Phase 2 Checklist
+
 - [ ] onnxruntime-react-native added
 - [ ] Embedding model downloaded
 - [ ] EmbeddingService created
@@ -1346,9 +1365,9 @@ const OPTIMIZED_CONFIG = {
 
 ---
 
-*Document created: February 2026*
-*Last updated: February 2026*
-*Project: AI Hackathon Mobile App*
+_Document created: February 2026_
+_Last updated: February 2026_
+_Project: AI Hackathon Mobile App_
 
 ---
 
@@ -1358,15 +1377,15 @@ const OPTIMIZED_CONFIG = {
 
 ### Implementation Summary
 
-| Component | Files | Priority | Est. Time |
-|-----------|-------|----------|-----------|
-| Dependencies & Config | 4 files | Critical | 30 min |
-| Type Definitions | 2 files | High | 15 min |
-| Database Layer | 2 files | Critical | 1.5 hours |
-| LLM Services | 5 files | Critical | 2.5 hours |
-| React Hooks | 2 files | Critical | 2 hours |
-| UI Components | 5 files | High | 3 hours |
-| Main Integration | 2 files | Critical | 2 hours |
+| Component             | Files   | Priority | Est. Time |
+| --------------------- | ------- | -------- | --------- |
+| Dependencies & Config | 4 files | Critical | 30 min    |
+| Type Definitions      | 2 files | High     | 15 min    |
+| Database Layer        | 2 files | Critical | 1.5 hours |
+| LLM Services          | 5 files | Critical | 2.5 hours |
+| React Hooks           | 2 files | Critical | 2 hours   |
+| UI Components         | 5 files | High     | 3 hours   |
+| Main Integration      | 2 files | Critical | 2 hours   |
 
 **Total: ~12-14 hours of focused development**
 
@@ -1396,6 +1415,7 @@ npx expo run:android
 After implementation, verify:
 
 ✅ **Basic Functionality**
+
 - [ ] App starts and shows loading screen
 - [ ] Model loads within 15-20 seconds
 - [ ] Can send a message and receive response
@@ -1403,12 +1423,14 @@ After implementation, verify:
 - [ ] Messages persist after app restart
 
 ✅ **Performance**
+
 - [ ] Model loads without crashing
 - [ ] Generation speed: 3-8 tokens/second
 - [ ] No memory leaks during long chats
 - [ ] App remains responsive during generation
 
 ✅ **Error Handling**
+
 - [ ] Graceful error if model fails to load
 - [ ] Can retry failed generation
 - [ ] Empty message validation
@@ -1438,4 +1460,3 @@ Once the minimal chat app is tested on a real device:
    - Estimate storage requirements
 
 ---
-
