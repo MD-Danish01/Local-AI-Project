@@ -19,3 +19,13 @@ export const DEFAULT_GENERATION_OPTIONS = {
   repeatPenalty: 1.1,
   stopSequences: ["<|im_end|>"],
 };
+
+/**
+ * Chat history settings for context-aware generation
+ */
+export const CHAT_HISTORY_CONFIG = {
+  /** Maximum number of previous messages to include in prompt */
+  maxMessages: 10,
+  /** Include system prompt in every request */
+  includeSystemPrompt: true,
+};

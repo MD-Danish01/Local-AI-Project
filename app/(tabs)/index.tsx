@@ -1,10 +1,11 @@
+import { ChatHeader } from "@/components/chat/ChatHeader";
 import { InputBar } from "@/components/chat/InputBar";
 import { MessageList } from "@/components/chat/MessageList";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { ModelDownloadScreen } from "@/components/ui/ModelDownloadScreen";
 import { useLLMContext } from "@/contexts/LLMContext";
 import { useLLMChat } from "@/hooks/useLLMChat";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 
 export default function ChatScreen() {
@@ -18,11 +19,27 @@ export default function ChatScreen() {
     totalBytes,
     error,
     conversationId,
+    conversations,
     startDownload,
     cancelDownload,
+    createNewChat,
+    refreshConversations,
   } = useLLMContext();
 
-  const chat = useLLMChat(conversationId || 0);
+  const chat = useLLMChat(conversationId || 0, {
+    onTitleGenerated: refreshConversations,
+  });
+
+  // Get current conversation title
+  const currentTitle = useMemo(() => {
+    const current = conversations.find((c) => c.id === conversationId);
+    return current?.title || "New Chat";
+  }, [conversations, conversationId]);
+
+  const handleNewChat = useCallback(async () => {
+    await createNewChat();
+    await refreshConversations();
+  }, [createNewChat, refreshConversations]);
 
   // ---- Model not yet on device ----
   if (needsDownload || isDownloading) {
@@ -54,6 +71,11 @@ export default function ChatScreen() {
   // ---- Chat UI ----
   return (
     <SafeAreaView style={styles.container}>
+      <ChatHeader
+        title={currentTitle}
+        onNewChat={handleNewChat}
+        disabled={!isReady || chat.isGenerating}
+      />
       <View style={styles.content}>
         <MessageList
           messages={chat.messages}

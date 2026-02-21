@@ -1,86 +1,128 @@
-import * as SQLite from 'expo-sqlite';
-import { createTablesSQL } from './schema';
-import type { Message, Conversation } from '@/types/chat';
-import { loggingService } from '@/services/logging/LoggingService';
+import { loggingService } from "@/services/logging/LoggingService";
+import type { Conversation, Message } from "@/types/chat";
+import * as SQLite from "expo-sqlite";
+import { createTablesSQL } from "./schema";
 
 class DatabaseService {
   private db: SQLite.SQLiteDatabase | null = null;
 
   async initialize(): Promise<void> {
     try {
-      loggingService.info('Database', 'Initializing database');
-      this.db = await SQLite.openDatabaseAsync('localai.db');
+      loggingService.info("Database", "Initializing database");
+      this.db = await SQLite.openDatabaseAsync("localai.db");
       await this.db.execAsync(createTablesSQL);
-      loggingService.info('Database', 'Database initialized successfully');
-      console.log('✅ Database initialized successfully');
+      loggingService.info("Database", "Database initialized successfully");
+      console.log("✅ Database initialized successfully");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      loggingService.error('Database', 'Database initialization failed', { error: errorMessage });
-      console.error('❌ Database initialization failed:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      loggingService.error("Database", "Database initialization failed", {
+        error: errorMessage,
+      });
+      console.error("❌ Database initialization failed:", error);
       throw error;
     }
   }
 
-  async createConversation(title: string = 'New Chat'): Promise<number> {
-    if (!this.db) throw new Error('Database not initialized');
-    
+  async createConversation(title: string = "New Chat"): Promise<number> {
+    if (!this.db) throw new Error("Database not initialized");
+
     const result = await this.db.runAsync(
-      'INSERT INTO conversations (title) VALUES (?)',
-      title
+      "INSERT INTO conversations (title) VALUES (?)",
+      title,
     );
     return result.lastInsertRowId;
   }
 
   async getConversations(): Promise<Conversation[]> {
-    if (!this.db) throw new Error('Database not initialized');
-    
+    if (!this.db) throw new Error("Database not initialized");
+
     const result = await this.db.getAllAsync<Conversation>(
-      'SELECT * FROM conversations ORDER BY updated_at DESC'
+      "SELECT * FROM conversations ORDER BY updated_at DESC",
     );
     return result;
   }
 
-  async saveMessage(message: Omit<Message, 'id' | 'createdAt'>): Promise<number> {
-    if (!this.db) throw new Error('Database not initialized');
-    
+  async saveMessage(
+    message: Omit<Message, "id" | "createdAt">,
+  ): Promise<number> {
+    if (!this.db) throw new Error("Database not initialized");
+
     const result = await this.db.runAsync(
-      'INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)',
+      "INSERT INTO messages (conversation_id, role, content) VALUES (?, ?, ?)",
       message.conversationId,
       message.role,
-      message.content
+      message.content,
     );
 
     // Update conversation's updated_at timestamp
     await this.db.runAsync(
-      'UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      message.conversationId
+      "UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+      message.conversationId,
     );
 
     return result.lastInsertRowId;
   }
 
   async getMessages(conversationId: number): Promise<Message[]> {
-    if (!this.db) throw new Error('Database not initialized');
-    
+    if (!this.db) throw new Error("Database not initialized");
+
     const result = await this.db.getAllAsync<Message>(
-      'SELECT * FROM messages WHERE conversation_id = ? ORDER BY created_at ASC',
-      conversationId
+      "SELECT * FROM messages WHERE conversation_id = ? ORDER BY created_at ASC",
+      conversationId,
     );
     return result;
   }
 
   async deleteConversation(conversationId: number): Promise<void> {
-    if (!this.db) throw new Error('Database not initialized');
-    
+    if (!this.db) throw new Error("Database not initialized");
+
     await this.db.runAsync(
-      'DELETE FROM conversations WHERE id = ?',
-      conversationId
+      "DELETE FROM conversations WHERE id = ?",
+      conversationId,
     );
   }
 
+  async updateConversationTitle(
+    conversationId: number,
+    title: string,
+  ): Promise<void> {
+    if (!this.db) throw new Error("Database not initialized");
+
+    await this.db.runAsync(
+      "UPDATE conversations SET title = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+      title,
+      conversationId,
+    );
+    loggingService.info("Database", "Conversation title updated", {
+      conversationId,
+      title,
+    });
+  }
+
+  async getConversation(conversationId: number): Promise<Conversation | null> {
+    if (!this.db) throw new Error("Database not initialized");
+
+    const result = await this.db.getFirstAsync<Conversation>(
+      "SELECT * FROM conversations WHERE id = ?",
+      conversationId,
+    );
+    return result || null;
+  }
+
+  async getMessageCount(conversationId: number): Promise<number> {
+    if (!this.db) throw new Error("Database not initialized");
+
+    const result = await this.db.getFirstAsync<{ count: number }>(
+      "SELECT COUNT(*) as count FROM messages WHERE conversation_id = ?",
+      conversationId,
+    );
+    return result?.count || 0;
+  }
+
   async clearAllData(): Promise<void> {
-    if (!this.db) throw new Error('Database not initialized');
-    
+    if (!this.db) throw new Error("Database not initialized");
+
     await this.db.execAsync(`
       DELETE FROM messages;
       DELETE FROM conversations;
