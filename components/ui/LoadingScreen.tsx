@@ -1,18 +1,20 @@
-import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { ThemedView } from '@/components/themed-view';
+import React from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
 interface LoadingScreenProps {
   progress?: number;
   message?: string;
 }
 
-export function LoadingScreen({ progress = 0, message = 'Loading model...' }: LoadingScreenProps) {
+export function LoadingScreen({
+  progress = 0,
+  message = "Loading model...",
+}: LoadingScreenProps) {
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.content}>
-        <ActivityIndicator size="large" color="#00D9FF" />
-        <Text style={styles.title}>LocalAI Chat</Text>
+        <ActivityIndicator size="large" color="#FFFFFF" />
+        <Text style={styles.title}>LocalAI</Text>
         <Text style={styles.message}>{message}</Text>
         {progress > 0 && (
           <View style={styles.progressContainer}>
@@ -23,52 +25,52 @@ export function LoadingScreen({ progress = 0, message = 'Loading model...' }: Lo
           </View>
         )}
       </View>
-    </ThemedView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#0A0E1A',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#1f2020",
   },
   content: {
-    alignItems: 'center',
+    alignItems: "center",
     padding: 20,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#00D9FF',
+    fontSize: 28,
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginTop: 20,
-    marginBottom: 10,
+    marginBottom: 8,
   },
   message: {
-    fontSize: 16,
-    color: '#9CA3AF',
+    fontSize: 15,
+    color: "#888888",
     marginBottom: 30,
   },
   progressContainer: {
-    width: 250,
-    alignItems: 'center',
+    width: 200,
+    alignItems: "center",
   },
   progressBar: {
-    width: '100%',
-    height: 8,
-    backgroundColor: '#1F2937',
-    borderRadius: 4,
-    overflow: 'hidden',
+    width: "100%",
+    height: 4,
+    backgroundColor: "#2a2a2a",
+    borderRadius: 2,
+    overflow: "hidden",
   },
   progressFill: {
-    height: '100%',
-    backgroundColor: '#00D9FF',
-    borderRadius: 4,
+    height: "100%",
+    backgroundColor: "#FFFFFF",
+    borderRadius: 2,
   },
   progressText: {
-    color: '#9CA3AF',
-    fontSize: 14,
+    color: "#888888",
+    fontSize: 13,
     marginTop: 8,
   },
 });

@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { consoleLogger, type LogEntry } from "@/services/ConsoleLogger";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  StyleSheet,
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  SafeAreaView,
-} from 'react-native';
-import { consoleLogger, type LogEntry } from '@/services/ConsoleLogger';
+    FlatList,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 export default function DebugScreen() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
-  const [filter, setFilter] = useState<LogEntry['level'] | 'all'>('all');
+  const [filter, setFilter] = useState<LogEntry["level"] | "all">("all");
   const flatListRef = useRef<FlatList>(null);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export default function DebugScreen() {
   }, []);
 
   const filteredLogs = logs.filter((log) => {
-    if (filter === 'all') return true;
+    if (filter === "all") return true;
     return log.level === filter;
   });
 
@@ -57,7 +57,7 @@ export default function DebugScreen() {
       </View>
 
       <View style={styles.filterContainer}>
-        {(['all', 'log', 'info', 'warn', 'error'] as const).map((level) => (
+        {(["all", "log", "info", "warn", "error"] as const).map((level) => (
           <TouchableOpacity
             key={level}
             style={[
@@ -98,96 +98,97 @@ export default function DebugScreen() {
 
       <View style={styles.footer}>
         <Text style={styles.footerText}>
-          {filteredLogs.length} {filter === 'all' ? 'total' : filter} logs
+          {filteredLogs.length} {filter === "all" ? "total" : filter} logs
         </Text>
       </View>
     </SafeAreaView>
   );
 }
 
-function getLevelColor(level: LogEntry['level']): string {
+function getLevelColor(level: LogEntry["level"]): string {
   switch (level) {
-    case 'error':
-      return '#FF6B6B';
-    case 'warn':
-      return '#FFA500';
-    case 'info':
-      return '#4ECDC4';
-    case 'debug':
-      return '#9B59B6';
-    case 'log':
+    case "error":
+      return "#FF6B6B";
+    case "warn":
+      return "#FFA500";
+    case "info":
+      return "#4ECDC4";
+    case "debug":
+      return "#9B59B6";
+    case "log":
     default:
-      return '#95A5A6';
+      return "#95A5A6";
   }
 }
 
-function getLevelEmoji(level: LogEntry['level']): string {
+function getLevelEmoji(level: LogEntry["level"]): string {
   switch (level) {
-    case 'error':
-      return '❌';
-    case 'warn':
-      return '⚠️';
-    case 'info':
-      return 'ℹ️';
-    case 'debug':
-      return '🐛';
-    case 'log':
+    case "error":
+      return "❌";
+    case "warn":
+      return "⚠️";
+    case "info":
+      return "ℹ️";
+    case "debug":
+      return "🐛";
+    case "log":
     default:
-      return '📝';
+      return "📝";
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0E1A',
+    backgroundColor: "#1f2020",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E2433',
+    borderBottomColor: "#2a2a2a",
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#FFFFFF",
   },
   clearButton: {
-    backgroundColor: '#FF6B6B',
-    paddingHorizontal: 16,
+    backgroundColor: "#2a2a2a",
+    paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 6,
   },
   clearButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
+    color: "#ff6b6b",
+    fontWeight: "600",
+    fontSize: 13,
   },
   filterContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 8,
     gap: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#1E2433',
+    borderBottomColor: "#2a2a2a",
   },
   filterButton: {
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
-    backgroundColor: '#1E2433',
+    backgroundColor: "#2a2a2a",
   },
   filterButtonActive: {
-    backgroundColor: '#00D9FF',
+    backgroundColor: "#FFFFFF",
   },
   filterButtonText: {
-    color: '#95A5A6',
+    color: "#888888",
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   filterButtonTextActive: {
-    color: '#0A0E1A',
+    color: "#1f2020",
   },
   logList: {
     flex: 1,
@@ -196,46 +197,46 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   logItem: {
-    marginBottom: 12,
+    marginBottom: 10,
     padding: 12,
-    backgroundColor: '#1E2433',
+    backgroundColor: "#2a2a2a",
     borderRadius: 8,
     borderLeftWidth: 3,
-    borderLeftColor: '#00D9FF',
+    borderLeftColor: "#444444",
   },
   logTime: {
-    fontSize: 11,
-    color: '#7F8C9B',
+    fontSize: 10,
+    color: "#666666",
     marginBottom: 4,
   },
   logLevel: {
-    fontSize: 12,
-    fontWeight: 'bold',
+    fontSize: 11,
+    fontWeight: "bold",
     marginBottom: 6,
   },
   logMessage: {
-    fontSize: 13,
-    color: '#D1D8E0',
-    fontFamily: 'monospace',
+    fontSize: 12,
+    color: "#FFFFFF",
+    fontFamily: "monospace",
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 60,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#7F8C9B',
+    fontSize: 15,
+    color: "#888888",
   },
   footer: {
     padding: 12,
     borderTopWidth: 1,
-    borderTopColor: '#1E2433',
-    alignItems: 'center',
+    borderTopColor: "#2a2a2a",
+    alignItems: "center",
   },
   footerText: {
     fontSize: 12,
-    color: '#7F8C9B',
+    color: "#666666",
   },
 });

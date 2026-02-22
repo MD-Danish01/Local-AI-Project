@@ -94,6 +94,13 @@ export function useLLMChat(
       };
 
       const tempUserMsg = { ...userMessage, id: Date.now() } as Message;
+
+      // IMPORTANT: Snapshot messages BEFORE setMessages or any await,
+      // because React may re-render during awaits and sync the ref,
+      // which would cause the user message to appear twice in the prompt.
+      const previousMessages = [...messagesRef.current];
+      const existingCount = previousMessages.length;
+
       setMessages((prev) => [...prev, tempUserMsg]);
 
       try {
@@ -115,18 +122,17 @@ export function useLLMChat(
         setIsGenerating(true);
         setStreamingContent("");
 
-        // Build prompt with recent history for context
-        // Use ref to always get the latest messages (avoids stale closure)
-        const currentMessages = messagesRef.current;
-        const allMessages = [...currentMessages, tempUserMsg];
+        // Build prompt: previous history + new user message (no duplicates)
+        const allMessages = [...previousMessages, tempUserMsg];
         const prompt = buildQwenPrompt(allMessages);
 
         loggingService.debug("Chat", "Prompt built with history context", {
+          previousCount: existingCount,
           totalMessages: allMessages.length,
           promptLength: prompt.length,
         });
         console.log(
-          `📝 Prompt built with ${allMessages.length} messages, length: ${prompt.length}`,
+          `📝 Prompt built: ${existingCount} history + 1 new = ${allMessages.length} messages, length: ${prompt.length}`,
         );
 
         // Generate response with streaming
@@ -155,10 +161,12 @@ export function useLLMChat(
         loggingService.info("Chat", "Assistant message saved to database");
         console.log("✅ Assistant message saved");
 
-        // Auto-generate title after first exchange (2 messages)
-        const totalMessages = currentMessages.length + 2; // existing + user + assistant
-        if (totalMessages === 2) {
-          // First exchange completed, generate title in background
+        // Auto-generate title after first exchange (when no prior messages existed)
+        if (existingCount === 0) {
+          loggingService.info(
+            "Chat",
+            "First exchange complete, generating title",
+          );
           autoGenerateTitle(conversationId)
             .then(() => {
               onTitleGenerated?.();

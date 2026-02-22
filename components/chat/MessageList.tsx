@@ -1,7 +1,7 @@
-import React from 'react';
-import { FlatList, View, Text, StyleSheet } from 'react-native';
-import { ChatBubble } from './ChatBubble';
-import type { Message } from '@/types/chat';
+import type { Message } from "@/types/chat";
+import React from "react";
+import { FlatList, StyleSheet, Text, View } from "react-native";
+import { ChatBubble } from "./ChatBubble";
 
 interface MessageListProps {
   messages: Message[];
@@ -9,7 +9,11 @@ interface MessageListProps {
   isGenerating?: boolean;
 }
 
-export function MessageList({ messages, streamingContent, isGenerating }: MessageListProps) {
+export function MessageList({
+  messages,
+  streamingContent,
+  isGenerating,
+}: MessageListProps) {
   const flatListRef = React.useRef<FlatList>(null);
 
   // Auto-scroll to bottom when new messages arrive
@@ -21,14 +25,18 @@ export function MessageList({ messages, streamingContent, isGenerating }: Messag
     }
   }, [messages.length, streamingContent]);
 
-  const renderItem = ({ item }: { item: Message }) => <ChatBubble message={item} />;
+  const renderItem = ({ item }: { item: Message }) => (
+    <ChatBubble message={item} />
+  );
 
   return (
     <View style={styles.container}>
       {messages.length === 0 && !isGenerating ? (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyText}>Start a conversation...</Text>
-          <Text style={styles.emptySubtext}>Your AI chat runs entirely on-device</Text>
+          <Text style={styles.emptyText}>Start a conversation</Text>
+          <Text style={styles.emptySubtext}>
+            AI runs entirely on your device
+          </Text>
         </View>
       ) : (
         <FlatList
@@ -39,24 +47,26 @@ export function MessageList({ messages, streamingContent, isGenerating }: Messag
           contentContainerStyle={styles.listContent}
         />
       )}
-      
+
       {/* Show streaming content as temporary assistant message */}
       {isGenerating && streamingContent && (
         <View style={styles.streamingContainer}>
-          <ChatBubble 
+          <ChatBubble
             message={{
               conversationId: 0,
-              role: 'assistant',
+              role: "assistant",
               content: streamingContent,
             }}
           />
         </View>
       )}
-      
+
       {/* Show typing indicator when waiting for first token */}
       {isGenerating && !streamingContent && (
         <View style={styles.typingContainer}>
-          <Text style={styles.typingText}>● ● ●</Text>
+          <View style={styles.typingBubble}>
+            <Text style={styles.typingText}>...</Text>
+          </View>
         </View>
       )}
     </View>
@@ -66,36 +76,43 @@ export function MessageList({ messages, streamingContent, isGenerating }: Messag
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0A0E1A',
+    backgroundColor: "#1f2020",
   },
   listContent: {
-    paddingVertical: 8,
+    paddingVertical: 16,
   },
   emptyState: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   emptyText: {
-    fontSize: 20,
-    color: '#9CA3AF',
+    fontSize: 18,
+    color: "#888888",
     marginBottom: 8,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#6B7280',
+    color: "#555555",
   },
   streamingContainer: {
     paddingBottom: 8,
   },
   typingContainer: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingVertical: 8,
+    alignItems: "flex-start",
+  },
+  typingBubble: {
+    backgroundColor: "#2a2a2a",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 20,
   },
   typingText: {
-    color: '#00D9FF',
-    fontSize: 24,
-    letterSpacing: 4,
+    color: "#888888",
+    fontSize: 18,
+    letterSpacing: 2,
   },
 });

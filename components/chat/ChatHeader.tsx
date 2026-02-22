@@ -1,7 +1,5 @@
 import { ThemedText } from "@/components/themed-text";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { Colors } from "@/constants/theme";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 
@@ -12,25 +10,23 @@ interface ChatHeaderProps {
 }
 
 export function ChatHeader({ title, onNewChat, disabled }: ChatHeaderProps) {
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? "light"];
-
   return (
     <View style={styles.container}>
       <ThemedText style={styles.title} numberOfLines={1}>
         {title}
       </ThemedText>
+
       <Pressable
-        style={[
+        style={({ pressed }) => [
           styles.newChatButton,
-          { backgroundColor: colors.tint },
           disabled && styles.disabledButton,
+          pressed && styles.pressedButton,
         ]}
         onPress={onNewChat}
         disabled={disabled}
         hitSlop={8}
       >
-        <IconSymbol name="plus" size={20} color="#FFFFFF" />
+        <IconSymbol name="plus" size={18} color="#1f2020" />
       </Pressable>
     </View>
   );
@@ -41,25 +37,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(255,255,255,0.1)",
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: "#1f2020",
   },
   title: {
     fontSize: 18,
     fontWeight: "600",
+    color: "#FFFFFF",
     flex: 1,
-    marginRight: 12,
   },
   newChatButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
   },
   disabledButton: {
-    opacity: 0.5,
+    opacity: 0.3,
+  },
+  pressedButton: {
+    opacity: 0.7,
   },
 });

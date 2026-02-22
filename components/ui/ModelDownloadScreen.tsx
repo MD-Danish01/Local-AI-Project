@@ -1,4 +1,3 @@
-import { ThemedView } from "@/components/themed-view";
 import { modelDownloadService } from "@/services/llm/ModelDownloadService";
 import { QWEN_MODEL_CONFIG } from "@/services/llm/config";
 import React from "react";
@@ -44,15 +43,10 @@ export function ModelDownloadScreen({
   const modelSizeMB = modelDownloadService.getFormattedSize();
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.card}>
-        {/* Icon / Logo */}
-        <View style={styles.iconContainer}>
-          <Text style={styles.iconEmoji}>🤖</Text>
-        </View>
-
         {/* Title */}
-        <Text style={styles.title}>LocalAI Chat</Text>
+        <Text style={styles.title}>LocalAI</Text>
         <Text style={styles.subtitle}>{QWEN_MODEL_CONFIG.name}</Text>
 
         {/* ---- IDLE / ERROR state ---- */}
@@ -65,7 +59,7 @@ export function ModelDownloadScreen({
 
             <Text style={styles.description}>
               The AI model runs entirely on your device — no internet required
-              after download. Tap below to download it once.
+              after download.
             </Text>
 
             {error ? (
@@ -81,7 +75,7 @@ export function ModelDownloadScreen({
               activeOpacity={0.8}
             >
               <Text style={styles.downloadButtonText}>
-                {error ? "🔄  Retry Download" : "⬇️  Download Model"}
+                {error ? "Retry Download" : "Download Model"}
               </Text>
             </TouchableOpacity>
 
@@ -114,7 +108,7 @@ export function ModelDownloadScreen({
 
             <ActivityIndicator
               size="small"
-              color="#00D9FF"
+              color="#FFFFFF"
               style={styles.spinner}
             />
 
@@ -128,7 +122,7 @@ export function ModelDownloadScreen({
           </>
         )}
       </View>
-    </ThemedView>
+    </View>
   );
 }
 
@@ -137,63 +131,49 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#0A0E1A",
+    backgroundColor: "#1f2020",
     padding: 20,
   },
   card: {
     width: "100%",
-    maxWidth: 380,
-    backgroundColor: "#111827",
-    borderRadius: 20,
-    padding: 28,
+    maxWidth: 340,
+    backgroundColor: "#2a2a2a",
+    borderRadius: 16,
+    padding: 24,
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#1F2937",
-  },
-  iconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "#0A0E1A",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 16,
-  },
-  iconEmoji: {
-    fontSize: 40,
   },
   title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#00D9FF",
+    fontSize: 24,
+    fontWeight: "600",
+    color: "#FFFFFF",
     marginBottom: 4,
   },
   subtitle: {
-    fontSize: 14,
-    color: "#6B7280",
+    fontSize: 13,
+    color: "#888888",
     marginBottom: 24,
   },
   infoBox: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    backgroundColor: "#1F2937",
+    backgroundColor: "#1f2020",
     borderRadius: 10,
     paddingVertical: 12,
     paddingHorizontal: 16,
     marginBottom: 16,
   },
   infoLabel: {
-    color: "#9CA3AF",
+    color: "#888888",
     fontSize: 14,
   },
   infoValue: {
-    color: "#F9FAFB",
+    color: "#FFFFFF",
     fontSize: 14,
     fontWeight: "600",
   },
   description: {
-    color: "#9CA3AF",
+    color: "#888888",
     fontSize: 13,
     textAlign: "center",
     lineHeight: 20,
@@ -201,60 +181,58 @@ const styles = StyleSheet.create({
   },
   errorBox: {
     width: "100%",
-    backgroundColor: "#2D1B1B",
+    backgroundColor: "#3a2020",
     borderRadius: 10,
     padding: 12,
     marginBottom: 16,
-    borderWidth: 1,
-    borderColor: "#4B1C1C",
   },
   errorTitle: {
-    color: "#F87171",
-    fontWeight: "700",
+    color: "#ff6b6b",
+    fontWeight: "600",
     marginBottom: 4,
   },
   errorMessage: {
-    color: "#FCA5A5",
+    color: "#ff9999",
     fontSize: 12,
   },
   downloadButton: {
     width: "100%",
-    backgroundColor: "#00D9FF",
-    paddingVertical: 16,
-    borderRadius: 12,
+    backgroundColor: "#FFFFFF",
+    paddingVertical: 14,
+    borderRadius: 10,
     alignItems: "center",
     marginBottom: 12,
   },
   downloadButtonText: {
-    color: "#0A0E1A",
-    fontSize: 16,
-    fontWeight: "700",
+    color: "#1f2020",
+    fontSize: 15,
+    fontWeight: "600",
   },
   hint: {
-    color: "#4B5563",
+    color: "#666666",
     fontSize: 12,
     textAlign: "center",
   },
 
   // --- Downloading state ---
   downloadingLabel: {
-    color: "#F9FAFB",
-    fontSize: 18,
+    color: "#FFFFFF",
+    fontSize: 17,
     fontWeight: "600",
     marginBottom: 20,
   },
   progressBarContainer: {
     width: "100%",
-    height: 10,
-    backgroundColor: "#1F2937",
-    borderRadius: 5,
+    height: 6,
+    backgroundColor: "#1f2020",
+    borderRadius: 3,
     overflow: "hidden",
     marginBottom: 10,
   },
   progressBarFill: {
     height: "100%",
-    backgroundColor: "#00D9FF",
-    borderRadius: 5,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 3,
   },
   statsRow: {
     flexDirection: "row",
@@ -263,21 +241,21 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   statsText: {
-    color: "#9CA3AF",
+    color: "#888888",
     fontSize: 13,
   },
   spinner: {
     marginBottom: 20,
   },
   cancelButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#374151",
+    borderColor: "#444444",
   },
   cancelButtonText: {
-    color: "#9CA3AF",
+    color: "#888888",
     fontSize: 14,
   },
 });

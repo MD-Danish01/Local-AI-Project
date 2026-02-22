@@ -1,9 +1,7 @@
 import { ThemedText } from "@/components/themed-text";
 import { ThemedView } from "@/components/themed-view";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { Colors } from "@/constants/theme";
 import { useLLMContext } from "@/contexts/LLMContext";
-import { useColorScheme } from "@/hooks/use-color-scheme";
 import type { Conversation } from "@/types/chat";
 import { useRouter } from "expo-router";
 import React, { useCallback, useEffect } from "react";
@@ -17,8 +15,6 @@ import {
 } from "react-native";
 
 export default function HistoryScreen() {
-  const colorScheme = useColorScheme();
-  const colors = Colors[colorScheme ?? "light"];
   const router = useRouter();
 
   const {
@@ -90,25 +86,19 @@ export default function HistoryScreen() {
 
     return (
       <Pressable
-        style={[
-          styles.chatItem,
-          isActive && { backgroundColor: colors.tint + "20" },
-        ]}
+        style={[styles.chatItem, isActive && { backgroundColor: "#2a2a2a" }]}
         onPress={() => handleSelectChat(item.id!)}
         onLongPress={() => handleDeleteChat(item)}
       >
         <View style={styles.chatIcon}>
           <IconSymbol
             name="message.fill"
-            size={24}
-            color={isActive ? colors.tint : colors.icon}
+            size={20}
+            color={isActive ? "#FFFFFF" : "#666666"}
           />
         </View>
         <View style={styles.chatContent}>
-          <ThemedText
-            style={[styles.chatTitle, isActive && { color: colors.tint }]}
-            numberOfLines={1}
-          >
+          <ThemedText style={styles.chatTitle} numberOfLines={1}>
             {item.title}
           </ThemedText>
           <ThemedText style={styles.chatDate}>
@@ -120,7 +110,7 @@ export default function HistoryScreen() {
           onPress={() => handleDeleteChat(item)}
           hitSlop={8}
         >
-          <IconSymbol name="trash" size={18} color="#FF6B6B" />
+          <IconSymbol name="trash" size={16} color="#666666" />
         </Pressable>
       </Pressable>
     );
@@ -128,25 +118,23 @@ export default function HistoryScreen() {
 
   const ListHeader = () => (
     <View style={styles.header}>
-      <ThemedText style={styles.headerTitle}>Chat History</ThemedText>
+      <ThemedText style={styles.headerTitle}>History</ThemedText>
       <Pressable
-        style={[styles.newChatButton, { backgroundColor: colors.tint }]}
+        style={styles.newChatButton}
         onPress={handleNewChat}
         disabled={!isReady}
       >
-        <IconSymbol name="plus" size={20} color="#FFFFFF" />
-        <ThemedText style={styles.newChatText}>New Chat</ThemedText>
+        <IconSymbol name="plus" size={16} color="#1f2020" />
+        <ThemedText style={styles.newChatText}>New</ThemedText>
       </Pressable>
     </View>
   );
 
   const ListEmpty = () => (
     <View style={styles.emptyState}>
-      <IconSymbol name="message.fill" size={48} color={colors.icon} />
-      <ThemedText style={styles.emptyText}>No conversations yet</ThemedText>
-      <ThemedText style={styles.emptySubtext}>
-        Start a new chat to begin
-      </ThemedText>
+      <IconSymbol name="message.fill" size={32} color="#555555" />
+      <ThemedText style={styles.emptyText}>No conversations</ThemedText>
+      <ThemedText style={styles.emptySubtext}>Start a new chat</ThemedText>
     </View>
   );
 
@@ -170,7 +158,7 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#0A0E1A",
+    backgroundColor: "#1f2020",
   },
   content: {
     flex: 1,
@@ -179,24 +167,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 16,
-    paddingTop: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: "bold",
+    fontSize: 24,
+    fontWeight: "600",
+    color: "#FFFFFF",
   },
   newChatButton: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    backgroundColor: "#FFFFFF",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: 20,
     gap: 6,
   },
   newChatText: {
-    color: "#FFFFFF",
+    color: "#1f2020",
     fontWeight: "600",
+    fontSize: 14,
   },
   listContent: {
     flexGrow: 1,
@@ -204,14 +195,15 @@ const styles = StyleSheet.create({
   chatItem: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
-    gap: 12,
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    gap: 14,
   },
   chatIcon: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "rgba(255,255,255,0.1)",
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#2a2a2a",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -219,21 +211,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   chatTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "500",
-    marginBottom: 4,
+    color: "#FFFFFF",
+    marginBottom: 2,
   },
   chatDate: {
-    fontSize: 13,
-    opacity: 0.6,
+    fontSize: 12,
+    color: "#666666",
   },
   deleteButton: {
     padding: 8,
   },
   separator: {
     height: 1,
-    backgroundColor: "rgba(255,255,255,0.1)",
-    marginLeft: 72,
+    backgroundColor: "#2a2a2a",
+    marginLeft: 74,
   },
   emptyState: {
     flex: 1,
@@ -243,11 +236,12 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   emptyText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "500",
+    color: "#888888",
   },
   emptySubtext: {
-    fontSize: 14,
-    opacity: 0.6,
+    fontSize: 13,
+    color: "#555555",
   },
 });

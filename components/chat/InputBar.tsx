@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import {
+    KeyboardAvoidingView,
+    Platform,
+    StyleSheet,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 interface InputBarProps {
   onSend: (message: string) => void;
@@ -8,28 +15,32 @@ interface InputBarProps {
   isGenerating?: boolean;
 }
 
-export function InputBar({ onSend, disabled = false, isGenerating = false }: InputBarProps) {
-  const [inputText, setInputText] = useState('');
+export function InputBar({
+  onSend,
+  disabled = false,
+  isGenerating = false,
+}: InputBarProps) {
+  const [inputText, setInputText] = useState("");
 
   const handleSend = () => {
     if (inputText.trim() && !disabled) {
       onSend(inputText.trim());
-      setInputText('');
+      setInputText("");
     }
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
     >
       <View style={styles.container}>
         <TextInput
           style={styles.input}
           value={inputText}
           onChangeText={setInputText}
-          placeholder="Type a message..."
-          placeholderTextColor="#6B7280"
+          placeholder="Message..."
+          placeholderTextColor="#666666"
           multiline
           maxLength={1000}
           editable={!disabled && !isGenerating}
@@ -38,15 +49,20 @@ export function InputBar({ onSend, disabled = false, isGenerating = false }: Inp
         <TouchableOpacity
           style={[
             styles.sendButton,
-            (disabled || isGenerating || !inputText.trim()) && styles.sendButtonDisabled,
+            (disabled || isGenerating || !inputText.trim()) &&
+              styles.sendButtonDisabled,
           ]}
           onPress={handleSend}
           disabled={disabled || isGenerating || !inputText.trim()}
         >
           <Ionicons
-            name="send"
-            size={24}
-            color={(disabled || isGenerating || !inputText.trim()) ? '#6B7280' : '#00D9FF'}
+            name="arrow-up"
+            size={20}
+            color={
+              disabled || isGenerating || !inputText.trim()
+                ? "#666666"
+                : "#1f2020"
+            }
           />
         </TouchableOpacity>
       </View>
@@ -56,33 +72,32 @@ export function InputBar({ onSend, disabled = false, isGenerating = false }: Inp
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    padding: 12,
-    backgroundColor: '#1F2937',
-    borderTopWidth: 1,
-    borderTopColor: '#374151',
+    flexDirection: "row",
+    alignItems: "flex-end",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#1f2020",
+    gap: 10,
   },
   input: {
     flex: 1,
-    backgroundColor: '#374151',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    marginRight: 8,
-    color: '#FFFFFF',
-    fontSize: 16,
-    maxHeight: 100,
+    backgroundColor: "#2a2a2a",
+    borderRadius: 24,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    color: "#FFFFFF",
+    fontSize: 15,
+    maxHeight: 120,
   },
   sendButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#374151',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
   },
   sendButtonDisabled: {
-    opacity: 0.5,
+    backgroundColor: "#2a2a2a",
   },
 });
