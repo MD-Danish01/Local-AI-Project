@@ -3,6 +3,8 @@ export interface Message {
   conversationId: number;
   role: 'user' | 'assistant' | 'system';
   content: string;
+  /** Extracted thinking/reasoning content (for assistant messages with <think> tags) */
+  thinking?: string;
   createdAt?: Date;
 }
 

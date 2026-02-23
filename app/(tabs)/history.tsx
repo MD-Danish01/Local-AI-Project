@@ -86,21 +86,30 @@ export default function HistoryScreen() {
 
     return (
       <Pressable
-        style={[styles.chatItem, isActive && { backgroundColor: "#2a2a2a" }]}
+        style={[
+          styles.chatItem,
+          isActive && styles.chatItemActive,
+        ]}
         onPress={() => handleSelectChat(item.id!)}
         onLongPress={() => handleDeleteChat(item)}
       >
-        <View style={styles.chatIcon}>
+        <View style={[styles.chatIcon, isActive && styles.chatIconActive]}>
           <IconSymbol
             name="message.fill"
-            size={20}
-            color={isActive ? "#FFFFFF" : "#666666"}
+            size={18}
+            color={isActive ? "#00D9FF" : "#7F8C9B"}
           />
         </View>
         <View style={styles.chatContent}>
-          <ThemedText style={styles.chatTitle} numberOfLines={1}>
-            {item.title}
-          </ThemedText>
+          <View style={styles.titleRow}>
+            <ThemedText
+              style={[styles.chatTitle, isActive && styles.chatTitleActive]}
+              numberOfLines={1}
+            >
+              {item.title}
+            </ThemedText>
+            {isActive && <View style={styles.activeIndicator} />}
+          </View>
           <ThemedText style={styles.chatDate}>
             {formatDate(item.updatedAt)}
           </ThemedText>
@@ -110,7 +119,11 @@ export default function HistoryScreen() {
           onPress={() => handleDeleteChat(item)}
           hitSlop={8}
         >
-          <IconSymbol name="trash" size={16} color="#666666" />
+          <IconSymbol
+            name="trash"
+            size={16}
+            color={isActive ? "#FF6B6B" : "#666666"}
+          />
         </Pressable>
       </Pressable>
     );
@@ -158,7 +171,7 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1f2020",
+    backgroundColor: "#0A0E1A",
   },
   content: {
     flex: 1,
@@ -168,29 +181,33 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingVertical: 18,
+    borderBottomWidth: 1,
+    borderBottomColor: "#1A1F2E",
   },
   headerTitle: {
-    fontSize: 24,
-    fontWeight: "600",
+    fontSize: 26,
+    fontWeight: "700",
     color: "#FFFFFF",
+    letterSpacing: -0.5,
   },
   newChatButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#00D9FF",
     paddingHorizontal: 14,
     paddingVertical: 8,
-    borderRadius: 20,
-    gap: 6,
+    borderRadius: 10,
+    gap: 5,
   },
   newChatText: {
-    color: "#1f2020",
-    fontWeight: "600",
-    fontSize: 14,
+    color: "#0A0E1A",
+    fontWeight: "700",
+    fontSize: 13,
   },
   listContent: {
     flexGrow: 1,
+    paddingVertical: 8,
   },
   chatItem: {
     flexDirection: "row",
@@ -198,34 +215,62 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 14,
     gap: 14,
+    backgroundColor: "transparent",
+  },
+  chatItemActive: {
+    backgroundColor: "#1A1F2E",
+    borderLeftWidth: 4,
+    borderLeftColor: "#00D9FF",
   },
   chatIcon: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#2a2a2a",
+    backgroundColor: "#1A1F2E",
     justifyContent: "center",
     alignItems: "center",
   },
+  chatIconActive: {
+    backgroundColor: "rgba(0, 217, 255, 0.2)",
+    borderWidth: 1,
+    borderColor: "rgba(0, 217, 255, 0.3)",
+  },
   chatContent: {
     flex: 1,
+    gap: 4,
+  },
+  titleRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   chatTitle: {
-    fontSize: 15,
-    fontWeight: "500",
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#D1D8E0",
+    flex: 1,
+  },
+  chatTitleActive: {
     color: "#FFFFFF",
-    marginBottom: 2,
+    fontWeight: "700",
   },
   chatDate: {
     fontSize: 12,
-    color: "#666666",
+    color: "#7F8C9B",
+  },
+  activeIndicator: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#00D9FF",
   },
   deleteButton: {
     padding: 8,
+    opacity: 0.8,
   },
   separator: {
     height: 1,
-    backgroundColor: "#2a2a2a",
+    backgroundColor: "#1A1F2E",
     marginLeft: 74,
   },
   emptyState: {
@@ -237,8 +282,8 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    fontWeight: "500",
-    color: "#888888",
+    fontWeight: "600",
+    color: "#7F8C9B",
   },
   emptySubtext: {
     fontSize: 13,

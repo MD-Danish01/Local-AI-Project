@@ -1,9 +1,10 @@
 import { databaseService } from "@/services/database/DatabaseService";
 import { llmService } from "@/services/llm/LLMService";
-import { buildQwenPrompt } from "@/services/llm/prompts";
+import { buildPrompt } from "@/services/llm/prompts";
 import { autoGenerateTitle } from "@/services/llm/titleGenerator";
 import { loggingService } from "@/services/logging/LoggingService";
 import type { Message } from "@/types/chat";
+import { parseThinkingResponse } from "@/utils/thinkingParser";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 interface UseLLMChatOptions {
@@ -124,7 +125,9 @@ export function useLLMChat(
 
         // Build prompt: previous history + new user message (no duplicates)
         const allMessages = [...previousMessages, tempUserMsg];
-        const prompt = buildQwenPrompt(allMessages);
+        const prompt = buildPrompt(allMessages, {
+          chatTemplate: llmService.chatTemplate,
+        });
 
         loggingService.debug("Chat", "Prompt built with history context", {
           previousCount: existingCount,
@@ -149,11 +152,22 @@ export function useLLMChat(
         });
         console.log("✅ Generation complete, length:", fullResponse.length);
 
-        // Add assistant message
+        // Parse thinking and main response
+        const parsed = parseThinkingResponse(fullResponse);
+        loggingService.debug("Chat", "Parsed response", {
+          thinkingLength: parsed.thinking.length,
+          mainResponseLength: parsed.mainResponse.length,
+          hasThinking: parsed.thinking.length > 0,
+        });
+        console.log("🧠 Thinking tokens:", parsed.thinking.length);
+        console.log("💬 Response tokens:", parsed.mainResponse.length);
+
+        // Add assistant message with separated thinking
         const assistantMessage: Omit<Message, "id" | "createdAt"> = {
           conversationId,
           role: "assistant",
-          content: fullResponse,
+          content: parsed.mainResponse,
+          thinking: parsed.thinking || undefined,
         };
 
         setMessages((prev) => [...prev, assistantMessage as Message]);

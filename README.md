@@ -1,17 +1,41 @@
-# LocalAI Chat
+# LocalAI Chat — On-Device LLM Chat App
 
-A fully on-device AI chat application built with React Native & Expo. Run the **Qwen2.5 0.5B** large language model locally on your Android device — no internet connection, no API keys, no cloud.
+## Project Overview
 
----
+LocalAI Chat is a fully on-device AI chat application for Android, built with React Native and Expo. It runs large language models (LLMs) entirely on the phone — no internet, no API keys, no cloud servers. All inference happens locally using the device's CPU via the llama.cpp engine.
 
-## Features
+The app supports two models: **Qwen3 0.6B** (fast, lightweight) and **Gemma 3 1B** (higher quality), both in GGUF Q4 quantized format. Users choose and download their preferred model on first launch. Each model uses its correct chat template — ChatML for Qwen3 and Gemma's native `<start_of_turn>` format — so both produce coherent, properly formatted responses.
 
-- **100% On-Device Inference** — powered by [`@runanywhere/llamacpp`](https://www.npmjs.com/package/@runanywhere/llamacpp)
-- **Qwen2.5 0.5B Q4** model (~397 MB, downloaded once to device storage)
-- **Persistent Chat History** via SQLite (`expo-sqlite`)
-- **Debug & Logs Tabs** for real-time inference diagnostics
-- **Dark / Light theme** support with automatic system detection
-- **New Architecture enabled** (React Native 0.81 + Expo SDK 54)
+### What We Built
+
+We designed and implemented a complete mobile AI assistant with:
+
+- **Multi-model support** — A model selection and download system lets users pick between Qwen3 0.6B (~430 MB) and Gemma 3 1B (~670 MB). The app detects which model is loaded and automatically applies the correct prompt template and stop sequences.
+
+- **Thinking/reasoning capability** — Both models can use `<think>` tags to show step-by-step reasoning. The app parses these tags in real-time during streaming, displaying a collapsible "View Reasoning" section above each response so users can see how the AI arrived at its answer.
+
+- **Rich text rendering** — Model output is processed through a deterministic post-processing pipeline that strips hidden chat tokens and XML tags, then parses Markdown (headings, bold, italic, code blocks with syntax labels, lists, blockquotes, inline math) and renders it with native React Native components. Code blocks include a copy-to-clipboard button. No web views or HTML are used.
+
+- **Multi-conversation chat** — Full chat history with SQLite persistence, conversation switching, auto-generated titles (using the LLM itself with few-shot prompting), and new chat creation.
+
+- **Streaming token generation** — Responses appear token-by-token in real time via the RunAnywhere SDK's streaming API, giving immediate feedback during inference.
+
+- **Fully offline architecture** — After the one-time model download, the app works completely offline. The LLM runs natively on-device through llama.cpp compiled for Android ARM64.
+
+### Tech Stack
+
+| Layer      | Technology                             |
+| ---------- | -------------------------------------- |
+| Framework  | React Native 0.81 + Expo SDK 54        |
+| Navigation | Expo Router v6 (file-based)            |
+| LLM Engine | @runanywhere/llamacpp 0.18 (llama.cpp) |
+| Models     | Qwen3 0.6B Q4, Gemma 3 1B Q4 (GGUF)    |
+| Database   | expo-sqlite 16                         |
+| Build      | EAS Build (cloud)                      |
+
+### Why It Matters
+
+Running LLMs on-device means complete data privacy — no conversations leave the phone. It also works without connectivity, making it useful in offline environments. By supporting multiple model families with correct prompt formatting, the app demonstrates that small quantized models can deliver usable AI assistance directly on consumer Android hardware.
 
 ---
 
@@ -21,8 +45,8 @@ Install the latest build directly on any Android device — no Play Store requir
 
 ### Latest Build
 
-| Build                    | Date       | Profile   | Download / QR                                                                                                       |
-| ------------------------ | ---------- | --------- | ------------------------------------------------------------------------------------------------------------------- |
+| Build                    | Date       | Profile   | Download / QR                                                                                                        |
+| ------------------------ | ---------- | --------- | -------------------------------------------------------------------------------------------------------------------- |
 | v1.0.0 — Initial Release | 2026-02-21 | `preview` | [EAS Build Link](https://expo.dev/accounts/danish-exo-2/projects/my-app/builds/234188d3-ee83-47e5-a14d-5943a67c16d7) |
 
 **Scan to install on Android:**

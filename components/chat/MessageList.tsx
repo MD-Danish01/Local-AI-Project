@@ -2,6 +2,7 @@ import type { Message } from "@/types/chat";
 import React from "react";
 import { FlatList, StyleSheet, Text, View } from "react-native";
 import { ChatBubble } from "./ChatBubble";
+import { parseThinkingResponse } from "@/utils/thinkingParser";
 
 interface MessageListProps {
   messages: Message[];
@@ -26,8 +27,14 @@ export function MessageList({
   }, [messages.length, streamingContent]);
 
   const renderItem = ({ item }: { item: Message }) => (
-    <ChatBubble message={item} />
+    <ChatBubble message={item} isStreaming={false} />
   );
+
+  // Parse streaming content to separate thinking and main response
+  const parsedStreaming = React.useMemo(() => {
+    if (!streamingContent) return null;
+    return parseThinkingResponse(streamingContent);
+  }, [streamingContent]);
 
   return (
     <View style={styles.container}>
@@ -49,14 +56,16 @@ export function MessageList({
       )}
 
       {/* Show streaming content as temporary assistant message */}
-      {isGenerating && streamingContent && (
+      {isGenerating && parsedStreaming && (
         <View style={styles.streamingContainer}>
           <ChatBubble
             message={{
               conversationId: 0,
               role: "assistant",
-              content: streamingContent,
+              content: parsedStreaming.mainResponse,
+              thinking: parsedStreaming.thinking,
             }}
+            isStreaming={true}
           />
         </View>
       )}
@@ -65,7 +74,7 @@ export function MessageList({
       {isGenerating && !streamingContent && (
         <View style={styles.typingContainer}>
           <View style={styles.typingBubble}>
-            <Text style={styles.typingText}>...</Text>
+            <Text style={styles.typingText}>💭 ●●●</Text>
           </View>
         </View>
       )}

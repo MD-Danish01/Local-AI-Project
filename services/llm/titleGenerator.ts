@@ -1,6 +1,7 @@
 import { databaseService } from "@/services/database/DatabaseService";
 import { loggingService } from "@/services/logging/LoggingService";
 import type { Message } from "@/types/chat";
+import { stripThinkingTags } from "@/utils/thinkingParser";
 import { llmService } from "./LLMService";
 
 /** Greetings that aren't useful for titles */
@@ -27,7 +28,8 @@ function findSubstantiveUserMessage(messages: Message[]): Message | null {
 }
 
 /**
- * Generate a chat title using the LLM with few-shot examples
+ * Generate a chat title using the LLM with few-shot examples.
+ * Builds the prompt in the correct format for the currently loaded model.
  */
 export async function generateChatTitle(messages: Message[]): Promise<string> {
   if (messages.length === 0) return "New Chat";
@@ -45,33 +47,12 @@ export async function generateChatTitle(messages: Message[]): Promise<string> {
     .map((m) => m.content.substring(0, 120))
     .join("; ");
 
-  // Few-shot prompt — gives the small model clear examples to imitate
-  const prompt = `<|im_start|>system
-You generate a short chat title (2-5 words) from the user's query. Output ONLY the title. No quotes. No explanation.
-<|im_end|>
-<|im_start|>user
-Query: How many states and union territories in India
-<|im_end|>
-<|im_start|>assistant
-Indian States & Territories
-<|im_end|>
-<|im_start|>user
-Query: Explain how photosynthesis works
-<|im_end|>
-<|im_start|>assistant
-Photosynthesis Explained
-<|im_end|>
-<|im_start|>user
-Query: Write a Python function to sort a list
-<|im_end|>
-<|im_start|>assistant
-Python List Sorting
-<|im_end|>
-<|im_start|>user
-Query: ${userQueries}
-<|im_end|>
-<|im_start|>assistant
-`;
+  // Build prompt in the correct format for the loaded model
+  const template = llmService.chatTemplate;
+  const prompt =
+    template === "gemma"
+      ? buildGemmaTitlePrompt(userQueries)
+      : buildChatMLTitlePrompt(userQueries);
 
   try {
     if (!llmService.isReady()) {
@@ -83,31 +64,46 @@ Query: ${userQueries}
     await llmService.generate(
       prompt,
       {
-        maxTokens: 15,
-        temperature: 0.2,
+        maxTokens: 8, // Strictly enforce 2-3 words
+        temperature: 0.1, // Lower temperature for more consistent short titles
+        stopSequences: [...llmService.stopSequences, "\n", "<think>", "."],
       },
       (token) => {
         title += token;
       },
     );
 
-    // Clean up
+    // Clean up and strip any thinking tags or template tokens
+    title = stripThinkingTags(title); // Remove any <think>...</think> content
     title = title
       .replace(/<\|im_end\|>/g, "")
-      .replace(/<\|im_start\|>[\s\S]*/g, "") // Stop at any new turn
+      .replace(/<\|im_start\|>[\s\S]*/g, "") // ChatML turn boundary
+      .replace(/<end_of_turn>/g, "") // Gemma turn boundary
+      .replace(/<start_of_turn>[\s\S]*/g, "") // Gemma turn boundary
       .replace(/["'`]/g, "")
-      .replace(/[.!?:]+$/g, "") // Strip trailing punctuation
-      .replace(/^(title|topic|subject)\s*:\s*/i, "") // Strip "Title:" prefix
+      .replace(/[.!?:,;]+$/g, "") // Strip trailing punctuation
+      .replace(/^(title|topic|subject|chat)\s*:\s*/i, "") // Strip prefixes
       .trim()
       .split("\n")[0] // First line only
-      .substring(0, 40);
+      .substring(0, 25); // Limit to 25 chars for 2-3 words
 
-    // Validate: reject if it looks like a full response rather than a title
-    if (!title || title.length < 2 || title.split(/\s+/).length > 10) {
+    // Strict validation: enforce 2-3 words only
+    const words = title.split(/\s+/).filter((w) => w.length > 0);
+    const wordCount = words.length;
+
+    if (!title || title.length < 3 || wordCount < 2 || wordCount > 3) {
+      loggingService.warn(
+        "TitleGen",
+        "Title doesn't meet 2-3 word criteria, using fallback",
+        {
+          title,
+          wordCount,
+        },
+      );
       return generateFallbackTitle(messages);
     }
 
-    loggingService.info("TitleGen", "Generated title", { title });
+    loggingService.info("TitleGen", "Generated title", { title, wordCount });
     return title;
   } catch (error) {
     loggingService.error("TitleGen", "Failed to generate title", { error });
@@ -117,20 +113,50 @@ Query: ${userQueries}
 
 /**
  * Fallback: extract a clean title from the first substantive user message
+ * Strictly keep it to 2-3 words for consistency
  */
 function generateFallbackTitle(messages: Message[]): string {
   const substantive = findSubstantiveUserMessage(messages);
   if (!substantive) {
     // If only greetings, use first user message
     const first = messages.find((m) => m.role === "user");
-    return first
-      ? capitalise(first.content.trim().split(/\s+/).slice(0, 4).join(" "))
-      : "New Chat";
+    if (!first) return "New Chat";
+
+    const words = first.content.trim().split(/\s+/).slice(0, 3);
+    return capitalise(words.join(" "));
   }
 
-  const words = substantive.content.trim().split(/\s+/);
-  const title = words.slice(0, 5).join(" ");
-  return capitalise(title.length > 40 ? title.substring(0, 37) + "…" : title);
+  // Extract exactly 2-3 words from the substantive message
+  const words = substantive.content
+    .trim()
+    .replace(/[^\w\s]/g, "") // Remove punctuation
+    .split(/\s+/)
+    .filter((w) => w.length > 0);
+
+  // Take 2-3 most meaningful words (skip common words if possible)
+  const commonWords = new Set([
+    "the",
+    "a",
+    "an",
+    "and",
+    "or",
+    "but",
+    "in",
+    "on",
+    "at",
+    "to",
+    "for",
+  ]);
+  const meaningfulWords = words.filter(
+    (w) => !commonWords.has(w.toLowerCase()),
+  );
+
+  const selectedWords = (
+    meaningfulWords.length >= 2 ? meaningfulWords : words
+  ).slice(0, 3);
+  const title = selectedWords.join(" ");
+
+  return capitalise(title.length > 25 ? title.substring(0, 22) + "…" : title);
 }
 
 function capitalise(s: string): string {
@@ -180,4 +206,59 @@ export async function autoGenerateTitle(conversationId: number): Promise<void> {
       error,
     });
   }
+}
+
+// ── Title prompt helpers per template ────────────────────────────────
+
+const TITLE_INSTRUCTION =
+  "Generate a concise chat title (2-3 words ONLY) that captures the main topic. Output ONLY the title. No quotes. No punctuation. No explanation.";
+
+function buildChatMLTitlePrompt(userQueries: string): string {
+  return `<|im_start|>system
+${TITLE_INSTRUCTION}
+<|im_end|>
+<|im_start|>user
+Query: How many states and union territories in India
+<|im_end|>
+<|im_start|>assistant
+Indian States
+<|im_end|>
+<|im_start|>user
+Query: Explain how photosynthesis works
+<|im_end|>
+<|im_start|>assistant
+Photosynthesis Explanation
+<|im_end|>
+<|im_start|>user
+Query: Write a Python function to sort a list
+<|im_end|>
+<|im_start|>assistant
+Python Sorting
+<|im_end|>
+<|im_start|>user
+Query: ${userQueries}
+<|im_end|>
+<|im_start|>assistant
+`;
+}
+
+function buildGemmaTitlePrompt(userQueries: string): string {
+  return `<start_of_turn>user
+${TITLE_INSTRUCTION}
+
+Query: How many states and union territories in India<end_of_turn>
+<start_of_turn>model
+Indian States<end_of_turn>
+<start_of_turn>user
+Query: Explain how photosynthesis works<end_of_turn>
+<start_of_turn>model
+Photosynthesis Explanation<end_of_turn>
+<start_of_turn>user
+Query: Write a Python function to sort a list<end_of_turn>
+<start_of_turn>model
+Python Sorting<end_of_turn>
+<start_of_turn>user
+Query: ${userQueries}<end_of_turn>
+<start_of_turn>model
+`;
 }

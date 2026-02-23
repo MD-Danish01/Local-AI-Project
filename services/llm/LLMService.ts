@@ -1,5 +1,5 @@
 import { loggingService } from "@/services/logging/LoggingService";
-import type { GenerateOptions } from "@/types/llm";
+import type { ChatTemplate, GenerateOptions, ModelInfo } from "@/types/llm";
 import { RunAnywhere } from "@runanywhere/core";
 import { LlamaCPP } from "@runanywhere/llamacpp";
 import { DEFAULT_GENERATION_OPTIONS, QWEN_MODEL_CONFIG } from "./config";
@@ -12,7 +12,22 @@ class LLMService {
   private isInitialized = false;
   private isModelLoaded = false;
 
-  async initialize(modelPath: string): Promise<void> {
+  /** Chat template for the currently loaded model */
+  private _chatTemplate: ChatTemplate = "chatml";
+  /** Model-specific stop sequences (if any) */
+  private _stopSequences: string[] | undefined;
+
+  /** Expose the active chat template so callers can build the right prompt */
+  get chatTemplate(): ChatTemplate {
+    return this._chatTemplate;
+  }
+
+  /** Expose model-specific stop sequences (falls back to default if unset) */
+  get stopSequences(): string[] {
+    return this._stopSequences ?? DEFAULT_GENERATION_OPTIONS.stopSequences;
+  }
+
+  async initialize(modelPath: string, modelInfo?: ModelInfo): Promise<void> {
     if (this.isInitialized) {
       loggingService.warn("LLM", "Model already initialized, skipping");
       return;
@@ -22,7 +37,13 @@ class LLMService {
       loggingService.info("LLM", "Initializing LLM with RunAnywhere SDK", {
         modelPath,
         modelId: this.modelId,
+        chatTemplate: modelInfo?.chatTemplate ?? "chatml",
       });
+
+      // Store model-specific settings
+      this._chatTemplate =
+        (modelInfo?.chatTemplate as ChatTemplate) ?? "chatml";
+      this._stopSequences = modelInfo?.stopSequences;
 
       // Validate model path exists
       if (!modelPath || modelPath.trim() === "") {
@@ -109,7 +130,12 @@ class LLMService {
       throw new Error(error);
     }
 
-    const finalOptions = { ...DEFAULT_GENERATION_OPTIONS, ...options };
+    const finalOptions = {
+      ...DEFAULT_GENERATION_OPTIONS,
+      // Use model-specific stop sequences unless caller explicitly overrides
+      stopSequences: this.stopSequences,
+      ...options,
+    };
 
     try {
       loggingService.info("LLM", "Starting text generation", {
@@ -194,6 +220,8 @@ class LLMService {
         await RunAnywhere.unloadModel();
         this.isModelLoaded = false;
         this.isInitialized = false;
+        this._chatTemplate = "chatml";
+        this._stopSequences = undefined;
         loggingService.info("LLM", "Model unloaded successfully");
       } catch (error) {
         const errorMessage =

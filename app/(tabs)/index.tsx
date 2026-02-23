@@ -1,6 +1,7 @@
 import { ChatHeader } from "@/components/chat/ChatHeader";
 import { InputBar } from "@/components/chat/InputBar";
 import { MessageList } from "@/components/chat/MessageList";
+import { ModelSelectionScreen } from "@/components/models/ModelSelectionScreen";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { ModelDownloadScreen } from "@/components/ui/ModelDownloadScreen";
 import { useLLMContext } from "@/contexts/LLMContext";
@@ -10,13 +11,18 @@ import {
     KeyboardAvoidingView,
     Platform,
     SafeAreaView,
-    StyleSheet
+    StyleSheet,
+    Text,
+    View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ChatScreen() {
+  const insets = useSafeAreaInsets();
   const {
     isReady,
     isLoading,
+    needsModelSelection,
     needsDownload,
     isDownloading,
     progress,
@@ -24,6 +30,7 @@ export default function ChatScreen() {
     totalBytes,
     error,
     conversationId,
+    activeModel,
     conversations,
     startDownload,
     cancelDownload,
@@ -46,6 +53,18 @@ export default function ChatScreen() {
     await refreshConversations();
   }, [createNewChat, refreshConversations]);
 
+  // Handle download start - for now, download the active model
+  const handleStartDownload = useCallback(() => {
+    if (activeModel) {
+      startDownload(activeModel);
+    }
+  }, [activeModel, startDownload]);
+
+  // ---- No model selected yet ----
+  if (needsModelSelection) {
+    return <ModelSelectionScreen />;
+  }
+
   // ---- Model not yet on device ----
   if (needsDownload || isDownloading) {
     return (
@@ -55,7 +74,7 @@ export default function ChatScreen() {
         downloadedBytes={downloadedBytes}
         totalBytes={totalBytes}
         error={error}
-        onStartDownload={startDownload}
+        onStartDownload={handleStartDownload}
         onCancelDownload={cancelDownload}
       />
     );
@@ -70,7 +89,18 @@ export default function ChatScreen() {
 
   // ---- Fatal error ----
   if (error) {
-    return <LoadingScreen progress={0} message={`Error: ${error}`} />;
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorIcon}>⚠️</Text>
+          <Text style={styles.errorTitle}>Error</Text>
+          <Text style={styles.errorMessage}>{error}</Text>
+          <Text style={styles.errorHint}>
+            Check the Logs tab for more details
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   // ---- Chat UI ----
@@ -83,8 +113,8 @@ export default function ChatScreen() {
       />
       <KeyboardAvoidingView
         style={styles.content}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+        behavior="padding"
+        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 56 + insets.bottom}
       >
         <MessageList
           messages={chat.messages}
@@ -108,5 +138,33 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  errorIcon: {
+    fontSize: 64,
+    marginBottom: 16,
+  },
+  errorTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#EF4444",
+    marginBottom: 12,
+  },
+  errorMessage: {
+    fontSize: 16,
+    color: "#E5E7EB",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  errorHint: {
+    fontSize: 14,
+    color: "#9CA3AF",
+    textAlign: "center",
+    marginTop: 8,
   },
 });

@@ -1,18 +1,21 @@
 import { databaseService } from "@/services/database/DatabaseService";
+import { enrichModelInfo } from "@/services/llm/config";
 import { llmService } from "@/services/llm/LLMService";
 import { modelDownloadService } from "@/services/llm/ModelDownloadService";
 import { modelService } from "@/services/llm/ModelService";
 import { loggingService } from "@/services/logging/LoggingService";
+import { modelRegistry } from "@/services/models/ModelRegistry";
 import type { Conversation } from "@/types/chat";
+import type { ModelInfo } from "@/types/llm";
 import { ModelLoadingState } from "@/types/llm";
 import { RunAnywhere, SDKEnvironment } from "@runanywhere/core";
 import { LlamaCPP } from "@runanywhere/llamacpp";
 import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
+    createContext,
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
 } from "react";
 
 interface LLMContextType {
@@ -20,6 +23,8 @@ interface LLMContextType {
   isReady: boolean;
   /** App is initialising DB / loading model into memory */
   isLoading: boolean;
+  /** No model selected yet */
+  needsModelSelection: boolean;
   /** Waiting for user to press Download */
   needsDownload: boolean;
   /** Download is actively in progress */
@@ -32,10 +37,12 @@ interface LLMContextType {
   totalBytes: number;
   error: string | null;
   conversationId: number | null;
+  /** Currently active model */
+  activeModel: ModelInfo | null;
   /** All conversations for history */
   conversations: Conversation[];
-  /** Call this when the user taps the Download button */
-  startDownload: () => void;
+  /** Call this when the user taps the Download button for a model */
+  startDownload: (model: ModelInfo) => void;
   /** Call this to cancel an in-flight download */
   cancelDownload: () => void;
   /** Create a new chat and switch to it */
@@ -60,6 +67,10 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
   const [totalBytes, setTotalBytes] = useState(0);
   const [conversationId, setConversationId] = useState<number | null>(null);
   const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeModel, setActiveModel] = useState<ModelInfo | null>(null);
+  const [downloadingModel, setDownloadingModel] = useState<ModelInfo | null>(
+    null,
+  );
 
   // ------------------------------------------------------------------
   // Conversation management functions
@@ -98,28 +109,30 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
       try {
         await databaseService.deleteConversation(id);
         loggingService.info("App", "Deleted conversation", { id });
+        await refreshConversations();
 
         // If we deleted the current conversation, switch to another or create new
         if (id === conversationId) {
-          const remaining = conversations.filter((c) => c.id !== id);
+          const remaining = await databaseService.getConversations();
           if (remaining.length > 0) {
             setConversationId(remaining[0].id!);
           } else {
-            await createNewChat();
+            const newId = await createNewChat();
+            setConversationId(newId);
           }
         }
-        await refreshConversations();
       } catch (err) {
         loggingService.error("App", "Failed to delete conversation", {
           error: err,
         });
+        throw err;
       }
     },
-    [conversationId, conversations, createNewChat, refreshConversations],
+    [conversationId, refreshConversations, createNewChat],
   );
 
   // ------------------------------------------------------------------
-  // Step A: initialise DB and check whether the model is already present
+  // Step A: initialise app and check for active model
   // ------------------------------------------------------------------
   useEffect(() => {
     async function initApp() {
@@ -145,9 +158,16 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
         // 1. Init database
         setProgress(10);
         await databaseService.initialize();
+        loggingService.info("App", "Database initialized");
         console.log("✅ Database ready");
 
-        // 2. Load conversations and create new chat for fresh start
+        // 2. Initialize model registry (adds default models)
+        setProgress(15);
+        loggingService.info("App", "Initializing model registry");
+        await modelRegistry.initialize();
+        console.log("✅ Model registry ready");
+
+        // 3. Load conversations and create new chat for fresh start
         setProgress(20);
         const existingConversations = await databaseService.getConversations();
         setConversations(existingConversations);
@@ -161,23 +181,43 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
         setConversations(updatedConversations);
         console.log("✅ Conversation ready");
 
-        // 3. Check if model file exists
+        // 4. Check for active model
         setProgress(30);
-        const localPath = await modelService.checkModel();
+        loggingService.info("App", "Checking for active model");
+        const activeModelInfo = await modelService.checkActiveModel();
 
-        if (!localPath) {
-          // Model not on device – ask user to download
-          console.log("📥 Model not present – waiting for user download");
+        if (activeModelInfo === null) {
+          // No model selected yet - show model selection screen
+          loggingService.warn(
+            "App",
+            "No model selected, showing selection screen",
+          );
+          console.log("📋 No model selected – user needs to choose");
+          setProgress(0);
+          setAppState(ModelLoadingState.NO_MODEL);
+          return;
+        }
+
+        if (activeModelInfo === undefined) {
+          // Model selected but not downloaded
+          const model = await modelRegistry.getActiveModel();
+          setActiveModel(model);
+          loggingService.warn("App", "Active model not downloaded", {
+            modelId: model?.id,
+          });
+          console.log(`📥 Model not downloaded: ${model?.name}`);
           setProgress(0);
           setAppState(ModelLoadingState.NOT_DOWNLOADED);
           return;
         }
 
-        // 4. Model already downloaded – load it straight away
-        await loadModel(localPath);
+        // Model is downloaded and ready - load it
+        setActiveModel(activeModelInfo);
+        await loadModel(activeModelInfo);
       } catch (err) {
         const msg =
           err instanceof Error ? err.message : "Initialisation failed";
+        loggingService.error("App", "Initialization failed", { error: msg });
         setError(msg);
         setAppState(ModelLoadingState.ERROR);
         console.error("❌ Init failed:", msg);
@@ -190,22 +230,33 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
   // ------------------------------------------------------------------
   // Load model into memory (after download or on subsequent launches)
   // ------------------------------------------------------------------
-  async function loadModel(localPath: string) {
+  async function loadModel(modelInfo: ModelInfo) {
     try {
+      // Enrich with chatTemplate & stopSequences from config defaults
+      const enriched = enrichModelInfo(modelInfo);
+
       setAppState(ModelLoadingState.LOADING);
       setProgress(50);
-      console.log("📦 Loading model into LLM engine…");
+      loggingService.info("App", "Loading model into LLM engine", {
+        modelId: enriched.id,
+        chatTemplate: enriched.chatTemplate,
+      });
+      console.log(
+        `📦 Loading model: ${enriched.name} (template: ${enriched.chatTemplate})`,
+      );
 
-      const modelPath = await modelService.prepareFromLocalPath(localPath);
+      const modelPath = await modelService.prepareModel(enriched);
       setProgress(80);
 
-      await llmService.initialize(modelPath);
+      await llmService.initialize(modelPath, enriched);
       setProgress(100);
 
       setAppState(ModelLoadingState.READY);
+      loggingService.info("App", "LLM ready for inference");
       console.log("🎉 LLM ready!");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to load model";
+      loggingService.error("App", "Model loading failed", { error: msg });
       setError(msg);
       setAppState(ModelLoadingState.ERROR);
       console.error("❌ Model load failed:", msg);
@@ -215,41 +266,101 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
   // ------------------------------------------------------------------
   // User-initiated download
   // ------------------------------------------------------------------
-  const startDownload = useCallback(() => {
+  const startDownload = useCallback((model: ModelInfo) => {
+    loggingService.info("App", "User initiated model download", {
+      modelId: model.id,
+    });
+    setDownloadingModel(model);
     setAppState(ModelLoadingState.DOWNLOADING);
     setProgress(0);
     setDownloadedBytes(0);
     setTotalBytes(0);
     setError(null);
 
+    // Update model status to downloading
+    modelRegistry.updateModelStatus(model.id, "downloading").catch((err) => {
+      loggingService.error("App", "Failed to update model status", {
+        error: err,
+      });
+    });
+
     modelDownloadService.downloadModel(
+      model,
       // onProgress
-      (pct, received, total) => {
+      (pct: number, received: number, total: number) => {
         setProgress(pct);
         setDownloadedBytes(received);
         setTotalBytes(total);
       },
       // onComplete
-      async (localPath) => {
+      async (localPath: string) => {
+        loggingService.info("App", "Download complete, loading model", {
+          modelId: model.id,
+          path: localPath,
+        });
         console.log("✅ Download complete, loading model…");
-        await loadModel(localPath);
+
+        // Update model status to downloaded
+        await modelRegistry.updateModelStatus(
+          model.id,
+          "downloaded",
+          localPath,
+        );
+
+        // Set as active model
+        await modelRegistry.setActiveModel(model.id);
+
+        // Get updated model info
+        const updatedModel = await modelRegistry.getModel(model.id);
+        if (updatedModel) {
+          setActiveModel(updatedModel);
+          await loadModel(updatedModel);
+        }
+
+        setDownloadingModel(null);
       },
       // onError
-      (err) => {
+      (err: Error) => {
+        loggingService.error("App", "Download error", {
+          modelId: model.id,
+          error: err.message,
+        });
         setError(err.message);
         setAppState(ModelLoadingState.NOT_DOWNLOADED);
         console.error("❌ Download error:", err.message);
+
+        // Update model status to error
+        modelRegistry.updateModelStatus(model.id, "error").catch((e) => {
+          loggingService.error("App", "Failed to update model status", {
+            error: e,
+          });
+        });
+
+        setDownloadingModel(null);
       },
     );
   }, []);
 
   const cancelDownload = useCallback(async () => {
-    await modelDownloadService.cancelDownload();
-    setAppState(ModelLoadingState.NOT_DOWNLOADED);
-    setProgress(0);
-    setDownloadedBytes(0);
-    setTotalBytes(0);
-  }, []);
+    if (downloadingModel) {
+      loggingService.info("App", "User cancelled download", {
+        modelId: downloadingModel.id,
+      });
+      await modelDownloadService.cancelDownload(
+        downloadingModel.id,
+        downloadingModel.fileName,
+      );
+
+      // Update model status back to available
+      await modelRegistry.updateModelStatus(downloadingModel.id, "available");
+
+      setAppState(ModelLoadingState.NOT_DOWNLOADED);
+      setProgress(0);
+      setDownloadedBytes(0);
+      setTotalBytes(0);
+      setDownloadingModel(null);
+    }
+  }, [downloadingModel]);
 
   // ------------------------------------------------------------------
   // Derived booleans
@@ -259,6 +370,7 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
     isLoading:
       appState === ModelLoadingState.IDLE ||
       appState === ModelLoadingState.LOADING,
+    needsModelSelection: appState === ModelLoadingState.NO_MODEL,
     needsDownload: appState === ModelLoadingState.NOT_DOWNLOADED,
     isDownloading: appState === ModelLoadingState.DOWNLOADING,
     progress,
@@ -266,6 +378,7 @@ export function LLMProvider({ children }: { children: React.ReactNode }) {
     totalBytes,
     error,
     conversationId,
+    activeModel,
     conversations,
     startDownload,
     cancelDownload,

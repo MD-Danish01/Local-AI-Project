@@ -20,7 +20,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.localai.chat"
+      "package": "com.localai.chat",
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "output": "static",
@@ -48,8 +49,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "3d084716-7a06-4b60-8b3c-6d8fb40c5ffd"
+        "projectId": "95b3358c-92d9-4d0f-8347-e065d6843f78"
       }
-    }
+    },
+    "owner": "hacky2201"
   }
 }
