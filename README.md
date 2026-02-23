@@ -47,7 +47,7 @@ Install the latest build directly on any Android device — no Play Store requir
 
 | Build                    | Date       | Profile   | Download / QR                                                                                                        |
 | ------------------------ | ---------- | --------- | -------------------------------------------------------------------------------------------------------------------- |
-| v1.0.0 — Initial Release | 2026-02-21 | `preview` | [EAS Build Link](https://expo.dev/accounts/danish-exo-2/projects/my-app/builds/234188d3-ee83-47e5-a14d-5943a67c16d7) |
+| v1.0.0 — Initial Release | 2026-02-21 | `preview` | [EAS Build Link](https://expo.dev/accounts/hacky2201/projects/my-app/builds/10a07105-26c9-4bc2-b0df-3bd216cddb3d) |
 
 **Scan to install on Android:**
 
