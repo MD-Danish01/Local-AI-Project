@@ -161,20 +161,16 @@ export function useLLMChat(
         loggingService.info("Chat", "Assistant message saved to database");
         console.log("✅ Assistant message saved");
 
-        // Auto-generate title after first exchange (when no prior messages existed)
-        if (existingCount === 0) {
-          loggingService.info(
-            "Chat",
-            "First exchange complete, generating title",
-          );
-          autoGenerateTitle(conversationId)
-            .then(() => {
-              onTitleGenerated?.();
-            })
-            .catch((err) => {
-              console.log("Failed to auto-generate title:", err);
-            });
-        }
+        // Auto-generate title after each exchange while title is still "New Chat".
+        // This handles the case where the first message was just a greeting —
+        // the title generator will skip greetings and wait for a real query.
+        autoGenerateTitle(conversationId)
+          .then(() => {
+            onTitleGenerated?.();
+          })
+          .catch((err) => {
+            console.log("Failed to auto-generate title:", err);
+          });
       } catch (err) {
         const errMsg = err instanceof Error ? err.message : "Generation failed";
         loggingService.error("Chat", "Failed to generate response", {

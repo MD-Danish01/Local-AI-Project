@@ -1,13 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import {
-    KeyboardAvoidingView,
-    Platform,
-    StyleSheet,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 interface InputBarProps {
   onSend: (message: string) => void;
@@ -30,43 +23,38 @@ export function InputBar({
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-    >
-      <View style={styles.container}>
-        <TextInput
-          style={styles.input}
-          value={inputText}
-          onChangeText={setInputText}
-          placeholder="Message..."
-          placeholderTextColor="#666666"
-          multiline
-          maxLength={1000}
-          editable={!disabled && !isGenerating}
-          onSubmitEditing={handleSend}
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        value={inputText}
+        onChangeText={setInputText}
+        placeholder="Message..."
+        placeholderTextColor="#666666"
+        multiline
+        maxLength={1000}
+        editable={!disabled && !isGenerating}
+        onSubmitEditing={handleSend}
+      />
+      <TouchableOpacity
+        style={[
+          styles.sendButton,
+          (disabled || isGenerating || !inputText.trim()) &&
+            styles.sendButtonDisabled,
+        ]}
+        onPress={handleSend}
+        disabled={disabled || isGenerating || !inputText.trim()}
+      >
+        <Ionicons
+          name="arrow-up"
+          size={20}
+          color={
+            disabled || isGenerating || !inputText.trim()
+              ? "#666666"
+              : "#1f2020"
+          }
         />
-        <TouchableOpacity
-          style={[
-            styles.sendButton,
-            (disabled || isGenerating || !inputText.trim()) &&
-              styles.sendButtonDisabled,
-          ]}
-          onPress={handleSend}
-          disabled={disabled || isGenerating || !inputText.trim()}
-        >
-          <Ionicons
-            name="arrow-up"
-            size={20}
-            color={
-              disabled || isGenerating || !inputText.trim()
-                ? "#666666"
-                : "#1f2020"
-            }
-          />
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+      </TouchableOpacity>
+    </View>
   );
 }
 

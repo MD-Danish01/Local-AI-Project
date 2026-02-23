@@ -6,7 +6,12 @@ import { ModelDownloadScreen } from "@/components/ui/ModelDownloadScreen";
 import { useLLMContext } from "@/contexts/LLMContext";
 import { useLLMChat } from "@/hooks/useLLMChat";
 import React, { useCallback, useMemo } from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import {
+    KeyboardAvoidingView,
+    Platform,
+    SafeAreaView,
+    StyleSheet
+} from "react-native";
 
 export default function ChatScreen() {
   const {
@@ -76,7 +81,11 @@ export default function ChatScreen() {
         onNewChat={handleNewChat}
         disabled={!isReady || chat.isGenerating}
       />
-      <View style={styles.content}>
+      <KeyboardAvoidingView
+        style={styles.content}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+      >
         <MessageList
           messages={chat.messages}
           streamingContent={chat.streamingContent}
@@ -87,7 +96,7 @@ export default function ChatScreen() {
           disabled={!isReady}
           isGenerating={chat.isGenerating}
         />
-      </View>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
